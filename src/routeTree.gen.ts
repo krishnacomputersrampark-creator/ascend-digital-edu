@@ -9,12 +9,112 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as VideosRouteImport } from './routes/videos'
+import { Route as VerifyCertificateRouteImport } from './routes/verify-certificate'
+import { Route as TestimonialsRouteImport } from './routes/testimonials'
+import { Route as StudentZoneRouteImport } from './routes/student-zone'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as NoticeRouteImport } from './routes/notice'
+import { Route as GalleryRouteImport } from './routes/gallery'
+import { Route as FranchiseRouteImport } from './routes/franchise'
+import { Route as FaqRouteImport } from './routes/faq'
+import { Route as FacultyRouteImport } from './routes/faculty'
+import { Route as EventsRouteImport } from './routes/events'
+import { Route as DownloadsRouteImport } from './routes/downloads'
+import { Route as CoursesRouteImport } from './routes/courses'
+import { Route as ContactRouteImport } from './routes/contact'
+import { Route as BlogRouteImport } from './routes/blog'
+import { Route as AdmissionRouteImport } from './routes/admission'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as StudentResultsRouteImport } from './routes/student.results'
+import { Route as StudentOnlineTestRouteImport } from './routes/student.online-test'
+import { Route as StudentLoginRouteImport } from './routes/student.login'
+import { Route as StudentFeesRouteImport } from './routes/student.fees'
+import { Route as StudentDashboardRouteImport } from './routes/student.dashboard'
+import { Route as StudentCertificatesRouteImport } from './routes/student.certificates'
+import { Route as StudentAttendanceRouteImport } from './routes/student.attendance'
+import { Route as SearchStudentRouteImport } from './routes/search.student'
+import { Route as SearchResultRouteImport } from './routes/search.result'
+import { Route as SearchCertificateRouteImport } from './routes/search.certificate'
 
+const VideosRoute = VideosRouteImport.update({
+  id: '/videos',
+  path: '/videos',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const VerifyCertificateRoute = VerifyCertificateRouteImport.update({
+  id: '/verify-certificate',
+  path: '/verify-certificate',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TestimonialsRoute = TestimonialsRouteImport.update({
+  id: '/testimonials',
+  path: '/testimonials',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const StudentZoneRoute = StudentZoneRouteImport.update({
+  id: '/student-zone',
+  path: '/student-zone',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
   path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NoticeRoute = NoticeRouteImport.update({
+  id: '/notice',
+  path: '/notice',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GalleryRoute = GalleryRouteImport.update({
+  id: '/gallery',
+  path: '/gallery',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FranchiseRoute = FranchiseRouteImport.update({
+  id: '/franchise',
+  path: '/franchise',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FaqRoute = FaqRouteImport.update({
+  id: '/faq',
+  path: '/faq',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FacultyRoute = FacultyRouteImport.update({
+  id: '/faculty',
+  path: '/faculty',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EventsRoute = EventsRouteImport.update({
+  id: '/events',
+  path: '/events',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DownloadsRoute = DownloadsRouteImport.update({
+  id: '/downloads',
+  path: '/downloads',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CoursesRoute = CoursesRouteImport.update({
+  id: '/courses',
+  path: '/courses',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContactRoute = ContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BlogRoute = BlogRouteImport.update({
+  id: '/blog',
+  path: '/blog',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdmissionRoute = AdmissionRouteImport.update({
+  id: '/admission',
+  path: '/admission',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -22,40 +122,377 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const StudentResultsRoute = StudentResultsRouteImport.update({
+  id: '/student/results',
+  path: '/student/results',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const StudentOnlineTestRoute = StudentOnlineTestRouteImport.update({
+  id: '/student/online-test',
+  path: '/student/online-test',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const StudentLoginRoute = StudentLoginRouteImport.update({
+  id: '/student/login',
+  path: '/student/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const StudentFeesRoute = StudentFeesRouteImport.update({
+  id: '/student/fees',
+  path: '/student/fees',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const StudentDashboardRoute = StudentDashboardRouteImport.update({
+  id: '/student/dashboard',
+  path: '/student/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const StudentCertificatesRoute = StudentCertificatesRouteImport.update({
+  id: '/student/certificates',
+  path: '/student/certificates',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const StudentAttendanceRoute = StudentAttendanceRouteImport.update({
+  id: '/student/attendance',
+  path: '/student/attendance',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SearchStudentRoute = SearchStudentRouteImport.update({
+  id: '/search/student',
+  path: '/search/student',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SearchResultRoute = SearchResultRouteImport.update({
+  id: '/search/result',
+  path: '/search/result',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SearchCertificateRoute = SearchCertificateRouteImport.update({
+  id: '/search/certificate',
+  path: '/search/certificate',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admission': typeof AdmissionRoute
+  '/blog': typeof BlogRoute
+  '/contact': typeof ContactRoute
+  '/courses': typeof CoursesRoute
+  '/downloads': typeof DownloadsRoute
+  '/events': typeof EventsRoute
+  '/faculty': typeof FacultyRoute
+  '/faq': typeof FaqRoute
+  '/franchise': typeof FranchiseRoute
+  '/gallery': typeof GalleryRoute
+  '/notice': typeof NoticeRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/student-zone': typeof StudentZoneRoute
+  '/testimonials': typeof TestimonialsRoute
+  '/verify-certificate': typeof VerifyCertificateRoute
+  '/videos': typeof VideosRoute
+  '/search/certificate': typeof SearchCertificateRoute
+  '/search/result': typeof SearchResultRoute
+  '/search/student': typeof SearchStudentRoute
+  '/student/attendance': typeof StudentAttendanceRoute
+  '/student/certificates': typeof StudentCertificatesRoute
+  '/student/dashboard': typeof StudentDashboardRoute
+  '/student/fees': typeof StudentFeesRoute
+  '/student/login': typeof StudentLoginRoute
+  '/student/online-test': typeof StudentOnlineTestRoute
+  '/student/results': typeof StudentResultsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/admission': typeof AdmissionRoute
+  '/blog': typeof BlogRoute
+  '/contact': typeof ContactRoute
+  '/courses': typeof CoursesRoute
+  '/downloads': typeof DownloadsRoute
+  '/events': typeof EventsRoute
+  '/faculty': typeof FacultyRoute
+  '/faq': typeof FaqRoute
+  '/franchise': typeof FranchiseRoute
+  '/gallery': typeof GalleryRoute
+  '/notice': typeof NoticeRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/student-zone': typeof StudentZoneRoute
+  '/testimonials': typeof TestimonialsRoute
+  '/verify-certificate': typeof VerifyCertificateRoute
+  '/videos': typeof VideosRoute
+  '/search/certificate': typeof SearchCertificateRoute
+  '/search/result': typeof SearchResultRoute
+  '/search/student': typeof SearchStudentRoute
+  '/student/attendance': typeof StudentAttendanceRoute
+  '/student/certificates': typeof StudentCertificatesRoute
+  '/student/dashboard': typeof StudentDashboardRoute
+  '/student/fees': typeof StudentFeesRoute
+  '/student/login': typeof StudentLoginRoute
+  '/student/online-test': typeof StudentOnlineTestRoute
+  '/student/results': typeof StudentResultsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/admission': typeof AdmissionRoute
+  '/blog': typeof BlogRoute
+  '/contact': typeof ContactRoute
+  '/courses': typeof CoursesRoute
+  '/downloads': typeof DownloadsRoute
+  '/events': typeof EventsRoute
+  '/faculty': typeof FacultyRoute
+  '/faq': typeof FaqRoute
+  '/franchise': typeof FranchiseRoute
+  '/gallery': typeof GalleryRoute
+  '/notice': typeof NoticeRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/student-zone': typeof StudentZoneRoute
+  '/testimonials': typeof TestimonialsRoute
+  '/verify-certificate': typeof VerifyCertificateRoute
+  '/videos': typeof VideosRoute
+  '/search/certificate': typeof SearchCertificateRoute
+  '/search/result': typeof SearchResultRoute
+  '/search/student': typeof SearchStudentRoute
+  '/student/attendance': typeof StudentAttendanceRoute
+  '/student/certificates': typeof StudentCertificatesRoute
+  '/student/dashboard': typeof StudentDashboardRoute
+  '/student/fees': typeof StudentFeesRoute
+  '/student/login': typeof StudentLoginRoute
+  '/student/online-test': typeof StudentOnlineTestRoute
+  '/student/results': typeof StudentResultsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/sitemap.xml'
+  fullPaths:
+    | '/'
+    | '/admission'
+    | '/blog'
+    | '/contact'
+    | '/courses'
+    | '/downloads'
+    | '/events'
+    | '/faculty'
+    | '/faq'
+    | '/franchise'
+    | '/gallery'
+    | '/notice'
+    | '/sitemap.xml'
+    | '/student-zone'
+    | '/testimonials'
+    | '/verify-certificate'
+    | '/videos'
+    | '/search/certificate'
+    | '/search/result'
+    | '/search/student'
+    | '/student/attendance'
+    | '/student/certificates'
+    | '/student/dashboard'
+    | '/student/fees'
+    | '/student/login'
+    | '/student/online-test'
+    | '/student/results'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/sitemap.xml'
-  id: '__root__' | '/' | '/sitemap.xml'
+  to:
+    | '/'
+    | '/admission'
+    | '/blog'
+    | '/contact'
+    | '/courses'
+    | '/downloads'
+    | '/events'
+    | '/faculty'
+    | '/faq'
+    | '/franchise'
+    | '/gallery'
+    | '/notice'
+    | '/sitemap.xml'
+    | '/student-zone'
+    | '/testimonials'
+    | '/verify-certificate'
+    | '/videos'
+    | '/search/certificate'
+    | '/search/result'
+    | '/search/student'
+    | '/student/attendance'
+    | '/student/certificates'
+    | '/student/dashboard'
+    | '/student/fees'
+    | '/student/login'
+    | '/student/online-test'
+    | '/student/results'
+  id:
+    | '__root__'
+    | '/'
+    | '/admission'
+    | '/blog'
+    | '/contact'
+    | '/courses'
+    | '/downloads'
+    | '/events'
+    | '/faculty'
+    | '/faq'
+    | '/franchise'
+    | '/gallery'
+    | '/notice'
+    | '/sitemap.xml'
+    | '/student-zone'
+    | '/testimonials'
+    | '/verify-certificate'
+    | '/videos'
+    | '/search/certificate'
+    | '/search/result'
+    | '/search/student'
+    | '/student/attendance'
+    | '/student/certificates'
+    | '/student/dashboard'
+    | '/student/fees'
+    | '/student/login'
+    | '/student/online-test'
+    | '/student/results'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdmissionRoute: typeof AdmissionRoute
+  BlogRoute: typeof BlogRoute
+  ContactRoute: typeof ContactRoute
+  CoursesRoute: typeof CoursesRoute
+  DownloadsRoute: typeof DownloadsRoute
+  EventsRoute: typeof EventsRoute
+  FacultyRoute: typeof FacultyRoute
+  FaqRoute: typeof FaqRoute
+  FranchiseRoute: typeof FranchiseRoute
+  GalleryRoute: typeof GalleryRoute
+  NoticeRoute: typeof NoticeRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  StudentZoneRoute: typeof StudentZoneRoute
+  TestimonialsRoute: typeof TestimonialsRoute
+  VerifyCertificateRoute: typeof VerifyCertificateRoute
+  VideosRoute: typeof VideosRoute
+  SearchCertificateRoute: typeof SearchCertificateRoute
+  SearchResultRoute: typeof SearchResultRoute
+  SearchStudentRoute: typeof SearchStudentRoute
+  StudentAttendanceRoute: typeof StudentAttendanceRoute
+  StudentCertificatesRoute: typeof StudentCertificatesRoute
+  StudentDashboardRoute: typeof StudentDashboardRoute
+  StudentFeesRoute: typeof StudentFeesRoute
+  StudentLoginRoute: typeof StudentLoginRoute
+  StudentOnlineTestRoute: typeof StudentOnlineTestRoute
+  StudentResultsRoute: typeof StudentResultsRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/videos': {
+      id: '/videos'
+      path: '/videos'
+      fullPath: '/videos'
+      preLoaderRoute: typeof VideosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/verify-certificate': {
+      id: '/verify-certificate'
+      path: '/verify-certificate'
+      fullPath: '/verify-certificate'
+      preLoaderRoute: typeof VerifyCertificateRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/testimonials': {
+      id: '/testimonials'
+      path: '/testimonials'
+      fullPath: '/testimonials'
+      preLoaderRoute: typeof TestimonialsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/student-zone': {
+      id: '/student-zone'
+      path: '/student-zone'
+      fullPath: '/student-zone'
+      preLoaderRoute: typeof StudentZoneRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/sitemap.xml': {
       id: '/sitemap.xml'
       path: '/sitemap.xml'
       fullPath: '/sitemap.xml'
       preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/notice': {
+      id: '/notice'
+      path: '/notice'
+      fullPath: '/notice'
+      preLoaderRoute: typeof NoticeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/gallery': {
+      id: '/gallery'
+      path: '/gallery'
+      fullPath: '/gallery'
+      preLoaderRoute: typeof GalleryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/franchise': {
+      id: '/franchise'
+      path: '/franchise'
+      fullPath: '/franchise'
+      preLoaderRoute: typeof FranchiseRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/faq': {
+      id: '/faq'
+      path: '/faq'
+      fullPath: '/faq'
+      preLoaderRoute: typeof FaqRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/faculty': {
+      id: '/faculty'
+      path: '/faculty'
+      fullPath: '/faculty'
+      preLoaderRoute: typeof FacultyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/events': {
+      id: '/events'
+      path: '/events'
+      fullPath: '/events'
+      preLoaderRoute: typeof EventsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/downloads': {
+      id: '/downloads'
+      path: '/downloads'
+      fullPath: '/downloads'
+      preLoaderRoute: typeof DownloadsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/courses': {
+      id: '/courses'
+      path: '/courses'
+      fullPath: '/courses'
+      preLoaderRoute: typeof CoursesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/blog': {
+      id: '/blog'
+      path: '/blog'
+      fullPath: '/blog'
+      preLoaderRoute: typeof BlogRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admission': {
+      id: '/admission'
+      path: '/admission'
+      fullPath: '/admission'
+      preLoaderRoute: typeof AdmissionRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -65,12 +502,107 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/student/results': {
+      id: '/student/results'
+      path: '/student/results'
+      fullPath: '/student/results'
+      preLoaderRoute: typeof StudentResultsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/student/online-test': {
+      id: '/student/online-test'
+      path: '/student/online-test'
+      fullPath: '/student/online-test'
+      preLoaderRoute: typeof StudentOnlineTestRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/student/login': {
+      id: '/student/login'
+      path: '/student/login'
+      fullPath: '/student/login'
+      preLoaderRoute: typeof StudentLoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/student/fees': {
+      id: '/student/fees'
+      path: '/student/fees'
+      fullPath: '/student/fees'
+      preLoaderRoute: typeof StudentFeesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/student/dashboard': {
+      id: '/student/dashboard'
+      path: '/student/dashboard'
+      fullPath: '/student/dashboard'
+      preLoaderRoute: typeof StudentDashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/student/certificates': {
+      id: '/student/certificates'
+      path: '/student/certificates'
+      fullPath: '/student/certificates'
+      preLoaderRoute: typeof StudentCertificatesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/student/attendance': {
+      id: '/student/attendance'
+      path: '/student/attendance'
+      fullPath: '/student/attendance'
+      preLoaderRoute: typeof StudentAttendanceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/search/student': {
+      id: '/search/student'
+      path: '/search/student'
+      fullPath: '/search/student'
+      preLoaderRoute: typeof SearchStudentRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/search/result': {
+      id: '/search/result'
+      path: '/search/result'
+      fullPath: '/search/result'
+      preLoaderRoute: typeof SearchResultRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/search/certificate': {
+      id: '/search/certificate'
+      path: '/search/certificate'
+      fullPath: '/search/certificate'
+      preLoaderRoute: typeof SearchCertificateRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdmissionRoute: AdmissionRoute,
+  BlogRoute: BlogRoute,
+  ContactRoute: ContactRoute,
+  CoursesRoute: CoursesRoute,
+  DownloadsRoute: DownloadsRoute,
+  EventsRoute: EventsRoute,
+  FacultyRoute: FacultyRoute,
+  FaqRoute: FaqRoute,
+  FranchiseRoute: FranchiseRoute,
+  GalleryRoute: GalleryRoute,
+  NoticeRoute: NoticeRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  StudentZoneRoute: StudentZoneRoute,
+  TestimonialsRoute: TestimonialsRoute,
+  VerifyCertificateRoute: VerifyCertificateRoute,
+  VideosRoute: VideosRoute,
+  SearchCertificateRoute: SearchCertificateRoute,
+  SearchResultRoute: SearchResultRoute,
+  SearchStudentRoute: SearchStudentRoute,
+  StudentAttendanceRoute: StudentAttendanceRoute,
+  StudentCertificatesRoute: StudentCertificatesRoute,
+  StudentDashboardRoute: StudentDashboardRoute,
+  StudentFeesRoute: StudentFeesRoute,
+  StudentLoginRoute: StudentLoginRoute,
+  StudentOnlineTestRoute: StudentOnlineTestRoute,
+  StudentResultsRoute: StudentResultsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
