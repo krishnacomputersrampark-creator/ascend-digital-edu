@@ -12,8 +12,13 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as StudentZoneRouteImport } from './routes/student-zone'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as StudentResultsRouteImport } from './routes/student.results'
+import { Route as StudentOnlineTestRouteImport } from './routes/student.online-test'
 import { Route as StudentLoginRouteImport } from './routes/student.login'
+import { Route as StudentFeesRouteImport } from './routes/student.fees'
 import { Route as StudentDashboardRouteImport } from './routes/student.dashboard'
+import { Route as StudentCertificatesRouteImport } from './routes/student.certificates'
+import { Route as StudentAttendanceRouteImport } from './routes/student.attendance'
 
 const StudentZoneRoute = StudentZoneRouteImport.update({
   id: '/student-zone',
@@ -30,9 +35,24 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const StudentResultsRoute = StudentResultsRouteImport.update({
+  id: '/student/results',
+  path: '/student/results',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const StudentOnlineTestRoute = StudentOnlineTestRouteImport.update({
+  id: '/student/online-test',
+  path: '/student/online-test',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const StudentLoginRoute = StudentLoginRouteImport.update({
   id: '/student/login',
   path: '/student/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const StudentFeesRoute = StudentFeesRouteImport.update({
+  id: '/student/fees',
+  path: '/student/fees',
   getParentRoute: () => rootRouteImport,
 } as any)
 const StudentDashboardRoute = StudentDashboardRouteImport.update({
@@ -40,28 +60,53 @@ const StudentDashboardRoute = StudentDashboardRouteImport.update({
   path: '/student/dashboard',
   getParentRoute: () => rootRouteImport,
 } as any)
+const StudentCertificatesRoute = StudentCertificatesRouteImport.update({
+  id: '/student/certificates',
+  path: '/student/certificates',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const StudentAttendanceRoute = StudentAttendanceRouteImport.update({
+  id: '/student/attendance',
+  path: '/student/attendance',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/student-zone': typeof StudentZoneRoute
+  '/student/attendance': typeof StudentAttendanceRoute
+  '/student/certificates': typeof StudentCertificatesRoute
   '/student/dashboard': typeof StudentDashboardRoute
+  '/student/fees': typeof StudentFeesRoute
   '/student/login': typeof StudentLoginRoute
+  '/student/online-test': typeof StudentOnlineTestRoute
+  '/student/results': typeof StudentResultsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/student-zone': typeof StudentZoneRoute
+  '/student/attendance': typeof StudentAttendanceRoute
+  '/student/certificates': typeof StudentCertificatesRoute
   '/student/dashboard': typeof StudentDashboardRoute
+  '/student/fees': typeof StudentFeesRoute
   '/student/login': typeof StudentLoginRoute
+  '/student/online-test': typeof StudentOnlineTestRoute
+  '/student/results': typeof StudentResultsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/student-zone': typeof StudentZoneRoute
+  '/student/attendance': typeof StudentAttendanceRoute
+  '/student/certificates': typeof StudentCertificatesRoute
   '/student/dashboard': typeof StudentDashboardRoute
+  '/student/fees': typeof StudentFeesRoute
   '/student/login': typeof StudentLoginRoute
+  '/student/online-test': typeof StudentOnlineTestRoute
+  '/student/results': typeof StudentResultsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -69,30 +114,50 @@ export interface FileRouteTypes {
     | '/'
     | '/sitemap.xml'
     | '/student-zone'
+    | '/student/attendance'
+    | '/student/certificates'
     | '/student/dashboard'
+    | '/student/fees'
     | '/student/login'
+    | '/student/online-test'
+    | '/student/results'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/sitemap.xml'
     | '/student-zone'
+    | '/student/attendance'
+    | '/student/certificates'
     | '/student/dashboard'
+    | '/student/fees'
     | '/student/login'
+    | '/student/online-test'
+    | '/student/results'
   id:
     | '__root__'
     | '/'
     | '/sitemap.xml'
     | '/student-zone'
+    | '/student/attendance'
+    | '/student/certificates'
     | '/student/dashboard'
+    | '/student/fees'
     | '/student/login'
+    | '/student/online-test'
+    | '/student/results'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   StudentZoneRoute: typeof StudentZoneRoute
+  StudentAttendanceRoute: typeof StudentAttendanceRoute
+  StudentCertificatesRoute: typeof StudentCertificatesRoute
   StudentDashboardRoute: typeof StudentDashboardRoute
+  StudentFeesRoute: typeof StudentFeesRoute
   StudentLoginRoute: typeof StudentLoginRoute
+  StudentOnlineTestRoute: typeof StudentOnlineTestRoute
+  StudentResultsRoute: typeof StudentResultsRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -118,11 +183,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/student/results': {
+      id: '/student/results'
+      path: '/student/results'
+      fullPath: '/student/results'
+      preLoaderRoute: typeof StudentResultsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/student/online-test': {
+      id: '/student/online-test'
+      path: '/student/online-test'
+      fullPath: '/student/online-test'
+      preLoaderRoute: typeof StudentOnlineTestRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/student/login': {
       id: '/student/login'
       path: '/student/login'
       fullPath: '/student/login'
       preLoaderRoute: typeof StudentLoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/student/fees': {
+      id: '/student/fees'
+      path: '/student/fees'
+      fullPath: '/student/fees'
+      preLoaderRoute: typeof StudentFeesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/student/dashboard': {
@@ -132,6 +218,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof StudentDashboardRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/student/certificates': {
+      id: '/student/certificates'
+      path: '/student/certificates'
+      fullPath: '/student/certificates'
+      preLoaderRoute: typeof StudentCertificatesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/student/attendance': {
+      id: '/student/attendance'
+      path: '/student/attendance'
+      fullPath: '/student/attendance'
+      preLoaderRoute: typeof StudentAttendanceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -139,8 +239,13 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   StudentZoneRoute: StudentZoneRoute,
+  StudentAttendanceRoute: StudentAttendanceRoute,
+  StudentCertificatesRoute: StudentCertificatesRoute,
   StudentDashboardRoute: StudentDashboardRoute,
+  StudentFeesRoute: StudentFeesRoute,
   StudentLoginRoute: StudentLoginRoute,
+  StudentOnlineTestRoute: StudentOnlineTestRoute,
+  StudentResultsRoute: StudentResultsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
