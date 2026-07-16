@@ -9,8 +9,12 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as VerifyCertificateRouteImport } from './routes/verify-certificate'
 import { Route as StudentZoneRouteImport } from './routes/student-zone'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as DownloadsRouteImport } from './routes/downloads'
+import { Route as CoursesRouteImport } from './routes/courses'
+import { Route as AdmissionRouteImport } from './routes/admission'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as StudentResultsRouteImport } from './routes/student.results'
 import { Route as StudentOnlineTestRouteImport } from './routes/student.online-test'
@@ -20,6 +24,11 @@ import { Route as StudentDashboardRouteImport } from './routes/student.dashboard
 import { Route as StudentCertificatesRouteImport } from './routes/student.certificates'
 import { Route as StudentAttendanceRouteImport } from './routes/student.attendance'
 
+const VerifyCertificateRoute = VerifyCertificateRouteImport.update({
+  id: '/verify-certificate',
+  path: '/verify-certificate',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const StudentZoneRoute = StudentZoneRouteImport.update({
   id: '/student-zone',
   path: '/student-zone',
@@ -28,6 +37,21 @@ const StudentZoneRoute = StudentZoneRouteImport.update({
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
   path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DownloadsRoute = DownloadsRouteImport.update({
+  id: '/downloads',
+  path: '/downloads',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CoursesRoute = CoursesRouteImport.update({
+  id: '/courses',
+  path: '/courses',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdmissionRoute = AdmissionRouteImport.update({
+  id: '/admission',
+  path: '/admission',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -73,8 +97,12 @@ const StudentAttendanceRoute = StudentAttendanceRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admission': typeof AdmissionRoute
+  '/courses': typeof CoursesRoute
+  '/downloads': typeof DownloadsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/student-zone': typeof StudentZoneRoute
+  '/verify-certificate': typeof VerifyCertificateRoute
   '/student/attendance': typeof StudentAttendanceRoute
   '/student/certificates': typeof StudentCertificatesRoute
   '/student/dashboard': typeof StudentDashboardRoute
@@ -85,8 +113,12 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/admission': typeof AdmissionRoute
+  '/courses': typeof CoursesRoute
+  '/downloads': typeof DownloadsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/student-zone': typeof StudentZoneRoute
+  '/verify-certificate': typeof VerifyCertificateRoute
   '/student/attendance': typeof StudentAttendanceRoute
   '/student/certificates': typeof StudentCertificatesRoute
   '/student/dashboard': typeof StudentDashboardRoute
@@ -98,8 +130,12 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/admission': typeof AdmissionRoute
+  '/courses': typeof CoursesRoute
+  '/downloads': typeof DownloadsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/student-zone': typeof StudentZoneRoute
+  '/verify-certificate': typeof VerifyCertificateRoute
   '/student/attendance': typeof StudentAttendanceRoute
   '/student/certificates': typeof StudentCertificatesRoute
   '/student/dashboard': typeof StudentDashboardRoute
@@ -112,8 +148,12 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/admission'
+    | '/courses'
+    | '/downloads'
     | '/sitemap.xml'
     | '/student-zone'
+    | '/verify-certificate'
     | '/student/attendance'
     | '/student/certificates'
     | '/student/dashboard'
@@ -124,8 +164,12 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/admission'
+    | '/courses'
+    | '/downloads'
     | '/sitemap.xml'
     | '/student-zone'
+    | '/verify-certificate'
     | '/student/attendance'
     | '/student/certificates'
     | '/student/dashboard'
@@ -136,8 +180,12 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/admission'
+    | '/courses'
+    | '/downloads'
     | '/sitemap.xml'
     | '/student-zone'
+    | '/verify-certificate'
     | '/student/attendance'
     | '/student/certificates'
     | '/student/dashboard'
@@ -149,8 +197,12 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdmissionRoute: typeof AdmissionRoute
+  CoursesRoute: typeof CoursesRoute
+  DownloadsRoute: typeof DownloadsRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   StudentZoneRoute: typeof StudentZoneRoute
+  VerifyCertificateRoute: typeof VerifyCertificateRoute
   StudentAttendanceRoute: typeof StudentAttendanceRoute
   StudentCertificatesRoute: typeof StudentCertificatesRoute
   StudentDashboardRoute: typeof StudentDashboardRoute
@@ -162,6 +214,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/verify-certificate': {
+      id: '/verify-certificate'
+      path: '/verify-certificate'
+      fullPath: '/verify-certificate'
+      preLoaderRoute: typeof VerifyCertificateRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/student-zone': {
       id: '/student-zone'
       path: '/student-zone'
@@ -174,6 +233,27 @@ declare module '@tanstack/react-router' {
       path: '/sitemap.xml'
       fullPath: '/sitemap.xml'
       preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/downloads': {
+      id: '/downloads'
+      path: '/downloads'
+      fullPath: '/downloads'
+      preLoaderRoute: typeof DownloadsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/courses': {
+      id: '/courses'
+      path: '/courses'
+      fullPath: '/courses'
+      preLoaderRoute: typeof CoursesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admission': {
+      id: '/admission'
+      path: '/admission'
+      fullPath: '/admission'
+      preLoaderRoute: typeof AdmissionRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -237,8 +317,12 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdmissionRoute: AdmissionRoute,
+  CoursesRoute: CoursesRoute,
+  DownloadsRoute: DownloadsRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   StudentZoneRoute: StudentZoneRoute,
+  VerifyCertificateRoute: VerifyCertificateRoute,
   StudentAttendanceRoute: StudentAttendanceRoute,
   StudentCertificatesRoute: StudentCertificatesRoute,
   StudentDashboardRoute: StudentDashboardRoute,
