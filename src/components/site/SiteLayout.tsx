@@ -323,12 +323,10 @@ export function PageHero({
 
 export function SiteLayout({ children }: { children: ReactNode }) {
   return (
-    <div className="min-h-screen bg-background pb-16 text-foreground xl:pb-0">
+    <div className="min-h-screen bg-background text-foreground">
       <SiteHeader />
       <main>{children}</main>
       <SiteFooter />
-      <WhatsAppFab />
-      <MobileTabBar />
     </div>
   );
 }
