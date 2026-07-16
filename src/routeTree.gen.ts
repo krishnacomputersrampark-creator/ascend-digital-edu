@@ -11,11 +11,19 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as VideosRouteImport } from './routes/videos'
 import { Route as VerifyCertificateRouteImport } from './routes/verify-certificate'
+import { Route as TestimonialsRouteImport } from './routes/testimonials'
 import { Route as StudentZoneRouteImport } from './routes/student-zone'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as NoticeRouteImport } from './routes/notice'
 import { Route as GalleryRouteImport } from './routes/gallery'
+import { Route as FranchiseRouteImport } from './routes/franchise'
+import { Route as FaqRouteImport } from './routes/faq'
+import { Route as FacultyRouteImport } from './routes/faculty'
+import { Route as EventsRouteImport } from './routes/events'
 import { Route as DownloadsRouteImport } from './routes/downloads'
 import { Route as CoursesRouteImport } from './routes/courses'
+import { Route as ContactRouteImport } from './routes/contact'
+import { Route as BlogRouteImport } from './routes/blog'
 import { Route as AdmissionRouteImport } from './routes/admission'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as StudentResultsRouteImport } from './routes/student.results'
@@ -39,6 +47,11 @@ const VerifyCertificateRoute = VerifyCertificateRouteImport.update({
   path: '/verify-certificate',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TestimonialsRoute = TestimonialsRouteImport.update({
+  id: '/testimonials',
+  path: '/testimonials',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const StudentZoneRoute = StudentZoneRouteImport.update({
   id: '/student-zone',
   path: '/student-zone',
@@ -49,9 +62,34 @@ const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   path: '/sitemap.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
+const NoticeRoute = NoticeRouteImport.update({
+  id: '/notice',
+  path: '/notice',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const GalleryRoute = GalleryRouteImport.update({
   id: '/gallery',
   path: '/gallery',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FranchiseRoute = FranchiseRouteImport.update({
+  id: '/franchise',
+  path: '/franchise',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FaqRoute = FaqRouteImport.update({
+  id: '/faq',
+  path: '/faq',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FacultyRoute = FacultyRouteImport.update({
+  id: '/faculty',
+  path: '/faculty',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EventsRoute = EventsRouteImport.update({
+  id: '/events',
+  path: '/events',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DownloadsRoute = DownloadsRouteImport.update({
@@ -62,6 +100,16 @@ const DownloadsRoute = DownloadsRouteImport.update({
 const CoursesRoute = CoursesRouteImport.update({
   id: '/courses',
   path: '/courses',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContactRoute = ContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BlogRoute = BlogRouteImport.update({
+  id: '/blog',
+  path: '/blog',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdmissionRoute = AdmissionRouteImport.update({
@@ -128,11 +176,19 @@ const SearchCertificateRoute = SearchCertificateRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admission': typeof AdmissionRoute
+  '/blog': typeof BlogRoute
+  '/contact': typeof ContactRoute
   '/courses': typeof CoursesRoute
   '/downloads': typeof DownloadsRoute
+  '/events': typeof EventsRoute
+  '/faculty': typeof FacultyRoute
+  '/faq': typeof FaqRoute
+  '/franchise': typeof FranchiseRoute
   '/gallery': typeof GalleryRoute
+  '/notice': typeof NoticeRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/student-zone': typeof StudentZoneRoute
+  '/testimonials': typeof TestimonialsRoute
   '/verify-certificate': typeof VerifyCertificateRoute
   '/videos': typeof VideosRoute
   '/search/certificate': typeof SearchCertificateRoute
@@ -149,11 +205,19 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admission': typeof AdmissionRoute
+  '/blog': typeof BlogRoute
+  '/contact': typeof ContactRoute
   '/courses': typeof CoursesRoute
   '/downloads': typeof DownloadsRoute
+  '/events': typeof EventsRoute
+  '/faculty': typeof FacultyRoute
+  '/faq': typeof FaqRoute
+  '/franchise': typeof FranchiseRoute
   '/gallery': typeof GalleryRoute
+  '/notice': typeof NoticeRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/student-zone': typeof StudentZoneRoute
+  '/testimonials': typeof TestimonialsRoute
   '/verify-certificate': typeof VerifyCertificateRoute
   '/videos': typeof VideosRoute
   '/search/certificate': typeof SearchCertificateRoute
@@ -171,11 +235,19 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/admission': typeof AdmissionRoute
+  '/blog': typeof BlogRoute
+  '/contact': typeof ContactRoute
   '/courses': typeof CoursesRoute
   '/downloads': typeof DownloadsRoute
+  '/events': typeof EventsRoute
+  '/faculty': typeof FacultyRoute
+  '/faq': typeof FaqRoute
+  '/franchise': typeof FranchiseRoute
   '/gallery': typeof GalleryRoute
+  '/notice': typeof NoticeRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/student-zone': typeof StudentZoneRoute
+  '/testimonials': typeof TestimonialsRoute
   '/verify-certificate': typeof VerifyCertificateRoute
   '/videos': typeof VideosRoute
   '/search/certificate': typeof SearchCertificateRoute
@@ -194,11 +266,19 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/admission'
+    | '/blog'
+    | '/contact'
     | '/courses'
     | '/downloads'
+    | '/events'
+    | '/faculty'
+    | '/faq'
+    | '/franchise'
     | '/gallery'
+    | '/notice'
     | '/sitemap.xml'
     | '/student-zone'
+    | '/testimonials'
     | '/verify-certificate'
     | '/videos'
     | '/search/certificate'
@@ -215,11 +295,19 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/admission'
+    | '/blog'
+    | '/contact'
     | '/courses'
     | '/downloads'
+    | '/events'
+    | '/faculty'
+    | '/faq'
+    | '/franchise'
     | '/gallery'
+    | '/notice'
     | '/sitemap.xml'
     | '/student-zone'
+    | '/testimonials'
     | '/verify-certificate'
     | '/videos'
     | '/search/certificate'
@@ -236,11 +324,19 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/admission'
+    | '/blog'
+    | '/contact'
     | '/courses'
     | '/downloads'
+    | '/events'
+    | '/faculty'
+    | '/faq'
+    | '/franchise'
     | '/gallery'
+    | '/notice'
     | '/sitemap.xml'
     | '/student-zone'
+    | '/testimonials'
     | '/verify-certificate'
     | '/videos'
     | '/search/certificate'
@@ -258,11 +354,19 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdmissionRoute: typeof AdmissionRoute
+  BlogRoute: typeof BlogRoute
+  ContactRoute: typeof ContactRoute
   CoursesRoute: typeof CoursesRoute
   DownloadsRoute: typeof DownloadsRoute
+  EventsRoute: typeof EventsRoute
+  FacultyRoute: typeof FacultyRoute
+  FaqRoute: typeof FaqRoute
+  FranchiseRoute: typeof FranchiseRoute
   GalleryRoute: typeof GalleryRoute
+  NoticeRoute: typeof NoticeRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   StudentZoneRoute: typeof StudentZoneRoute
+  TestimonialsRoute: typeof TestimonialsRoute
   VerifyCertificateRoute: typeof VerifyCertificateRoute
   VideosRoute: typeof VideosRoute
   SearchCertificateRoute: typeof SearchCertificateRoute
@@ -293,6 +397,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof VerifyCertificateRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/testimonials': {
+      id: '/testimonials'
+      path: '/testimonials'
+      fullPath: '/testimonials'
+      preLoaderRoute: typeof TestimonialsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/student-zone': {
       id: '/student-zone'
       path: '/student-zone'
@@ -307,11 +418,46 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/notice': {
+      id: '/notice'
+      path: '/notice'
+      fullPath: '/notice'
+      preLoaderRoute: typeof NoticeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/gallery': {
       id: '/gallery'
       path: '/gallery'
       fullPath: '/gallery'
       preLoaderRoute: typeof GalleryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/franchise': {
+      id: '/franchise'
+      path: '/franchise'
+      fullPath: '/franchise'
+      preLoaderRoute: typeof FranchiseRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/faq': {
+      id: '/faq'
+      path: '/faq'
+      fullPath: '/faq'
+      preLoaderRoute: typeof FaqRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/faculty': {
+      id: '/faculty'
+      path: '/faculty'
+      fullPath: '/faculty'
+      preLoaderRoute: typeof FacultyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/events': {
+      id: '/events'
+      path: '/events'
+      fullPath: '/events'
+      preLoaderRoute: typeof EventsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/downloads': {
@@ -326,6 +472,20 @@ declare module '@tanstack/react-router' {
       path: '/courses'
       fullPath: '/courses'
       preLoaderRoute: typeof CoursesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/blog': {
+      id: '/blog'
+      path: '/blog'
+      fullPath: '/blog'
+      preLoaderRoute: typeof BlogRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admission': {
@@ -418,11 +578,19 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdmissionRoute: AdmissionRoute,
+  BlogRoute: BlogRoute,
+  ContactRoute: ContactRoute,
   CoursesRoute: CoursesRoute,
   DownloadsRoute: DownloadsRoute,
+  EventsRoute: EventsRoute,
+  FacultyRoute: FacultyRoute,
+  FaqRoute: FaqRoute,
+  FranchiseRoute: FranchiseRoute,
   GalleryRoute: GalleryRoute,
+  NoticeRoute: NoticeRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   StudentZoneRoute: StudentZoneRoute,
+  TestimonialsRoute: TestimonialsRoute,
   VerifyCertificateRoute: VerifyCertificateRoute,
   VideosRoute: VideosRoute,
   SearchCertificateRoute: SearchCertificateRoute,
