@@ -14,6 +14,7 @@ import { reportLovableError } from "../lib/lovable-error-reporting";
 import { LanguageProvider } from "@/components/site/language";
 import { WhatsAppFab, MobileTabBar } from "@/components/site/SiteLayout";
 import { AuthProvider } from "@/lib/auth";
+import { useRouterState } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
 import { Toaster } from "sonner";
 
@@ -164,6 +165,8 @@ function RootShell({ children }: { children: ReactNode }) {
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   const router = useRouter();
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const isDashboard = pathname.startsWith("/dashboard") || pathname.startsWith("/auth");
 
   useEffect(() => {
     const { data: sub } = supabase.auth.onAuthStateChange((event) => {
@@ -179,11 +182,11 @@ function RootComponent() {
       <AuthProvider>
         <LanguageProvider>
           {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-          <div className="pb-16 xl:pb-0">
+          <div className={isDashboard ? "" : "pb-16 xl:pb-0"}>
             <Outlet />
           </div>
-          <WhatsAppFab />
-          <MobileTabBar />
+          {!isDashboard && <WhatsAppFab />}
+          {!isDashboard && <MobileTabBar />}
           <Toaster position="top-right" richColors closeButton />
         </LanguageProvider>
       </AuthProvider>
