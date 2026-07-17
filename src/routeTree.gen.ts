@@ -24,6 +24,7 @@ import { Route as DownloadsRouteImport } from './routes/downloads'
 import { Route as CoursesRouteImport } from './routes/courses'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as BlogRouteImport } from './routes/blog'
+import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AdmissionRouteImport } from './routes/admission'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as StudentResultsRouteImport } from './routes/student.results'
@@ -112,6 +113,11 @@ const BlogRoute = BlogRouteImport.update({
   path: '/blog',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdmissionRoute = AdmissionRouteImport.update({
   id: '/admission',
   path: '/admission',
@@ -176,6 +182,7 @@ const SearchCertificateRoute = SearchCertificateRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admission': typeof AdmissionRoute
+  '/auth': typeof AuthRoute
   '/blog': typeof BlogRoute
   '/contact': typeof ContactRoute
   '/courses': typeof CoursesRoute
@@ -205,6 +212,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admission': typeof AdmissionRoute
+  '/auth': typeof AuthRoute
   '/blog': typeof BlogRoute
   '/contact': typeof ContactRoute
   '/courses': typeof CoursesRoute
@@ -235,6 +243,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/admission': typeof AdmissionRoute
+  '/auth': typeof AuthRoute
   '/blog': typeof BlogRoute
   '/contact': typeof ContactRoute
   '/courses': typeof CoursesRoute
@@ -266,6 +275,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/admission'
+    | '/auth'
     | '/blog'
     | '/contact'
     | '/courses'
@@ -295,6 +305,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/admission'
+    | '/auth'
     | '/blog'
     | '/contact'
     | '/courses'
@@ -324,6 +335,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/admission'
+    | '/auth'
     | '/blog'
     | '/contact'
     | '/courses'
@@ -354,6 +366,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdmissionRoute: typeof AdmissionRoute
+  AuthRoute: typeof AuthRoute
   BlogRoute: typeof BlogRoute
   ContactRoute: typeof ContactRoute
   CoursesRoute: typeof CoursesRoute
@@ -488,6 +501,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BlogRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admission': {
       id: '/admission'
       path: '/admission'
@@ -578,6 +598,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdmissionRoute: AdmissionRoute,
+  AuthRoute: AuthRoute,
   BlogRoute: BlogRoute,
   ContactRoute: ContactRoute,
   CoursesRoute: CoursesRoute,
