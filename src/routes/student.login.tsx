@@ -1,17 +1,10 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
-import { Eye, EyeOff, Lock, User, ShieldCheck, RefreshCcw, ArrowRight } from "lucide-react";
-import { SiteLayout } from "@/components/site/SiteLayout";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/student/login")({
-  head: () => ({
-    meta: [
-      { title: "Student Login — Krishna Computer Center" },
-      { name: "description", content: "Secure login for Krishna Computer Center students with Student ID, email or mobile number." },
-      { name: "robots", content: "noindex" },
-    ],
-  }),
-  component: LoginPage,
+  beforeLoad: () => {
+    throw redirect({ to: "/auth" });
+  },
+  component: () => null,
 });
 
 function randomCaptcha() {
