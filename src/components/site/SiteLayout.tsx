@@ -24,6 +24,8 @@ import {
 } from "lucide-react";
 import logoAsset from "@/assets/logo.jpg.asset.json";
 import { useLang } from "./language";
+import { useAuth, signOutAndRedirect, ROLE_LABEL } from "@/lib/auth";
+import { LayoutDashboard, LogOut } from "lucide-react";
 
 const NAV = [
   { label: "Home", hi: "होम", to: "/" },
@@ -59,6 +61,9 @@ export function SiteHeader() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const { lang, t } = useLang();
+  const { user, role, profile } = useAuth();
+  const signedIn = !!user;
+  const displayName = profile?.full_name || user?.email?.split("@")[0] || "";
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
     onScroll();
@@ -105,14 +110,34 @@ export function SiteHeader() {
         </nav>
         <div className="flex items-center gap-2">
           <LanguageSwitcher />
-          <Link
-            to="/student/login"
-            className="hidden rounded-full px-3.5 py-2 text-sm font-semibold text-ink hover:text-brand lg:inline-flex"
-          >{t("Login", "लॉगिन")}</Link>
-          <Link
-            to="/admission"
-            className="hidden items-center gap-1.5 rounded-full gradient-brand px-4 py-2 text-sm font-semibold text-white shadow-brand transition hover:opacity-95 lg:inline-flex"
-          >{t("Apply Now", "अभी आवेदन")} <ArrowRight className="h-4 w-4" /></Link>
+          {signedIn ? (
+            <>
+              <Link
+                to="/dashboard"
+                className="hidden items-center gap-1.5 rounded-full gradient-brand px-4 py-2 text-sm font-semibold text-white shadow-brand transition hover:opacity-95 lg:inline-flex"
+              >
+                <LayoutDashboard className="h-4 w-4" /> {t("Dashboard", "डैशबोर्ड")}
+              </Link>
+              <button
+                onClick={() => void signOutAndRedirect()}
+                title={`${displayName}${role ? " · " + ROLE_LABEL[role] : ""}`}
+                className="hidden rounded-full border border-border bg-white px-3.5 py-2 text-sm font-semibold text-ink hover:text-brand lg:inline-flex"
+              >
+                <LogOut className="mr-1.5 inline h-4 w-4" />{t("Sign out", "साइन आउट")}
+              </button>
+            </>
+          ) : (
+            <>
+              <Link
+                to="/auth"
+                className="hidden rounded-full px-3.5 py-2 text-sm font-semibold text-ink hover:text-brand lg:inline-flex"
+              >{t("Login", "लॉगिन")}</Link>
+              <Link
+                to="/admission"
+                className="hidden items-center gap-1.5 rounded-full gradient-brand px-4 py-2 text-sm font-semibold text-white shadow-brand transition hover:opacity-95 lg:inline-flex"
+              >{t("Apply Now", "अभी आवेदन")} <ArrowRight className="h-4 w-4" /></Link>
+            </>
+          )}
           <button
             onClick={() => setOpen((o) => !o)}
             className="grid h-10 w-10 place-items-center rounded-xl bg-cyan-soft text-brand xl:hidden"
@@ -137,12 +162,25 @@ export function SiteHeader() {
               </Link>
             ))}
             <div className="mt-2 flex flex-col gap-2 border-t pt-3">
-              <Link to="/student/login" onClick={() => setOpen(false)} className="rounded-full border border-border px-4 py-2 text-center text-sm font-semibold">
-                {t("Student Login", "स्टूडेंट लॉगिन")}
-              </Link>
-              <Link to="/admission" onClick={() => setOpen(false)} className="rounded-full gradient-brand px-4 py-2 text-center text-sm font-semibold text-white">
-                {t("Apply Now", "अभी आवेदन")}
-              </Link>
+              {signedIn ? (
+                <>
+                  <Link to="/dashboard" onClick={() => setOpen(false)} className="rounded-full gradient-brand px-4 py-2 text-center text-sm font-semibold text-white">
+                    {t("Open Dashboard", "डैशबोर्ड खोलें")}
+                  </Link>
+                  <button onClick={() => { setOpen(false); void signOutAndRedirect(); }} className="rounded-full border border-border px-4 py-2 text-center text-sm font-semibold">
+                    {t("Sign out", "साइन आउट")}
+                  </button>
+                </>
+              ) : (
+                <>
+                  <Link to="/auth" onClick={() => setOpen(false)} className="rounded-full border border-border px-4 py-2 text-center text-sm font-semibold">
+                    {t("Sign In", "साइन इन")}
+                  </Link>
+                  <Link to="/admission" onClick={() => setOpen(false)} className="rounded-full gradient-brand px-4 py-2 text-center text-sm font-semibold text-white">
+                    {t("Apply Now", "अभी आवेदन")}
+                  </Link>
+                </>
+              )}
             </div>
           </div>
         </div>

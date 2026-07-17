@@ -24,7 +24,9 @@ import { Route as DownloadsRouteImport } from './routes/downloads'
 import { Route as CoursesRouteImport } from './routes/courses'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as BlogRouteImport } from './routes/blog'
+import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AdmissionRouteImport } from './routes/admission'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as StudentResultsRouteImport } from './routes/student.results'
 import { Route as StudentOnlineTestRouteImport } from './routes/student.online-test'
@@ -36,6 +38,7 @@ import { Route as StudentAttendanceRouteImport } from './routes/student.attendan
 import { Route as SearchStudentRouteImport } from './routes/search.student'
 import { Route as SearchResultRouteImport } from './routes/search.result'
 import { Route as SearchCertificateRouteImport } from './routes/search.certificate'
+import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 
 const VideosRoute = VideosRouteImport.update({
   id: '/videos',
@@ -112,9 +115,18 @@ const BlogRoute = BlogRouteImport.update({
   path: '/blog',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdmissionRoute = AdmissionRouteImport.update({
   id: '/admission',
   path: '/admission',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -172,10 +184,16 @@ const SearchCertificateRoute = SearchCertificateRouteImport.update({
   path: '/search/certificate',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admission': typeof AdmissionRoute
+  '/auth': typeof AuthRoute
   '/blog': typeof BlogRoute
   '/contact': typeof ContactRoute
   '/courses': typeof CoursesRoute
@@ -191,6 +209,7 @@ export interface FileRoutesByFullPath {
   '/testimonials': typeof TestimonialsRoute
   '/verify-certificate': typeof VerifyCertificateRoute
   '/videos': typeof VideosRoute
+  '/dashboard': typeof AuthenticatedDashboardRoute
   '/search/certificate': typeof SearchCertificateRoute
   '/search/result': typeof SearchResultRoute
   '/search/student': typeof SearchStudentRoute
@@ -205,6 +224,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admission': typeof AdmissionRoute
+  '/auth': typeof AuthRoute
   '/blog': typeof BlogRoute
   '/contact': typeof ContactRoute
   '/courses': typeof CoursesRoute
@@ -220,6 +240,7 @@ export interface FileRoutesByTo {
   '/testimonials': typeof TestimonialsRoute
   '/verify-certificate': typeof VerifyCertificateRoute
   '/videos': typeof VideosRoute
+  '/dashboard': typeof AuthenticatedDashboardRoute
   '/search/certificate': typeof SearchCertificateRoute
   '/search/result': typeof SearchResultRoute
   '/search/student': typeof SearchStudentRoute
@@ -234,7 +255,9 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/admission': typeof AdmissionRoute
+  '/auth': typeof AuthRoute
   '/blog': typeof BlogRoute
   '/contact': typeof ContactRoute
   '/courses': typeof CoursesRoute
@@ -250,6 +273,7 @@ export interface FileRoutesById {
   '/testimonials': typeof TestimonialsRoute
   '/verify-certificate': typeof VerifyCertificateRoute
   '/videos': typeof VideosRoute
+  '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/search/certificate': typeof SearchCertificateRoute
   '/search/result': typeof SearchResultRoute
   '/search/student': typeof SearchStudentRoute
@@ -266,6 +290,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/admission'
+    | '/auth'
     | '/blog'
     | '/contact'
     | '/courses'
@@ -281,6 +306,7 @@ export interface FileRouteTypes {
     | '/testimonials'
     | '/verify-certificate'
     | '/videos'
+    | '/dashboard'
     | '/search/certificate'
     | '/search/result'
     | '/search/student'
@@ -295,6 +321,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/admission'
+    | '/auth'
     | '/blog'
     | '/contact'
     | '/courses'
@@ -310,6 +337,7 @@ export interface FileRouteTypes {
     | '/testimonials'
     | '/verify-certificate'
     | '/videos'
+    | '/dashboard'
     | '/search/certificate'
     | '/search/result'
     | '/search/student'
@@ -323,7 +351,9 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/_authenticated'
     | '/admission'
+    | '/auth'
     | '/blog'
     | '/contact'
     | '/courses'
@@ -339,6 +369,7 @@ export interface FileRouteTypes {
     | '/testimonials'
     | '/verify-certificate'
     | '/videos'
+    | '/_authenticated/dashboard'
     | '/search/certificate'
     | '/search/result'
     | '/search/student'
@@ -353,7 +384,9 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AdmissionRoute: typeof AdmissionRoute
+  AuthRoute: typeof AuthRoute
   BlogRoute: typeof BlogRoute
   ContactRoute: typeof ContactRoute
   CoursesRoute: typeof CoursesRoute
@@ -488,11 +521,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BlogRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admission': {
       id: '/admission'
       path: '/admission'
       fullPath: '/admission'
       preLoaderRoute: typeof AdmissionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -572,12 +619,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SearchCertificateRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/dashboard': {
+      id: '/_authenticated/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof AuthenticatedDashboardRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
 
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AdmissionRoute: AdmissionRoute,
+  AuthRoute: AuthRoute,
   BlogRoute: BlogRoute,
   ContactRoute: ContactRoute,
   CoursesRoute: CoursesRoute,
@@ -607,13 +674,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
