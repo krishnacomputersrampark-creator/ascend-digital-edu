@@ -1,8 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useServerFn } from "@tanstack/react-start";
 import { motion } from "motion/react";
-import { CheckCircle2, Upload, Sparkles, ArrowRight } from "lucide-react";
+import { CheckCircle2, Upload, Sparkles, ArrowRight, AlertCircle } from "lucide-react";
 import { SiteLayout, PageHero } from "@/components/site/SiteLayout";
+import { submitAdmission, listCoursesPublic, listBranchesPublic } from "@/lib/admissions.functions";
 
 export const Route = createFileRoute("/admission")({
   head: () => ({
@@ -17,7 +19,45 @@ export const Route = createFileRoute("/admission")({
 });
 
 function AdmissionPage() {
+  const submit = useServerFn(submitAdmission);
+  const loadCourses = useServerFn(listCoursesPublic);
+  const loadBranches = useServerFn(listBranchesPublic);
   const [submitted, setSubmitted] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
+  const [err, setErr] = useState<string | null>(null);
+  const [courses, setCourses] = useState<any[]>([]);
+  const [branches, setBranches] = useState<any[]>([]);
+
+  useEffect(() => {
+    loadCourses().then(setCourses).catch(() => {});
+    loadBranches().then(setBranches).catch(() => {});
+  }, [loadCourses, loadBranches]);
+
+  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setBusy(true); setErr(null);
+    const fd = new FormData(e.currentTarget);
+    const payload = {
+      full_name: String(fd.get("name") || ""),
+      email: String(fd.get("email") || ""),
+      phone: String(fd.get("mobile") || ""),
+      date_of_birth: String(fd.get("dob") || ""),
+      gender: String(fd.get("gender") || ""),
+      address: String(fd.get("address") || ""),
+      guardian_name: String(fd.get("father") || ""),
+      qualification: String(fd.get("qual") || ""),
+      course_id: String(fd.get("course_id") || ""),
+      branch_id: String(fd.get("branch_id") || ""),
+      source: "website",
+    };
+    try {
+      const row = await submit({ data: payload as any });
+      setSubmitted(row.admission_no as string);
+    } catch (e: any) {
+      setErr(e?.message ?? "Something went wrong. Please try again.");
+    } finally { setBusy(false); }
+  };
+
   return (
     <SiteLayout>
       <PageHero
@@ -36,30 +76,38 @@ function AdmissionPage() {
               <p className="mt-4 text-sm text-muted-foreground">Please save this number for follow-up. Our team will reach out on the mobile number provided.</p>
             </motion.div>
           ) : (
-            <form
-              onSubmit={(e) => { e.preventDefault(); setSubmitted("KCC-APP-" + Math.floor(100000 + Math.random()*899999)); }}
-              className="rounded-3xl border bg-white p-6 shadow-soft sm:p-8"
-            >
+            <form onSubmit={onSubmit} className="rounded-3xl border bg-white p-6 shadow-soft sm:p-8">
+              {err && (
+                <div className="mb-4 flex items-start gap-2 rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-800">
+                  <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" /> <span>{err}</span>
+                </div>
+              )}
               <div className="grid gap-4 sm:grid-cols-2">
                 <Field label="Student Name" name="name" required />
                 <Field label="Father's Name" name="father" required />
-                <Field label="Mother's Name" name="mother" required />
-                <Field label="Date of Birth" name="dob" type="date" required />
+                <Field label="Mother's Name" name="mother" />
+                <Field label="Date of Birth" name="dob" type="date" />
                 <Field label="Mobile Number" name="mobile" type="tel" required />
-                <Field label="Email" name="email" type="email" required />
+                <Field label="Email" name="email" type="email" />
                 <Field label="Gender" name="gender">
-                  <select className="w-full bg-transparent text-sm focus:outline-none"><option>Male</option><option>Female</option><option>Other</option></select>
+                  <select name="gender" className="w-full bg-transparent text-sm focus:outline-none"><option>Male</option><option>Female</option><option>Other</option></select>
                 </Field>
                 <Field label="Qualification" name="qual">
-                  <select className="w-full bg-transparent text-sm focus:outline-none"><option>10th</option><option>12th</option><option>Graduate</option><option>Post Graduate</option></select>
+                  <select name="qual" className="w-full bg-transparent text-sm focus:outline-none"><option>10th</option><option>12th</option><option>Graduate</option><option>Post Graduate</option></select>
                 </Field>
-                <Field label="Course Selection" name="course">
-                  <select className="w-full bg-transparent text-sm focus:outline-none"><option>ADCA</option><option>DCA</option><option>PGDCA</option><option>CCC</option><option>O Level</option><option>Python</option><option>Tally Prime</option><option>Digital Marketing</option></select>
+                <Field label="Course Selection" name="course_id">
+                  <select name="course_id" className="w-full bg-transparent text-sm focus:outline-none">
+                    <option value="">Select a course…</option>
+                    {courses.map((c) => <option key={c.id} value={c.id}>{c.code} · {c.name}</option>)}
+                  </select>
                 </Field>
-                <Field label="Branch Selection" name="branch">
-                  <select className="w-full bg-transparent text-sm focus:outline-none"><option>Karawal Nagar</option><option>Rampark, Loni</option></select>
+                <Field label="Branch Selection" name="branch_id">
+                  <select name="branch_id" className="w-full bg-transparent text-sm focus:outline-none">
+                    <option value="">Select a branch…</option>
+                    {branches.map((b) => <option key={b.id} value={b.id}>{b.name}{b.city ? ` · ${b.city}` : ""}</option>)}
+                  </select>
                 </Field>
-                <Field label="Address" name="address" className="sm:col-span-2" required />
+                <Field label="Address" name="address" className="sm:col-span-2" />
               </div>
               <div className="mt-6 grid gap-3 sm:grid-cols-3">
                 {["Upload Photo","Upload Aadhaar","Upload Signature"].map((l) => (
@@ -71,8 +119,8 @@ function AdmissionPage() {
                   </label>
                 ))}
               </div>
-              <button className="mt-8 inline-flex w-full items-center justify-center gap-2 rounded-full gradient-brand px-6 py-3.5 text-sm font-semibold text-white shadow-brand transition hover:-translate-y-0.5">
-                <Sparkles className="h-4 w-4" /> Submit Application <ArrowRight className="h-4 w-4" />
+              <button disabled={busy} className="mt-8 inline-flex w-full items-center justify-center gap-2 rounded-full gradient-brand px-6 py-3.5 text-sm font-semibold text-white shadow-brand transition hover:-translate-y-0.5 disabled:opacity-60">
+                <Sparkles className="h-4 w-4" /> {busy ? "Submitting…" : "Submit Application"} <ArrowRight className="h-4 w-4" />
               </button>
               <p className="mt-3 text-center text-[11px] text-muted-foreground">You'll receive an application number instantly. Approval within one working day.</p>
             </form>

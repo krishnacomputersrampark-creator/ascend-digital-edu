@@ -1,4 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
+import { useServerFn } from "@tanstack/react-start";
 import { motion } from "motion/react";
 import {
   Users, GraduationCap, ClipboardList, Wallet, FileBadge, CalendarCheck,
@@ -6,6 +8,8 @@ import {
 } from "lucide-react";
 import { DashboardShell } from "@/components/erp/DashboardShell";
 import { useAuth, ROLE_LABEL, type AppRole } from "@/lib/auth";
+import { dashboardStats } from "@/lib/admissions.functions";
+import { AreaChart, Area, ResponsiveContainer, XAxis, YAxis, Tooltip, CartesianGrid } from "recharts";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
   head: () => ({
@@ -62,6 +66,13 @@ function DashboardHome() {
   const effectiveRole: AppRole = role ?? "guest";
   const displayName = profile?.full_name || user?.email?.split("@")[0] || "there";
   const stats = STAT_BY_ROLE[effectiveRole];
+  const fetchStats = useServerFn(dashboardStats);
+  const [live, setLive] = useState<Awaited<ReturnType<typeof dashboardStats>> | null>(null);
+
+  useEffect(() => {
+    if (effectiveRole === "guest") return;
+    fetchStats().then(setLive).catch(() => {});
+  }, [fetchStats, effectiveRole]);
 
   return (
     <DashboardShell
@@ -103,12 +114,51 @@ function DashboardHome() {
               <s.icon className="h-5 w-5" />
             </span>
             <div className="mt-4 text-xs font-semibold uppercase tracking-wider text-muted-foreground">{s.label}</div>
-            <div className="mt-0.5 text-2xl font-extrabold text-ink">{s.value}</div>
+            <div className="mt-0.5 text-2xl font-extrabold text-ink">{
+              live && s.label === "Total Students" ? live.totalStudents :
+              live && s.label === "Pending Admissions" ? live.pendingAdmissions :
+              live && s.label === "Active Courses" ? live.activeCourses :
+              s.value
+            }</div>
             <div className="mt-0.5 text-xs text-muted-foreground">{s.sub}</div>
             <span className="pointer-events-none absolute -bottom-8 -right-8 h-24 w-24 rounded-full bg-cyan/10 opacity-0 blur-2xl transition group-hover:opacity-100" />
           </motion.div>
         ))}
       </div>
+
+      {live && effectiveRole !== "guest" && effectiveRole !== "student" && (
+        <div className="mt-8 rounded-2xl border border-border bg-white p-6 shadow-soft">
+          <div className="mb-4 flex items-center justify-between">
+            <div>
+              <h2 className="text-lg font-extrabold text-ink">Admissions Trend</h2>
+              <p className="text-xs text-muted-foreground">Last 6 months · applications vs approved</p>
+            </div>
+            <Link to="/dashboard/admissions" className="text-xs font-semibold text-brand hover:underline">View all →</Link>
+          </div>
+          <div className="h-64 w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <AreaChart data={live.series} margin={{ top: 8, right: 16, left: -12, bottom: 0 }}>
+                <defs>
+                  <linearGradient id="grad-adm" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#0ea5b7" stopOpacity={0.55} />
+                    <stop offset="95%" stopColor="#0ea5b7" stopOpacity={0} />
+                  </linearGradient>
+                  <linearGradient id="grad-app" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#22c55e" stopOpacity={0.5} />
+                    <stop offset="95%" stopColor="#22c55e" stopOpacity={0} />
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" opacity={0.3} />
+                <XAxis dataKey="month" tick={{ fontSize: 12 }} />
+                <YAxis tick={{ fontSize: 12 }} allowDecimals={false} />
+                <Tooltip />
+                <Area type="monotone" dataKey="admissions" stroke="#0ea5b7" fill="url(#grad-adm)" strokeWidth={2} />
+                <Area type="monotone" dataKey="approved" stroke="#22c55e" fill="url(#grad-app)" strokeWidth={2} />
+              </AreaChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+      )}
 
       <div className="mt-8 grid gap-6 lg:grid-cols-3">
         <div className="lg:col-span-2 rounded-2xl border border-border bg-white p-6 shadow-soft">
