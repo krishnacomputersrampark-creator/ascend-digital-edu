@@ -14,6 +14,7 @@ import { Route as VerifyCertificateRouteImport } from './routes/verify-certifica
 import { Route as TestimonialsRouteImport } from './routes/testimonials'
 import { Route as StudentZoneRouteImport } from './routes/student-zone'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as SetupRouteImport } from './routes/setup'
 import { Route as NoticeRouteImport } from './routes/notice'
 import { Route as GalleryRouteImport } from './routes/gallery'
 import { Route as FranchiseRouteImport } from './routes/franchise'
@@ -39,6 +40,8 @@ import { Route as SearchStudentRouteImport } from './routes/search.student'
 import { Route as SearchResultRouteImport } from './routes/search.result'
 import { Route as SearchCertificateRouteImport } from './routes/search.certificate'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedDashboardStudentsRouteImport } from './routes/_authenticated/dashboard.students'
+import { Route as AuthenticatedDashboardAdmissionsRouteImport } from './routes/_authenticated/dashboard.admissions'
 
 const VideosRoute = VideosRouteImport.update({
   id: '/videos',
@@ -63,6 +66,11 @@ const StudentZoneRoute = StudentZoneRouteImport.update({
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
   path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SetupRoute = SetupRouteImport.update({
+  id: '/setup',
+  path: '/setup',
   getParentRoute: () => rootRouteImport,
 } as any)
 const NoticeRoute = NoticeRouteImport.update({
@@ -189,6 +197,18 @@ const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedDashboardStudentsRoute =
+  AuthenticatedDashboardStudentsRouteImport.update({
+    id: '/students',
+    path: '/students',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
+const AuthenticatedDashboardAdmissionsRoute =
+  AuthenticatedDashboardAdmissionsRouteImport.update({
+    id: '/admissions',
+    path: '/admissions',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -204,12 +224,13 @@ export interface FileRoutesByFullPath {
   '/franchise': typeof FranchiseRoute
   '/gallery': typeof GalleryRoute
   '/notice': typeof NoticeRoute
+  '/setup': typeof SetupRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/student-zone': typeof StudentZoneRoute
   '/testimonials': typeof TestimonialsRoute
   '/verify-certificate': typeof VerifyCertificateRoute
   '/videos': typeof VideosRoute
-  '/dashboard': typeof AuthenticatedDashboardRoute
+  '/dashboard': typeof AuthenticatedDashboardRouteWithChildren
   '/search/certificate': typeof SearchCertificateRoute
   '/search/result': typeof SearchResultRoute
   '/search/student': typeof SearchStudentRoute
@@ -220,6 +241,8 @@ export interface FileRoutesByFullPath {
   '/student/login': typeof StudentLoginRoute
   '/student/online-test': typeof StudentOnlineTestRoute
   '/student/results': typeof StudentResultsRoute
+  '/dashboard/admissions': typeof AuthenticatedDashboardAdmissionsRoute
+  '/dashboard/students': typeof AuthenticatedDashboardStudentsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -235,12 +258,13 @@ export interface FileRoutesByTo {
   '/franchise': typeof FranchiseRoute
   '/gallery': typeof GalleryRoute
   '/notice': typeof NoticeRoute
+  '/setup': typeof SetupRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/student-zone': typeof StudentZoneRoute
   '/testimonials': typeof TestimonialsRoute
   '/verify-certificate': typeof VerifyCertificateRoute
   '/videos': typeof VideosRoute
-  '/dashboard': typeof AuthenticatedDashboardRoute
+  '/dashboard': typeof AuthenticatedDashboardRouteWithChildren
   '/search/certificate': typeof SearchCertificateRoute
   '/search/result': typeof SearchResultRoute
   '/search/student': typeof SearchStudentRoute
@@ -251,6 +275,8 @@ export interface FileRoutesByTo {
   '/student/login': typeof StudentLoginRoute
   '/student/online-test': typeof StudentOnlineTestRoute
   '/student/results': typeof StudentResultsRoute
+  '/dashboard/admissions': typeof AuthenticatedDashboardAdmissionsRoute
+  '/dashboard/students': typeof AuthenticatedDashboardStudentsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -268,12 +294,13 @@ export interface FileRoutesById {
   '/franchise': typeof FranchiseRoute
   '/gallery': typeof GalleryRoute
   '/notice': typeof NoticeRoute
+  '/setup': typeof SetupRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/student-zone': typeof StudentZoneRoute
   '/testimonials': typeof TestimonialsRoute
   '/verify-certificate': typeof VerifyCertificateRoute
   '/videos': typeof VideosRoute
-  '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/_authenticated/dashboard': typeof AuthenticatedDashboardRouteWithChildren
   '/search/certificate': typeof SearchCertificateRoute
   '/search/result': typeof SearchResultRoute
   '/search/student': typeof SearchStudentRoute
@@ -284,6 +311,8 @@ export interface FileRoutesById {
   '/student/login': typeof StudentLoginRoute
   '/student/online-test': typeof StudentOnlineTestRoute
   '/student/results': typeof StudentResultsRoute
+  '/_authenticated/dashboard/admissions': typeof AuthenticatedDashboardAdmissionsRoute
+  '/_authenticated/dashboard/students': typeof AuthenticatedDashboardStudentsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -301,6 +330,7 @@ export interface FileRouteTypes {
     | '/franchise'
     | '/gallery'
     | '/notice'
+    | '/setup'
     | '/sitemap.xml'
     | '/student-zone'
     | '/testimonials'
@@ -317,6 +347,8 @@ export interface FileRouteTypes {
     | '/student/login'
     | '/student/online-test'
     | '/student/results'
+    | '/dashboard/admissions'
+    | '/dashboard/students'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -332,6 +364,7 @@ export interface FileRouteTypes {
     | '/franchise'
     | '/gallery'
     | '/notice'
+    | '/setup'
     | '/sitemap.xml'
     | '/student-zone'
     | '/testimonials'
@@ -348,6 +381,8 @@ export interface FileRouteTypes {
     | '/student/login'
     | '/student/online-test'
     | '/student/results'
+    | '/dashboard/admissions'
+    | '/dashboard/students'
   id:
     | '__root__'
     | '/'
@@ -364,6 +399,7 @@ export interface FileRouteTypes {
     | '/franchise'
     | '/gallery'
     | '/notice'
+    | '/setup'
     | '/sitemap.xml'
     | '/student-zone'
     | '/testimonials'
@@ -380,6 +416,8 @@ export interface FileRouteTypes {
     | '/student/login'
     | '/student/online-test'
     | '/student/results'
+    | '/_authenticated/dashboard/admissions'
+    | '/_authenticated/dashboard/students'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -397,6 +435,7 @@ export interface RootRouteChildren {
   FranchiseRoute: typeof FranchiseRoute
   GalleryRoute: typeof GalleryRoute
   NoticeRoute: typeof NoticeRoute
+  SetupRoute: typeof SetupRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   StudentZoneRoute: typeof StudentZoneRoute
   TestimonialsRoute: typeof TestimonialsRoute
@@ -449,6 +488,13 @@ declare module '@tanstack/react-router' {
       path: '/sitemap.xml'
       fullPath: '/sitemap.xml'
       preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/setup': {
+      id: '/setup'
+      path: '/setup'
+      fullPath: '/setup'
+      preLoaderRoute: typeof SetupRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/notice': {
@@ -626,15 +672,46 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/dashboard/students': {
+      id: '/_authenticated/dashboard/students'
+      path: '/students'
+      fullPath: '/dashboard/students'
+      preLoaderRoute: typeof AuthenticatedDashboardStudentsRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/admissions': {
+      id: '/_authenticated/dashboard/admissions'
+      path: '/admissions'
+      fullPath: '/dashboard/admissions'
+      preLoaderRoute: typeof AuthenticatedDashboardAdmissionsRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
   }
 }
 
+interface AuthenticatedDashboardRouteChildren {
+  AuthenticatedDashboardAdmissionsRoute: typeof AuthenticatedDashboardAdmissionsRoute
+  AuthenticatedDashboardStudentsRoute: typeof AuthenticatedDashboardStudentsRoute
+}
+
+const AuthenticatedDashboardRouteChildren: AuthenticatedDashboardRouteChildren =
+  {
+    AuthenticatedDashboardAdmissionsRoute:
+      AuthenticatedDashboardAdmissionsRoute,
+    AuthenticatedDashboardStudentsRoute: AuthenticatedDashboardStudentsRoute,
+  }
+
+const AuthenticatedDashboardRouteWithChildren =
+  AuthenticatedDashboardRoute._addFileChildren(
+    AuthenticatedDashboardRouteChildren,
+  )
+
 interface AuthenticatedRouteRouteChildren {
-  AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRouteWithChildren
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
-  AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedDashboardRoute: AuthenticatedDashboardRouteWithChildren,
 }
 
 const AuthenticatedRouteRouteWithChildren =
@@ -655,6 +732,7 @@ const rootRouteChildren: RootRouteChildren = {
   FranchiseRoute: FranchiseRoute,
   GalleryRoute: GalleryRoute,
   NoticeRoute: NoticeRoute,
+  SetupRoute: SetupRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   StudentZoneRoute: StudentZoneRoute,
   TestimonialsRoute: TestimonialsRoute,
