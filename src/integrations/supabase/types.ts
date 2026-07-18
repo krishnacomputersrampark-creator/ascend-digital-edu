@@ -14,6 +14,215 @@ export type Database = {
   }
   public: {
     Tables: {
+      admissions: {
+        Row: {
+          address: string | null
+          admission_no: string
+          branch_id: string | null
+          city: string | null
+          course_id: string | null
+          course_preference: string | null
+          created_at: string
+          date_of_birth: string | null
+          email: string | null
+          full_name: string
+          gender: string | null
+          guardian_name: string | null
+          guardian_phone: string | null
+          id: string
+          notes: string | null
+          phone: string
+          pincode: string | null
+          qualification: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          source: string | null
+          state: string | null
+          status: string
+          student_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          address?: string | null
+          admission_no?: string
+          branch_id?: string | null
+          city?: string | null
+          course_id?: string | null
+          course_preference?: string | null
+          created_at?: string
+          date_of_birth?: string | null
+          email?: string | null
+          full_name: string
+          gender?: string | null
+          guardian_name?: string | null
+          guardian_phone?: string | null
+          id?: string
+          notes?: string | null
+          phone: string
+          pincode?: string | null
+          qualification?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          source?: string | null
+          state?: string | null
+          status?: string
+          student_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          address?: string | null
+          admission_no?: string
+          branch_id?: string | null
+          city?: string | null
+          course_id?: string | null
+          course_preference?: string | null
+          created_at?: string
+          date_of_birth?: string | null
+          email?: string | null
+          full_name?: string
+          gender?: string | null
+          guardian_name?: string | null
+          guardian_phone?: string | null
+          id?: string
+          notes?: string | null
+          phone?: string
+          pincode?: string | null
+          qualification?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          source?: string | null
+          state?: string | null
+          status?: string
+          student_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "admissions_branch_id_fkey"
+            columns: ["branch_id"]
+            isOneToOne: false
+            referencedRelation: "branches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "admissions_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "admissions_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "students"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      audit_logs: {
+        Row: {
+          action: string
+          actor_email: string | null
+          actor_id: string | null
+          created_at: string
+          entity: string
+          entity_id: string | null
+          id: string
+          meta: Json | null
+        }
+        Insert: {
+          action: string
+          actor_email?: string | null
+          actor_id?: string | null
+          created_at?: string
+          entity: string
+          entity_id?: string | null
+          id?: string
+          meta?: Json | null
+        }
+        Update: {
+          action?: string
+          actor_email?: string | null
+          actor_id?: string | null
+          created_at?: string
+          entity?: string
+          entity_id?: string | null
+          id?: string
+          meta?: Json | null
+        }
+        Relationships: []
+      }
+      batches: {
+        Row: {
+          branch_id: string
+          capacity: number
+          code: string
+          course_id: string
+          created_at: string
+          end_date: string | null
+          faculty_id: string | null
+          id: string
+          name: string
+          start_date: string | null
+          status: string
+          timing: string | null
+          updated_at: string
+        }
+        Insert: {
+          branch_id: string
+          capacity?: number
+          code: string
+          course_id: string
+          created_at?: string
+          end_date?: string | null
+          faculty_id?: string | null
+          id?: string
+          name: string
+          start_date?: string | null
+          status?: string
+          timing?: string | null
+          updated_at?: string
+        }
+        Update: {
+          branch_id?: string
+          capacity?: number
+          code?: string
+          course_id?: string
+          created_at?: string
+          end_date?: string | null
+          faculty_id?: string | null
+          id?: string
+          name?: string
+          start_date?: string | null
+          status?: string
+          timing?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "batches_branch_id_fkey"
+            columns: ["branch_id"]
+            isOneToOne: false
+            referencedRelation: "branches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "batches_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "batches_faculty_id_fkey"
+            columns: ["faculty_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       branches: {
         Row: {
           address: string | null
@@ -55,6 +264,63 @@ export type Database = {
           phone?: string | null
           pincode?: string | null
           state?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      courses: {
+        Row: {
+          category: string | null
+          certificate: boolean
+          code: string
+          created_at: string
+          description: string | null
+          duration: string | null
+          duration_months: number | null
+          eligibility: string | null
+          fees: number
+          id: string
+          is_active: boolean
+          name: string
+          slug: string
+          sort_order: number
+          syllabus: Json | null
+          updated_at: string
+        }
+        Insert: {
+          category?: string | null
+          certificate?: boolean
+          code: string
+          created_at?: string
+          description?: string | null
+          duration?: string | null
+          duration_months?: number | null
+          eligibility?: string | null
+          fees?: number
+          id?: string
+          is_active?: boolean
+          name: string
+          slug: string
+          sort_order?: number
+          syllabus?: Json | null
+          updated_at?: string
+        }
+        Update: {
+          category?: string | null
+          certificate?: boolean
+          code?: string
+          created_at?: string
+          description?: string | null
+          duration?: string | null
+          duration_months?: number | null
+          eligibility?: string | null
+          fees?: number
+          id?: string
+          is_active?: boolean
+          name?: string
+          slug?: string
+          sort_order?: number
+          syllabus?: Json | null
           updated_at?: string
         }
         Relationships: []
@@ -130,6 +396,181 @@ export type Database = {
           },
         ]
       }
+      student_documents: {
+        Row: {
+          created_at: string
+          file_path: string
+          file_size: number | null
+          id: string
+          kind: string
+          mime_type: string | null
+          student_id: string
+          title: string | null
+          updated_at: string
+          uploaded_by: string | null
+          verified: boolean
+        }
+        Insert: {
+          created_at?: string
+          file_path: string
+          file_size?: number | null
+          id?: string
+          kind: string
+          mime_type?: string | null
+          student_id: string
+          title?: string | null
+          updated_at?: string
+          uploaded_by?: string | null
+          verified?: boolean
+        }
+        Update: {
+          created_at?: string
+          file_path?: string
+          file_size?: number | null
+          id?: string
+          kind?: string
+          mime_type?: string | null
+          student_id?: string
+          title?: string | null
+          updated_at?: string
+          uploaded_by?: string | null
+          verified?: boolean
+        }
+        Relationships: [
+          {
+            foreignKeyName: "student_documents_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "students"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      students: {
+        Row: {
+          address: string | null
+          admission_id: string | null
+          batch_id: string | null
+          branch_id: string
+          city: string | null
+          course_id: string | null
+          created_at: string
+          date_of_birth: string | null
+          deleted_at: string | null
+          email: string | null
+          emergency_contact: string | null
+          enrollment_no: string
+          full_name: string
+          gender: string | null
+          guardian_name: string | null
+          guardian_phone: string | null
+          id: string
+          joined_at: string
+          notes: string | null
+          phone: string
+          photo_url: string | null
+          pincode: string | null
+          qualification: string | null
+          roll_no: string | null
+          state: string | null
+          status: string
+          student_code: string
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          address?: string | null
+          admission_id?: string | null
+          batch_id?: string | null
+          branch_id: string
+          city?: string | null
+          course_id?: string | null
+          created_at?: string
+          date_of_birth?: string | null
+          deleted_at?: string | null
+          email?: string | null
+          emergency_contact?: string | null
+          enrollment_no?: string
+          full_name: string
+          gender?: string | null
+          guardian_name?: string | null
+          guardian_phone?: string | null
+          id?: string
+          joined_at?: string
+          notes?: string | null
+          phone: string
+          photo_url?: string | null
+          pincode?: string | null
+          qualification?: string | null
+          roll_no?: string | null
+          state?: string | null
+          status?: string
+          student_code?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          address?: string | null
+          admission_id?: string | null
+          batch_id?: string | null
+          branch_id?: string
+          city?: string | null
+          course_id?: string | null
+          created_at?: string
+          date_of_birth?: string | null
+          deleted_at?: string | null
+          email?: string | null
+          emergency_contact?: string | null
+          enrollment_no?: string
+          full_name?: string
+          gender?: string | null
+          guardian_name?: string | null
+          guardian_phone?: string | null
+          id?: string
+          joined_at?: string
+          notes?: string | null
+          phone?: string
+          photo_url?: string | null
+          pincode?: string | null
+          qualification?: string | null
+          roll_no?: string | null
+          state?: string | null
+          status?: string
+          student_code?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "students_admission_id_fkey"
+            columns: ["admission_id"]
+            isOneToOne: false
+            referencedRelation: "admissions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "students_batch_id_fkey"
+            columns: ["batch_id"]
+            isOneToOne: false
+            referencedRelation: "batches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "students_branch_id_fkey"
+            columns: ["branch_id"]
+            isOneToOne: false
+            referencedRelation: "branches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "students_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_roles: {
         Row: {
           branch_id: string | null
@@ -178,6 +619,11 @@ export type Database = {
         }
         Returns: boolean
       }
+      next_admission_no: { Args: never; Returns: string }
+      next_enrollment_no: { Args: never; Returns: string }
+      next_student_code: { Args: never; Returns: string }
+      show_limit: { Args: never; Returns: number }
+      show_trgm: { Args: { "": string }; Returns: string[] }
     }
     Enums: {
       app_role:
