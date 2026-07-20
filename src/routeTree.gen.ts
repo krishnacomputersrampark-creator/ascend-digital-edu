@@ -52,6 +52,7 @@ import { Route as AuthenticatedDashboardRouteImport } from './routes/_authentica
 import { Route as StudentDashboardProfileEditRouteImport } from './routes/student-dashboard_.profile.edit'
 import { Route as StudentDashboardFeesHistoryRouteImport } from './routes/student-dashboard_.fees.history'
 import { Route as AuthenticatedDashboardStudentsRouteImport } from './routes/_authenticated/dashboard.students'
+import { Route as AuthenticatedDashboardResultsRouteImport } from './routes/_authenticated/dashboard.results'
 import { Route as AuthenticatedDashboardFeesRouteImport } from './routes/_authenticated/dashboard.fees'
 import { Route as AuthenticatedDashboardAttendanceRouteImport } from './routes/_authenticated/dashboard.attendance'
 import { Route as AuthenticatedDashboardAdmissionsRouteImport } from './routes/_authenticated/dashboard.admissions'
@@ -284,6 +285,12 @@ const AuthenticatedDashboardStudentsRoute =
     path: '/students',
     getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
+const AuthenticatedDashboardResultsRoute =
+  AuthenticatedDashboardResultsRouteImport.update({
+    id: '/results',
+    path: '/results',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
 const AuthenticatedDashboardFeesRoute =
   AuthenticatedDashboardFeesRouteImport.update({
     id: '/fees',
@@ -400,6 +407,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/admissions': typeof AuthenticatedDashboardAdmissionsRouteWithChildren
   '/dashboard/attendance': typeof AuthenticatedDashboardAttendanceRouteWithChildren
   '/dashboard/fees': typeof AuthenticatedDashboardFeesRouteWithChildren
+  '/dashboard/results': typeof AuthenticatedDashboardResultsRoute
   '/dashboard/students': typeof AuthenticatedDashboardStudentsRoute
   '/student-dashboard/fees/history': typeof StudentDashboardFeesHistoryRoute
   '/student-dashboard/profile/edit': typeof StudentDashboardProfileEditRoute
@@ -456,6 +464,7 @@ export interface FileRoutesByTo {
   '/dashboard/admissions': typeof AuthenticatedDashboardAdmissionsRouteWithChildren
   '/dashboard/attendance': typeof AuthenticatedDashboardAttendanceRouteWithChildren
   '/dashboard/fees': typeof AuthenticatedDashboardFeesRouteWithChildren
+  '/dashboard/results': typeof AuthenticatedDashboardResultsRoute
   '/dashboard/students': typeof AuthenticatedDashboardStudentsRoute
   '/student-dashboard/fees/history': typeof StudentDashboardFeesHistoryRoute
   '/student-dashboard/profile/edit': typeof StudentDashboardProfileEditRoute
@@ -514,6 +523,7 @@ export interface FileRoutesById {
   '/_authenticated/dashboard/admissions': typeof AuthenticatedDashboardAdmissionsRouteWithChildren
   '/_authenticated/dashboard/attendance': typeof AuthenticatedDashboardAttendanceRouteWithChildren
   '/_authenticated/dashboard/fees': typeof AuthenticatedDashboardFeesRouteWithChildren
+  '/_authenticated/dashboard/results': typeof AuthenticatedDashboardResultsRoute
   '/_authenticated/dashboard/students': typeof AuthenticatedDashboardStudentsRoute
   '/student-dashboard_/fees/history': typeof StudentDashboardFeesHistoryRoute
   '/student-dashboard_/profile/edit': typeof StudentDashboardProfileEditRoute
@@ -572,6 +582,7 @@ export interface FileRouteTypes {
     | '/dashboard/admissions'
     | '/dashboard/attendance'
     | '/dashboard/fees'
+    | '/dashboard/results'
     | '/dashboard/students'
     | '/student-dashboard/fees/history'
     | '/student-dashboard/profile/edit'
@@ -628,6 +639,7 @@ export interface FileRouteTypes {
     | '/dashboard/admissions'
     | '/dashboard/attendance'
     | '/dashboard/fees'
+    | '/dashboard/results'
     | '/dashboard/students'
     | '/student-dashboard/fees/history'
     | '/student-dashboard/profile/edit'
@@ -685,6 +697,7 @@ export interface FileRouteTypes {
     | '/_authenticated/dashboard/admissions'
     | '/_authenticated/dashboard/attendance'
     | '/_authenticated/dashboard/fees'
+    | '/_authenticated/dashboard/results'
     | '/_authenticated/dashboard/students'
     | '/student-dashboard_/fees/history'
     | '/student-dashboard_/profile/edit'
@@ -1044,6 +1057,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardStudentsRouteImport
       parentRoute: typeof AuthenticatedDashboardRoute
     }
+    '/_authenticated/dashboard/results': {
+      id: '/_authenticated/dashboard/results'
+      path: '/results'
+      fullPath: '/dashboard/results'
+      preLoaderRoute: typeof AuthenticatedDashboardResultsRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
     '/_authenticated/dashboard/fees': {
       id: '/_authenticated/dashboard/fees'
       path: '/fees'
@@ -1192,6 +1212,7 @@ interface AuthenticatedDashboardRouteChildren {
   AuthenticatedDashboardAdmissionsRoute: typeof AuthenticatedDashboardAdmissionsRouteWithChildren
   AuthenticatedDashboardAttendanceRoute: typeof AuthenticatedDashboardAttendanceRouteWithChildren
   AuthenticatedDashboardFeesRoute: typeof AuthenticatedDashboardFeesRouteWithChildren
+  AuthenticatedDashboardResultsRoute: typeof AuthenticatedDashboardResultsRoute
   AuthenticatedDashboardStudentsRoute: typeof AuthenticatedDashboardStudentsRoute
 }
 
@@ -1203,6 +1224,7 @@ const AuthenticatedDashboardRouteChildren: AuthenticatedDashboardRouteChildren =
       AuthenticatedDashboardAttendanceRouteWithChildren,
     AuthenticatedDashboardFeesRoute:
       AuthenticatedDashboardFeesRouteWithChildren,
+    AuthenticatedDashboardResultsRoute: AuthenticatedDashboardResultsRoute,
     AuthenticatedDashboardStudentsRoute: AuthenticatedDashboardStudentsRoute,
   }
 
