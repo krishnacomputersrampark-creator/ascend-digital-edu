@@ -16,8 +16,14 @@ export type Database = {
     Tables: {
       admissions: {
         Row: {
+          aadhaar_back_url: string | null
+          aadhaar_front_url: string | null
+          aadhaar_number: string | null
           address: string | null
           admission_no: string
+          alternate_mobile: string | null
+          application_no: string | null
+          batch_id: string | null
           branch_id: string | null
           city: string | null
           course_id: string | null
@@ -30,12 +36,19 @@ export type Database = {
           guardian_name: string | null
           guardian_phone: string | null
           id: string
+          mother_name: string | null
           notes: string | null
+          passport_photo_url: string | null
           phone: string
+          photo_url: string | null
           pincode: string | null
+          preferred_timing: string | null
           qualification: string | null
+          qualification_url: string | null
+          remarks: string | null
           reviewed_at: string | null
           reviewed_by: string | null
+          signature_url: string | null
           source: string | null
           state: string | null
           status: string
@@ -43,8 +56,14 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          aadhaar_back_url?: string | null
+          aadhaar_front_url?: string | null
+          aadhaar_number?: string | null
           address?: string | null
           admission_no?: string
+          alternate_mobile?: string | null
+          application_no?: string | null
+          batch_id?: string | null
           branch_id?: string | null
           city?: string | null
           course_id?: string | null
@@ -57,12 +76,19 @@ export type Database = {
           guardian_name?: string | null
           guardian_phone?: string | null
           id?: string
+          mother_name?: string | null
           notes?: string | null
+          passport_photo_url?: string | null
           phone: string
+          photo_url?: string | null
           pincode?: string | null
+          preferred_timing?: string | null
           qualification?: string | null
+          qualification_url?: string | null
+          remarks?: string | null
           reviewed_at?: string | null
           reviewed_by?: string | null
+          signature_url?: string | null
           source?: string | null
           state?: string | null
           status?: string
@@ -70,8 +96,14 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          aadhaar_back_url?: string | null
+          aadhaar_front_url?: string | null
+          aadhaar_number?: string | null
           address?: string | null
           admission_no?: string
+          alternate_mobile?: string | null
+          application_no?: string | null
+          batch_id?: string | null
           branch_id?: string | null
           city?: string | null
           course_id?: string | null
@@ -84,12 +116,19 @@ export type Database = {
           guardian_name?: string | null
           guardian_phone?: string | null
           id?: string
+          mother_name?: string | null
           notes?: string | null
+          passport_photo_url?: string | null
           phone?: string
+          photo_url?: string | null
           pincode?: string | null
+          preferred_timing?: string | null
           qualification?: string | null
+          qualification_url?: string | null
+          remarks?: string | null
           reviewed_at?: string | null
           reviewed_by?: string | null
+          signature_url?: string | null
           source?: string | null
           state?: string | null
           status?: string
@@ -97,6 +136,13 @@ export type Database = {
           updated_at?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "admissions_batch_id_fkey"
+            columns: ["batch_id"]
+            isOneToOne: false
+            referencedRelation: "batches"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "admissions_branch_id_fkey"
             columns: ["branch_id"]
@@ -703,6 +749,7 @@ export type Database = {
         Returns: boolean
       }
       next_admission_no: { Args: never; Returns: string }
+      next_application_no: { Args: never; Returns: string }
       next_enrollment_no: { Args: never; Returns: string }
       next_student_code: { Args: never; Returns: string }
       show_limit: { Args: never; Returns: number }

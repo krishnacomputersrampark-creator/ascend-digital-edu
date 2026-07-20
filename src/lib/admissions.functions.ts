@@ -33,6 +33,20 @@ const admissionSchema = z.object({
   course_preference: z.string().max(120).optional().or(z.literal("")),
   branch_id: z.string().uuid().optional().or(z.literal("")),
   source: z.string().max(60).optional().or(z.literal("")),
+  mother_name: z.string().max(120).optional().or(z.literal("")),
+  alternate_mobile: z.string().max(20).optional().or(z.literal("")),
+  aadhaar_number: z.string().trim().regex(/^\d{12}$/, "Aadhaar must be 12 digits").optional().or(z.literal("")),
+  city: z.string().max(80).optional().or(z.literal("")),
+  state: z.string().max(80).optional().or(z.literal("")),
+  pincode: z.string().max(10).optional().or(z.literal("")),
+  batch_id: z.string().uuid().optional().or(z.literal("")),
+  preferred_timing: z.string().max(60).optional().or(z.literal("")),
+  photo_url: z.string().max(500).optional().or(z.literal("")),
+  signature_url: z.string().max(500).optional().or(z.literal("")),
+  aadhaar_front_url: z.string().max(500).optional().or(z.literal("")),
+  aadhaar_back_url: z.string().max(500).optional().or(z.literal("")),
+  qualification_url: z.string().max(500).optional().or(z.literal("")),
+  passport_photo_url: z.string().max(500).optional().or(z.literal("")),
 });
 
 export const submitAdmission = createServerFn({ method: "POST" })
@@ -42,10 +56,15 @@ export const submitAdmission = createServerFn({ method: "POST" })
     const payload = Object.fromEntries(
       Object.entries(data).map(([k, v]) => [k, v === "" ? null : v])
     );
+    // Duplicate check on aadhaar / phone
+    if ((payload as any).aadhaar_number) {
+      const { data: dup } = await sb.from("admissions").select("id").eq("aadhaar_number", (payload as any).aadhaar_number).limit(1);
+      if (dup && dup.length) throw new Error("An application with this Aadhaar number already exists.");
+    }
     const { data: row, error } = await sb
       .from("admissions")
       .insert({ ...(payload as any), status: "pending" })
-      .select("id, admission_no")
+      .select("id, admission_no, application_no")
       .single();
     if (error) throw new Error(error.message);
     return row;
@@ -112,8 +131,10 @@ export const convertAdmissionToStudent = createServerFn({ method: "POST" })
         qualification: a.qualification,
         course_id: a.course_id,
         branch_id: data.branch_id,
+        batch_id: (a as any).batch_id ?? null,
+        photo_url: (a as any).photo_url ?? null,
       })
-      .select("id, student_code, enrollment_no")
+      .select("id, student_code, enrollment_no, roll_no")
       .single();
     if (sErr) throw new Error(sErr.message);
 
@@ -123,6 +144,57 @@ export const convertAdmissionToStudent = createServerFn({ method: "POST" })
       .eq("id", a.id);
 
     return s;
+  });
+
+export const getAdmissionById = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) => z.object({ id: z.string().uuid() }).parse(d))
+  .handler(async ({ data, context }) => {
+    const { data: row, error } = await context.supabase
+      .from("admissions")
+      .select("*, course:courses(id,code,name), branch:branches(id,code,name,city), batch:batches(id,code,name,timing)")
+      .eq("id", data.id)
+      .single();
+    if (error) throw new Error(error.message);
+    return row as any;
+  });
+
+export const rejectAdmission = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) =>
+    z.object({ id: z.string().uuid(), remarks: z.string().trim().min(3).max(500) }).parse(d)
+  )
+  .handler(async ({ data, context }) => {
+    const { error } = await context.supabase
+      .from("admissions")
+      .update({ status: "rejected", remarks: data.remarks, reviewed_by: context.userId, reviewed_at: new Date().toISOString() })
+      .eq("id", data.id);
+    if (error) throw new Error(error.message);
+    return { ok: true };
+  });
+
+export const updateAdmissionRemarks = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) =>
+    z.object({ id: z.string().uuid(), remarks: z.string().max(500) }).parse(d)
+  )
+  .handler(async ({ data, context }) => {
+    const { error } = await context.supabase
+      .from("admissions").update({ remarks: data.remarks }).eq("id", data.id);
+    if (error) throw new Error(error.message);
+    return { ok: true };
+  });
+
+export const listBatchesPublic = createServerFn({ method: "GET" })
+  .inputValidator((d: { branch_id?: string; course_id?: string } = {}) => d)
+  .handler(async ({ data }) => {
+    const sb = publicClient();
+    let q = sb.from("batches").select("id, code, name, timing, branch_id, course_id").eq("status", "active").order("name");
+    if (data.branch_id) q = q.eq("branch_id", data.branch_id);
+    if (data.course_id) q = q.eq("course_id", data.course_id);
+    const { data: rows, error } = await q;
+    if (error) return [];
+    return rows ?? [];
   });
 
 export const listStudents = createServerFn({ method: "GET" })
