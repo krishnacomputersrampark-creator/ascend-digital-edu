@@ -388,4 +388,3 @@ function FileTile({ label, accept, state, loading, onFile }: { label: string; ac
 function Row({ k, v }: { k: string; v?: string | null }) {
   return (<><dt className="text-xs uppercase tracking-wider text-ink/60">{k}</dt><dd className="font-semibold text-ink">{v || "—"}</dd></>);
 }
-}
