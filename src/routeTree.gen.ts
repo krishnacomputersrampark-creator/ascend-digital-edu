@@ -43,6 +43,7 @@ import { Route as StudentAssignmentsRouteImport } from './routes/student.assignm
 import { Route as SearchStudentRouteImport } from './routes/search.student'
 import { Route as SearchResultRouteImport } from './routes/search.result'
 import { Route as SearchCertificateRouteImport } from './routes/search.certificate'
+import { Route as AdmissionSuccessRouteImport } from './routes/admission.success'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedDashboardStudentsRouteImport } from './routes/_authenticated/dashboard.students'
 import { Route as AuthenticatedDashboardAdmissionsRouteImport } from './routes/_authenticated/dashboard.admissions'
@@ -216,6 +217,11 @@ const SearchCertificateRoute = SearchCertificateRouteImport.update({
   path: '/search/certificate',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdmissionSuccessRoute = AdmissionSuccessRouteImport.update({
+  id: '/success',
+  path: '/success',
+  getParentRoute: () => AdmissionRoute,
+} as any)
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
@@ -236,7 +242,7 @@ const AuthenticatedDashboardAdmissionsRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/admission': typeof AdmissionRoute
+  '/admission': typeof AdmissionRouteWithChildren
   '/auth': typeof AuthRoute
   '/blog': typeof BlogRoute
   '/contact': typeof ContactRoute
@@ -257,6 +263,7 @@ export interface FileRoutesByFullPath {
   '/verify-certificate': typeof VerifyCertificateRoute
   '/videos': typeof VideosRoute
   '/dashboard': typeof AuthenticatedDashboardRouteWithChildren
+  '/admission/success': typeof AdmissionSuccessRoute
   '/search/certificate': typeof SearchCertificateRoute
   '/search/result': typeof SearchResultRoute
   '/search/student': typeof SearchStudentRoute
@@ -274,7 +281,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/admission': typeof AdmissionRoute
+  '/admission': typeof AdmissionRouteWithChildren
   '/auth': typeof AuthRoute
   '/blog': typeof BlogRoute
   '/contact': typeof ContactRoute
@@ -295,6 +302,7 @@ export interface FileRoutesByTo {
   '/verify-certificate': typeof VerifyCertificateRoute
   '/videos': typeof VideosRoute
   '/dashboard': typeof AuthenticatedDashboardRouteWithChildren
+  '/admission/success': typeof AdmissionSuccessRoute
   '/search/certificate': typeof SearchCertificateRoute
   '/search/result': typeof SearchResultRoute
   '/search/student': typeof SearchStudentRoute
@@ -314,7 +322,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
-  '/admission': typeof AdmissionRoute
+  '/admission': typeof AdmissionRouteWithChildren
   '/auth': typeof AuthRoute
   '/blog': typeof BlogRoute
   '/contact': typeof ContactRoute
@@ -335,6 +343,7 @@ export interface FileRoutesById {
   '/verify-certificate': typeof VerifyCertificateRoute
   '/videos': typeof VideosRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRouteWithChildren
+  '/admission/success': typeof AdmissionSuccessRoute
   '/search/certificate': typeof SearchCertificateRoute
   '/search/result': typeof SearchResultRoute
   '/search/student': typeof SearchStudentRoute
@@ -375,6 +384,7 @@ export interface FileRouteTypes {
     | '/verify-certificate'
     | '/videos'
     | '/dashboard'
+    | '/admission/success'
     | '/search/certificate'
     | '/search/result'
     | '/search/student'
@@ -413,6 +423,7 @@ export interface FileRouteTypes {
     | '/verify-certificate'
     | '/videos'
     | '/dashboard'
+    | '/admission/success'
     | '/search/certificate'
     | '/search/result'
     | '/search/student'
@@ -452,6 +463,7 @@ export interface FileRouteTypes {
     | '/verify-certificate'
     | '/videos'
     | '/_authenticated/dashboard'
+    | '/admission/success'
     | '/search/certificate'
     | '/search/result'
     | '/search/student'
@@ -471,7 +483,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
-  AdmissionRoute: typeof AdmissionRoute
+  AdmissionRoute: typeof AdmissionRouteWithChildren
   AuthRoute: typeof AuthRoute
   BlogRoute: typeof BlogRoute
   ContactRoute: typeof ContactRoute
@@ -745,6 +757,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SearchCertificateRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admission/success': {
+      id: '/admission/success'
+      path: '/success'
+      fullPath: '/admission/success'
+      preLoaderRoute: typeof AdmissionSuccessRouteImport
+      parentRoute: typeof AdmissionRoute
+    }
     '/_authenticated/dashboard': {
       id: '/_authenticated/dashboard'
       path: '/dashboard'
@@ -797,10 +816,22 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
 const AuthenticatedRouteRouteWithChildren =
   AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
 
+interface AdmissionRouteChildren {
+  AdmissionSuccessRoute: typeof AdmissionSuccessRoute
+}
+
+const AdmissionRouteChildren: AdmissionRouteChildren = {
+  AdmissionSuccessRoute: AdmissionSuccessRoute,
+}
+
+const AdmissionRouteWithChildren = AdmissionRoute._addFileChildren(
+  AdmissionRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
-  AdmissionRoute: AdmissionRoute,
+  AdmissionRoute: AdmissionRouteWithChildren,
   AuthRoute: AuthRoute,
   BlogRoute: BlogRoute,
   ContactRoute: ContactRoute,
