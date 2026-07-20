@@ -4,6 +4,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { ArrowLeft, Check, X, Loader2, FileText, ExternalLink, UserPlus, MessageSquare } from "lucide-react";
 import { toast } from "sonner";
 import { DashboardShell } from "@/components/erp/DashboardShell";
+import { supabase } from "@/integrations/supabase/client";
 import {
   getAdmissionById,
   rejectAdmission,
@@ -208,6 +209,12 @@ function Item({ k, v, span }: { k: string; v?: string | null; span?: boolean }) 
   );
 }
 function DocTile({ label, url }: { label: string; url: string | null }) {
+  const [signed, setSigned] = useState<string | null>(null);
+  useEffect(() => {
+    if (!url) return;
+    // Value is a storage path in the private `documents` bucket.
+    supabase.storage.from("documents").createSignedUrl(url, 3600).then(({ data }) => setSigned(data?.signedUrl ?? null));
+  }, [url]);
   if (!url) return (
     <div className="rounded-xl border-2 border-dashed border-border p-4 text-center text-xs text-muted-foreground">
       <FileText className="mx-auto h-5 w-5" /> <span className="mt-1 block font-semibold">{label}</span> Not uploaded
@@ -215,9 +222,9 @@ function DocTile({ label, url }: { label: string; url: string | null }) {
   );
   const isImg = /\.(jpe?g|png|webp|gif)($|\?)/i.test(url);
   return (
-    <a href={url} target="_blank" rel="noreferrer" className="group block overflow-hidden rounded-xl border bg-white text-xs">
+    <a href={signed ?? "#"} target="_blank" rel="noreferrer" className="group block overflow-hidden rounded-xl border bg-white text-xs">
       <div className="aspect-video bg-cyan-soft/60">
-        {isImg ? <img src={url} alt={label} className="h-full w-full object-cover" /> : <div className="grid h-full w-full place-items-center"><FileText className="h-8 w-8 text-brand" /></div>}
+        {isImg && signed ? <img src={signed} alt={label} className="h-full w-full object-cover" /> : <div className="grid h-full w-full place-items-center">{signed ? <FileText className="h-8 w-8 text-brand" /> : <Loader2 className="h-5 w-5 animate-spin text-brand" />}</div>}
       </div>
       <div className="flex items-center justify-between px-3 py-2">
         <span className="font-semibold text-ink">{label}</span>
