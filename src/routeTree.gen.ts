@@ -13,9 +13,11 @@ import { Route as VideosRouteImport } from './routes/videos'
 import { Route as VerifyCertificateRouteImport } from './routes/verify-certificate'
 import { Route as TestimonialsRouteImport } from './routes/testimonials'
 import { Route as StudentZoneRouteImport } from './routes/student-zone'
+import { Route as StudentDashboardRouteImport } from './routes/student-dashboard'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SetupRouteImport } from './routes/setup'
 import { Route as NoticeRouteImport } from './routes/notice'
+import { Route as LoginRouteImport } from './routes/login'
 import { Route as GalleryRouteImport } from './routes/gallery'
 import { Route as FranchiseRouteImport } from './routes/franchise'
 import { Route as FaqRouteImport } from './routes/faq'
@@ -30,12 +32,15 @@ import { Route as AdmissionRouteImport } from './routes/admission'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as StudentResultsRouteImport } from './routes/student.results'
+import { Route as StudentProfileRouteImport } from './routes/student.profile'
 import { Route as StudentOnlineTestRouteImport } from './routes/student.online-test'
+import { Route as StudentNotificationsRouteImport } from './routes/student.notifications'
 import { Route as StudentLoginRouteImport } from './routes/student.login'
 import { Route as StudentFeesRouteImport } from './routes/student.fees'
 import { Route as StudentDashboardRouteImport } from './routes/student.dashboard'
 import { Route as StudentCertificatesRouteImport } from './routes/student.certificates'
 import { Route as StudentAttendanceRouteImport } from './routes/student.attendance'
+import { Route as StudentAssignmentsRouteImport } from './routes/student.assignments'
 import { Route as SearchStudentRouteImport } from './routes/search.student'
 import { Route as SearchResultRouteImport } from './routes/search.result'
 import { Route as SearchCertificateRouteImport } from './routes/search.certificate'
@@ -63,6 +68,11 @@ const StudentZoneRoute = StudentZoneRouteImport.update({
   path: '/student-zone',
   getParentRoute: () => rootRouteImport,
 } as any)
+const StudentDashboardRoute = StudentDashboardRouteImport.update({
+  id: '/student-dashboard',
+  path: '/student-dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
   path: '/sitemap.xml',
@@ -76,6 +86,11 @@ const SetupRoute = SetupRouteImport.update({
 const NoticeRoute = NoticeRouteImport.update({
   id: '/notice',
   path: '/notice',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
 const GalleryRoute = GalleryRouteImport.update({
@@ -147,9 +162,19 @@ const StudentResultsRoute = StudentResultsRouteImport.update({
   path: '/student/results',
   getParentRoute: () => rootRouteImport,
 } as any)
+const StudentProfileRoute = StudentProfileRouteImport.update({
+  id: '/student/profile',
+  path: '/student/profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const StudentOnlineTestRoute = StudentOnlineTestRouteImport.update({
   id: '/student/online-test',
   path: '/student/online-test',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const StudentNotificationsRoute = StudentNotificationsRouteImport.update({
+  id: '/student/notifications',
+  path: '/student/notifications',
   getParentRoute: () => rootRouteImport,
 } as any)
 const StudentLoginRoute = StudentLoginRouteImport.update({
@@ -175,6 +200,11 @@ const StudentCertificatesRoute = StudentCertificatesRouteImport.update({
 const StudentAttendanceRoute = StudentAttendanceRouteImport.update({
   id: '/student/attendance',
   path: '/student/attendance',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const StudentAssignmentsRoute = StudentAssignmentsRouteImport.update({
+  id: '/student/assignments',
+  path: '/student/assignments',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SearchStudentRoute = SearchStudentRouteImport.update({
@@ -223,9 +253,11 @@ export interface FileRoutesByFullPath {
   '/faq': typeof FaqRoute
   '/franchise': typeof FranchiseRoute
   '/gallery': typeof GalleryRoute
+  '/login': typeof LoginRoute
   '/notice': typeof NoticeRoute
   '/setup': typeof SetupRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/student-dashboard': typeof StudentDashboardRoute
   '/student-zone': typeof StudentZoneRoute
   '/testimonials': typeof TestimonialsRoute
   '/verify-certificate': typeof VerifyCertificateRoute
@@ -234,12 +266,15 @@ export interface FileRoutesByFullPath {
   '/search/certificate': typeof SearchCertificateRoute
   '/search/result': typeof SearchResultRoute
   '/search/student': typeof SearchStudentRoute
+  '/student/assignments': typeof StudentAssignmentsRoute
   '/student/attendance': typeof StudentAttendanceRoute
   '/student/certificates': typeof StudentCertificatesRoute
   '/student/dashboard': typeof StudentDashboardRoute
   '/student/fees': typeof StudentFeesRoute
   '/student/login': typeof StudentLoginRoute
+  '/student/notifications': typeof StudentNotificationsRoute
   '/student/online-test': typeof StudentOnlineTestRoute
+  '/student/profile': typeof StudentProfileRoute
   '/student/results': typeof StudentResultsRoute
   '/dashboard/admissions': typeof AuthenticatedDashboardAdmissionsRoute
   '/dashboard/students': typeof AuthenticatedDashboardStudentsRoute
@@ -257,9 +292,11 @@ export interface FileRoutesByTo {
   '/faq': typeof FaqRoute
   '/franchise': typeof FranchiseRoute
   '/gallery': typeof GalleryRoute
+  '/login': typeof LoginRoute
   '/notice': typeof NoticeRoute
   '/setup': typeof SetupRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/student-dashboard': typeof StudentDashboardRoute
   '/student-zone': typeof StudentZoneRoute
   '/testimonials': typeof TestimonialsRoute
   '/verify-certificate': typeof VerifyCertificateRoute
@@ -268,12 +305,15 @@ export interface FileRoutesByTo {
   '/search/certificate': typeof SearchCertificateRoute
   '/search/result': typeof SearchResultRoute
   '/search/student': typeof SearchStudentRoute
+  '/student/assignments': typeof StudentAssignmentsRoute
   '/student/attendance': typeof StudentAttendanceRoute
   '/student/certificates': typeof StudentCertificatesRoute
   '/student/dashboard': typeof StudentDashboardRoute
   '/student/fees': typeof StudentFeesRoute
   '/student/login': typeof StudentLoginRoute
+  '/student/notifications': typeof StudentNotificationsRoute
   '/student/online-test': typeof StudentOnlineTestRoute
+  '/student/profile': typeof StudentProfileRoute
   '/student/results': typeof StudentResultsRoute
   '/dashboard/admissions': typeof AuthenticatedDashboardAdmissionsRoute
   '/dashboard/students': typeof AuthenticatedDashboardStudentsRoute
@@ -293,9 +333,11 @@ export interface FileRoutesById {
   '/faq': typeof FaqRoute
   '/franchise': typeof FranchiseRoute
   '/gallery': typeof GalleryRoute
+  '/login': typeof LoginRoute
   '/notice': typeof NoticeRoute
   '/setup': typeof SetupRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/student-dashboard': typeof StudentDashboardRoute
   '/student-zone': typeof StudentZoneRoute
   '/testimonials': typeof TestimonialsRoute
   '/verify-certificate': typeof VerifyCertificateRoute
@@ -304,12 +346,15 @@ export interface FileRoutesById {
   '/search/certificate': typeof SearchCertificateRoute
   '/search/result': typeof SearchResultRoute
   '/search/student': typeof SearchStudentRoute
+  '/student/assignments': typeof StudentAssignmentsRoute
   '/student/attendance': typeof StudentAttendanceRoute
   '/student/certificates': typeof StudentCertificatesRoute
   '/student/dashboard': typeof StudentDashboardRoute
   '/student/fees': typeof StudentFeesRoute
   '/student/login': typeof StudentLoginRoute
+  '/student/notifications': typeof StudentNotificationsRoute
   '/student/online-test': typeof StudentOnlineTestRoute
+  '/student/profile': typeof StudentProfileRoute
   '/student/results': typeof StudentResultsRoute
   '/_authenticated/dashboard/admissions': typeof AuthenticatedDashboardAdmissionsRoute
   '/_authenticated/dashboard/students': typeof AuthenticatedDashboardStudentsRoute
@@ -329,9 +374,11 @@ export interface FileRouteTypes {
     | '/faq'
     | '/franchise'
     | '/gallery'
+    | '/login'
     | '/notice'
     | '/setup'
     | '/sitemap.xml'
+    | '/student-dashboard'
     | '/student-zone'
     | '/testimonials'
     | '/verify-certificate'
@@ -340,12 +387,15 @@ export interface FileRouteTypes {
     | '/search/certificate'
     | '/search/result'
     | '/search/student'
+    | '/student/assignments'
     | '/student/attendance'
     | '/student/certificates'
     | '/student/dashboard'
     | '/student/fees'
     | '/student/login'
+    | '/student/notifications'
     | '/student/online-test'
+    | '/student/profile'
     | '/student/results'
     | '/dashboard/admissions'
     | '/dashboard/students'
@@ -363,9 +413,11 @@ export interface FileRouteTypes {
     | '/faq'
     | '/franchise'
     | '/gallery'
+    | '/login'
     | '/notice'
     | '/setup'
     | '/sitemap.xml'
+    | '/student-dashboard'
     | '/student-zone'
     | '/testimonials'
     | '/verify-certificate'
@@ -374,12 +426,15 @@ export interface FileRouteTypes {
     | '/search/certificate'
     | '/search/result'
     | '/search/student'
+    | '/student/assignments'
     | '/student/attendance'
     | '/student/certificates'
     | '/student/dashboard'
     | '/student/fees'
     | '/student/login'
+    | '/student/notifications'
     | '/student/online-test'
+    | '/student/profile'
     | '/student/results'
     | '/dashboard/admissions'
     | '/dashboard/students'
@@ -398,9 +453,11 @@ export interface FileRouteTypes {
     | '/faq'
     | '/franchise'
     | '/gallery'
+    | '/login'
     | '/notice'
     | '/setup'
     | '/sitemap.xml'
+    | '/student-dashboard'
     | '/student-zone'
     | '/testimonials'
     | '/verify-certificate'
@@ -409,12 +466,15 @@ export interface FileRouteTypes {
     | '/search/certificate'
     | '/search/result'
     | '/search/student'
+    | '/student/assignments'
     | '/student/attendance'
     | '/student/certificates'
     | '/student/dashboard'
     | '/student/fees'
     | '/student/login'
+    | '/student/notifications'
     | '/student/online-test'
+    | '/student/profile'
     | '/student/results'
     | '/_authenticated/dashboard/admissions'
     | '/_authenticated/dashboard/students'
@@ -434,9 +494,11 @@ export interface RootRouteChildren {
   FaqRoute: typeof FaqRoute
   FranchiseRoute: typeof FranchiseRoute
   GalleryRoute: typeof GalleryRoute
+  LoginRoute: typeof LoginRoute
   NoticeRoute: typeof NoticeRoute
   SetupRoute: typeof SetupRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  StudentDashboardRoute: typeof StudentDashboardRoute
   StudentZoneRoute: typeof StudentZoneRoute
   TestimonialsRoute: typeof TestimonialsRoute
   VerifyCertificateRoute: typeof VerifyCertificateRoute
@@ -444,12 +506,15 @@ export interface RootRouteChildren {
   SearchCertificateRoute: typeof SearchCertificateRoute
   SearchResultRoute: typeof SearchResultRoute
   SearchStudentRoute: typeof SearchStudentRoute
+  StudentAssignmentsRoute: typeof StudentAssignmentsRoute
   StudentAttendanceRoute: typeof StudentAttendanceRoute
   StudentCertificatesRoute: typeof StudentCertificatesRoute
   StudentDashboardRoute: typeof StudentDashboardRoute
   StudentFeesRoute: typeof StudentFeesRoute
   StudentLoginRoute: typeof StudentLoginRoute
+  StudentNotificationsRoute: typeof StudentNotificationsRoute
   StudentOnlineTestRoute: typeof StudentOnlineTestRoute
+  StudentProfileRoute: typeof StudentProfileRoute
   StudentResultsRoute: typeof StudentResultsRoute
 }
 
@@ -483,6 +548,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof StudentZoneRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/student-dashboard': {
+      id: '/student-dashboard'
+      path: '/student-dashboard'
+      fullPath: '/student-dashboard'
+      preLoaderRoute: typeof StudentDashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/sitemap.xml': {
       id: '/sitemap.xml'
       path: '/sitemap.xml'
@@ -502,6 +574,13 @@ declare module '@tanstack/react-router' {
       path: '/notice'
       fullPath: '/notice'
       preLoaderRoute: typeof NoticeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/gallery': {
@@ -602,11 +681,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof StudentResultsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/student/profile': {
+      id: '/student/profile'
+      path: '/student/profile'
+      fullPath: '/student/profile'
+      preLoaderRoute: typeof StudentProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/student/online-test': {
       id: '/student/online-test'
       path: '/student/online-test'
       fullPath: '/student/online-test'
       preLoaderRoute: typeof StudentOnlineTestRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/student/notifications': {
+      id: '/student/notifications'
+      path: '/student/notifications'
+      fullPath: '/student/notifications'
+      preLoaderRoute: typeof StudentNotificationsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/student/login': {
@@ -642,6 +735,13 @@ declare module '@tanstack/react-router' {
       path: '/student/attendance'
       fullPath: '/student/attendance'
       preLoaderRoute: typeof StudentAttendanceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/student/assignments': {
+      id: '/student/assignments'
+      path: '/student/assignments'
+      fullPath: '/student/assignments'
+      preLoaderRoute: typeof StudentAssignmentsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/search/student': {
@@ -731,9 +831,11 @@ const rootRouteChildren: RootRouteChildren = {
   FaqRoute: FaqRoute,
   FranchiseRoute: FranchiseRoute,
   GalleryRoute: GalleryRoute,
+  LoginRoute: LoginRoute,
   NoticeRoute: NoticeRoute,
   SetupRoute: SetupRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  StudentDashboardRoute: StudentDashboardRoute,
   StudentZoneRoute: StudentZoneRoute,
   TestimonialsRoute: TestimonialsRoute,
   VerifyCertificateRoute: VerifyCertificateRoute,
@@ -741,12 +843,15 @@ const rootRouteChildren: RootRouteChildren = {
   SearchCertificateRoute: SearchCertificateRoute,
   SearchResultRoute: SearchResultRoute,
   SearchStudentRoute: SearchStudentRoute,
+  StudentAssignmentsRoute: StudentAssignmentsRoute,
   StudentAttendanceRoute: StudentAttendanceRoute,
   StudentCertificatesRoute: StudentCertificatesRoute,
   StudentDashboardRoute: StudentDashboardRoute,
   StudentFeesRoute: StudentFeesRoute,
   StudentLoginRoute: StudentLoginRoute,
+  StudentNotificationsRoute: StudentNotificationsRoute,
   StudentOnlineTestRoute: StudentOnlineTestRoute,
+  StudentProfileRoute: StudentProfileRoute,
   StudentResultsRoute: StudentResultsRoute,
 }
 export const routeTree = rootRouteImport
