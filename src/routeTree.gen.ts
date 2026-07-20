@@ -13,6 +13,7 @@ import { Route as VideosRouteImport } from './routes/videos'
 import { Route as VerifyCertificateRouteImport } from './routes/verify-certificate'
 import { Route as TestimonialsRouteImport } from './routes/testimonials'
 import { Route as StudentZoneRouteImport } from './routes/student-zone'
+import { Route as StudentDashboardRouteImport } from './routes/student-dashboard'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SetupRouteImport } from './routes/setup'
 import { Route as NoticeRouteImport } from './routes/notice'
@@ -62,6 +63,11 @@ const TestimonialsRoute = TestimonialsRouteImport.update({
 const StudentZoneRoute = StudentZoneRouteImport.update({
   id: '/student-zone',
   path: '/student-zone',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const StudentDashboardRoute = StudentDashboardRouteImport.update({
+  id: '/student-dashboard',
+  path: '/student-dashboard',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
@@ -233,6 +239,7 @@ export interface FileRoutesByFullPath {
   '/notice': typeof NoticeRoute
   '/setup': typeof SetupRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/student-dashboard': typeof StudentDashboardRoute
   '/student-zone': typeof StudentZoneRoute
   '/testimonials': typeof TestimonialsRoute
   '/verify-certificate': typeof VerifyCertificateRoute
@@ -268,6 +275,7 @@ export interface FileRoutesByTo {
   '/notice': typeof NoticeRoute
   '/setup': typeof SetupRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/student-dashboard': typeof StudentDashboardRoute
   '/student-zone': typeof StudentZoneRoute
   '/testimonials': typeof TestimonialsRoute
   '/verify-certificate': typeof VerifyCertificateRoute
@@ -305,6 +313,7 @@ export interface FileRoutesById {
   '/notice': typeof NoticeRoute
   '/setup': typeof SetupRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/student-dashboard': typeof StudentDashboardRoute
   '/student-zone': typeof StudentZoneRoute
   '/testimonials': typeof TestimonialsRoute
   '/verify-certificate': typeof VerifyCertificateRoute
@@ -342,6 +351,7 @@ export interface FileRouteTypes {
     | '/notice'
     | '/setup'
     | '/sitemap.xml'
+    | '/student-dashboard'
     | '/student-zone'
     | '/testimonials'
     | '/verify-certificate'
@@ -377,6 +387,7 @@ export interface FileRouteTypes {
     | '/notice'
     | '/setup'
     | '/sitemap.xml'
+    | '/student-dashboard'
     | '/student-zone'
     | '/testimonials'
     | '/verify-certificate'
@@ -413,6 +424,7 @@ export interface FileRouteTypes {
     | '/notice'
     | '/setup'
     | '/sitemap.xml'
+    | '/student-dashboard'
     | '/student-zone'
     | '/testimonials'
     | '/verify-certificate'
@@ -450,6 +462,7 @@ export interface RootRouteChildren {
   NoticeRoute: typeof NoticeRoute
   SetupRoute: typeof SetupRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  StudentDashboardRoute: typeof StudentDashboardRoute
   StudentZoneRoute: typeof StudentZoneRoute
   TestimonialsRoute: typeof TestimonialsRoute
   VerifyCertificateRoute: typeof VerifyCertificateRoute
@@ -494,6 +507,13 @@ declare module '@tanstack/react-router' {
       path: '/student-zone'
       fullPath: '/student-zone'
       preLoaderRoute: typeof StudentZoneRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/student-dashboard': {
+      id: '/student-dashboard'
+      path: '/student-dashboard'
+      fullPath: '/student-dashboard'
+      preLoaderRoute: typeof StudentDashboardRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/sitemap.xml': {
@@ -755,6 +775,7 @@ const rootRouteChildren: RootRouteChildren = {
   NoticeRoute: NoticeRoute,
   SetupRoute: SetupRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  StudentDashboardRoute: StudentDashboardRoute,
   StudentZoneRoute: StudentZoneRoute,
   TestimonialsRoute: TestimonialsRoute,
   VerifyCertificateRoute: VerifyCertificateRoute,
