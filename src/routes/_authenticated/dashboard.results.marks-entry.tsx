@@ -63,7 +63,7 @@ function MarksEntryPage() {
   const setMark = (studentId: string, subjectId: string, field: "theory" | "practical" | "internal", value: number, max: number) => {
     setRows(prev => {
       const s = { ...(prev[studentId] ?? {}) };
-      const cur = { theory: 0, practical: 0, internal: 0, ...(s[subjectId] ?? {}) };
+      const cur = { theory: 0, practical: 0, internal: 0, ...((s[subjectId] as any) ?? {}) } as { theory: number; practical: number; internal: number };
       const clamped = Math.max(0, Math.min(value || 0, max));
       cur[field] = clamped;
       s[subjectId] = cur;
