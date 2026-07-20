@@ -40,6 +40,7 @@ import { Route as StudentFeesRouteImport } from './routes/student.fees'
 import { Route as StudentCertificatesRouteImport } from './routes/student.certificates'
 import { Route as StudentAttendanceRouteImport } from './routes/student.attendance'
 import { Route as StudentAssignmentsRouteImport } from './routes/student.assignments'
+import { Route as StudentDashboardProfileRouteImport } from './routes/student-dashboard_.profile'
 import { Route as SearchStudentRouteImport } from './routes/search.student'
 import { Route as SearchResultRouteImport } from './routes/search.result'
 import { Route as SearchCertificateRouteImport } from './routes/search.certificate'
@@ -203,6 +204,11 @@ const StudentAssignmentsRoute = StudentAssignmentsRouteImport.update({
   path: '/student/assignments',
   getParentRoute: () => rootRouteImport,
 } as any)
+const StudentDashboardProfileRoute = StudentDashboardProfileRouteImport.update({
+  id: '/student-dashboard_/profile',
+  path: '/student-dashboard/profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SearchStudentRoute = SearchStudentRouteImport.update({
   id: '/search/student',
   path: '/search/student',
@@ -274,6 +280,7 @@ export interface FileRoutesByFullPath {
   '/search/certificate': typeof SearchCertificateRoute
   '/search/result': typeof SearchResultRoute
   '/search/student': typeof SearchStudentRoute
+  '/student-dashboard/profile': typeof StudentDashboardProfileRoute
   '/student/assignments': typeof StudentAssignmentsRoute
   '/student/attendance': typeof StudentAttendanceRoute
   '/student/certificates': typeof StudentCertificatesRoute
@@ -314,6 +321,7 @@ export interface FileRoutesByTo {
   '/search/certificate': typeof SearchCertificateRoute
   '/search/result': typeof SearchResultRoute
   '/search/student': typeof SearchStudentRoute
+  '/student-dashboard/profile': typeof StudentDashboardProfileRoute
   '/student/assignments': typeof StudentAssignmentsRoute
   '/student/attendance': typeof StudentAttendanceRoute
   '/student/certificates': typeof StudentCertificatesRoute
@@ -356,6 +364,7 @@ export interface FileRoutesById {
   '/search/certificate': typeof SearchCertificateRoute
   '/search/result': typeof SearchResultRoute
   '/search/student': typeof SearchStudentRoute
+  '/student-dashboard_/profile': typeof StudentDashboardProfileRoute
   '/student/assignments': typeof StudentAssignmentsRoute
   '/student/attendance': typeof StudentAttendanceRoute
   '/student/certificates': typeof StudentCertificatesRoute
@@ -398,6 +407,7 @@ export interface FileRouteTypes {
     | '/search/certificate'
     | '/search/result'
     | '/search/student'
+    | '/student-dashboard/profile'
     | '/student/assignments'
     | '/student/attendance'
     | '/student/certificates'
@@ -438,6 +448,7 @@ export interface FileRouteTypes {
     | '/search/certificate'
     | '/search/result'
     | '/search/student'
+    | '/student-dashboard/profile'
     | '/student/assignments'
     | '/student/attendance'
     | '/student/certificates'
@@ -479,6 +490,7 @@ export interface FileRouteTypes {
     | '/search/certificate'
     | '/search/result'
     | '/search/student'
+    | '/student-dashboard_/profile'
     | '/student/assignments'
     | '/student/attendance'
     | '/student/certificates'
@@ -519,6 +531,7 @@ export interface RootRouteChildren {
   SearchCertificateRoute: typeof SearchCertificateRoute
   SearchResultRoute: typeof SearchResultRoute
   SearchStudentRoute: typeof SearchStudentRoute
+  StudentDashboardProfileRoute: typeof StudentDashboardProfileRoute
   StudentAssignmentsRoute: typeof StudentAssignmentsRoute
   StudentAttendanceRoute: typeof StudentAttendanceRoute
   StudentCertificatesRoute: typeof StudentCertificatesRoute
@@ -749,6 +762,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof StudentAssignmentsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/student-dashboard_/profile': {
+      id: '/student-dashboard_/profile'
+      path: '/student-dashboard/profile'
+      fullPath: '/student-dashboard/profile'
+      preLoaderRoute: typeof StudentDashboardProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/search/student': {
       id: '/search/student'
       path: '/search/student'
@@ -889,6 +909,7 @@ const rootRouteChildren: RootRouteChildren = {
   SearchCertificateRoute: SearchCertificateRoute,
   SearchResultRoute: SearchResultRoute,
   SearchStudentRoute: SearchStudentRoute,
+  StudentDashboardProfileRoute: StudentDashboardProfileRoute,
   StudentAssignmentsRoute: StudentAssignmentsRoute,
   StudentAttendanceRoute: StudentAttendanceRoute,
   StudentCertificatesRoute: StudentCertificatesRoute,

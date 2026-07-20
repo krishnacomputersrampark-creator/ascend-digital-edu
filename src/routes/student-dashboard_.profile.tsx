@@ -6,7 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { PortalShell } from "@/components/student/PortalShell";
 import { calcProfileCompletion, getPhotoSignedUrl, getStudentByUserId, type StudentRecord } from "@/lib/students.repo";
 
-export const Route = createFileRoute("/student-dashboard/profile")({
+export const Route = createFileRoute("/student-dashboard_/profile")({
   head: () => ({ meta: [{ title: "My Profile · Krishna Computer Center" }, { name: "robots", content: "noindex" }] }),
   component: ProfilePage,
 });
