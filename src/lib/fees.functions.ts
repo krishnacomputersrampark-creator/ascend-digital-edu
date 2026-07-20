@@ -79,7 +79,7 @@ export const getOrCreateStudentFee = createServerFn({ method: "POST" })
     if (existing) return existing as any;
 
     const { data: s, error: sErr } = await context.supabase
-      .from("students").select("id, course_id, branch_id, total_fee").eq("id", data.student_id).single();
+      .from("students").select("id, course_id, branch_id").eq("id", data.student_id).single();
     if (sErr || !s) throw new Error(sErr?.message ?? "Student not found");
 
     let structure: any = null;
@@ -90,7 +90,7 @@ export const getOrCreateStudentFee = createServerFn({ method: "POST" })
         .order("created_at", { ascending: false }).limit(1).maybeSingle();
       structure = fs;
     }
-    const total = Number(structure?.total_fee ?? (s as any).total_fee ?? 0);
+    const total = Number(structure?.total_fee ?? 0);
     const { data: row, error } = await context.supabase.from("student_fees").insert({
       student_id: data.student_id,
       fee_structure_id: structure?.id ?? null,
