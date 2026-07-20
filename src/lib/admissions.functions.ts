@@ -33,6 +33,20 @@ const admissionSchema = z.object({
   course_preference: z.string().max(120).optional().or(z.literal("")),
   branch_id: z.string().uuid().optional().or(z.literal("")),
   source: z.string().max(60).optional().or(z.literal("")),
+  mother_name: z.string().max(120).optional().or(z.literal("")),
+  alternate_mobile: z.string().max(20).optional().or(z.literal("")),
+  aadhaar_number: z.string().trim().regex(/^\d{12}$/, "Aadhaar must be 12 digits").optional().or(z.literal("")),
+  city: z.string().max(80).optional().or(z.literal("")),
+  state: z.string().max(80).optional().or(z.literal("")),
+  pincode: z.string().max(10).optional().or(z.literal("")),
+  batch_id: z.string().uuid().optional().or(z.literal("")),
+  preferred_timing: z.string().max(60).optional().or(z.literal("")),
+  photo_url: z.string().url().optional().or(z.literal("")),
+  signature_url: z.string().url().optional().or(z.literal("")),
+  aadhaar_front_url: z.string().url().optional().or(z.literal("")),
+  aadhaar_back_url: z.string().url().optional().or(z.literal("")),
+  qualification_url: z.string().url().optional().or(z.literal("")),
+  passport_photo_url: z.string().url().optional().or(z.literal("")),
 });
 
 export const submitAdmission = createServerFn({ method: "POST" })
@@ -42,10 +56,15 @@ export const submitAdmission = createServerFn({ method: "POST" })
     const payload = Object.fromEntries(
       Object.entries(data).map(([k, v]) => [k, v === "" ? null : v])
     );
+    // Duplicate check on aadhaar / phone
+    if ((payload as any).aadhaar_number) {
+      const { data: dup } = await sb.from("admissions").select("id").eq("aadhaar_number", (payload as any).aadhaar_number).limit(1);
+      if (dup && dup.length) throw new Error("An application with this Aadhaar number already exists.");
+    }
     const { data: row, error } = await sb
       .from("admissions")
       .insert({ ...(payload as any), status: "pending" })
-      .select("id, admission_no")
+      .select("id, admission_no, application_no")
       .single();
     if (error) throw new Error(error.message);
     return row;
