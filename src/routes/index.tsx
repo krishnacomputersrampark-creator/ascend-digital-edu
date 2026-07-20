@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { motion, useInView, useMotionValue, animate } from "motion/react";
 import {
@@ -98,15 +98,15 @@ function SectionHeading({
 
 /* ---------------- Header ---------------- */
 
-const NAV = [
-  { label: "Home", href: "#home" },
-  { label: "About", href: "#about" },
-  { label: "Courses", href: "#courses" },
-  { label: "Student Zone", href: "#student-zone" },
-  { label: "Downloads", href: "#downloads" },
-  { label: "Gallery", href: "#gallery" },
-  { label: "Notice Board", href: "#notice" },
-  { label: "Contact", href: "#contact" },
+const NAV: { label: string; to: string; hash?: string }[] = [
+  { label: "Home", to: "/" },
+  { label: "About", to: "/", hash: "about" },
+  { label: "Courses", to: "/courses" },
+  { label: "Student Zone", to: "/student-zone" },
+  { label: "Downloads", to: "/downloads" },
+  { label: "Gallery", to: "/gallery" },
+  { label: "Notice Board", to: "/notice" },
+  { label: "Contact", to: "/contact" },
 ];
 
 function Header() {
@@ -125,7 +125,7 @@ function Header() {
       }`}
     >
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6 lg:px-8">
-        <a href="#home" className="flex items-center gap-3">
+        <Link to="/" className="flex items-center gap-3">
           <span className="grid h-11 w-11 place-items-center rounded-xl gradient-brand text-white shadow-brand">
             <GraduationCap className="h-6 w-6" />
           </span>
@@ -145,12 +145,13 @@ function Header() {
               Empowering Students Through Digital Education
             </span>
           </span>
-        </a>
+        </Link>
         <nav className="hidden items-center gap-1 xl:flex">
           {NAV.map((n) => (
-            <a
-              key={n.href}
-              href={n.href}
+            <Link
+              key={n.label}
+              to={n.to}
+              hash={n.hash}
               className={`rounded-full px-3 py-2 text-sm font-medium transition-colors ${
                 scrolled
                   ? "text-ink/80 hover:bg-cyan-soft hover:text-brand"
@@ -158,30 +159,30 @@ function Header() {
               }`}
             >
               {n.label}
-            </a>
+            </Link>
           ))}
         </nav>
         <div className="hidden items-center gap-2 lg:flex">
-          <a
-            href="#login"
+          <Link
+            to="/auth"
             className={`rounded-full px-4 py-2 text-sm font-semibold transition ${
               scrolled ? "text-ink hover:text-brand" : "text-white hover:text-cyan-soft"
             }`}
           >
             Login
-          </a>
-          <a
-            href="#admission"
+          </Link>
+          <Link
+            to="/admission"
             className="rounded-full border-2 border-brand px-4 py-2 text-sm font-semibold text-brand transition hover:bg-brand hover:text-white"
           >
             Admission
-          </a>
-          <a
-            href="#apply"
+          </Link>
+          <Link
+            to="/admission"
             className="inline-flex items-center gap-1.5 rounded-full gradient-brand px-5 py-2.5 text-sm font-semibold text-white shadow-brand transition hover:opacity-95"
           >
             Apply Now <ArrowRight className="h-4 w-4" />
-          </a>
+          </Link>
         </div>
         <button
           onClick={() => setOpen((o) => !o)}
@@ -197,22 +198,23 @@ function Header() {
         <div className="border-t bg-white shadow-soft xl:hidden">
           <div className="mx-auto grid max-w-7xl gap-1 px-4 py-4">
             {NAV.map((n) => (
-              <a
-                key={n.href}
-                href={n.href}
+              <Link
+                key={n.label}
+                to={n.to}
+                hash={n.hash}
                 onClick={() => setOpen(false)}
                 className="rounded-lg px-3 py-2.5 text-sm font-medium text-ink hover:bg-cyan-soft hover:text-brand"
               >
                 {n.label}
-              </a>
+              </Link>
             ))}
             <div className="mt-2 flex flex-col gap-2 border-t pt-3">
-              <a href="#login" className="rounded-full border border-border px-4 py-2 text-center text-sm font-semibold">
+              <Link to="/auth" onClick={() => setOpen(false)} className="rounded-full border border-border px-4 py-2 text-center text-sm font-semibold">
                 Login
-              </a>
-              <a href="#apply" className="rounded-full gradient-brand px-4 py-2 text-center text-sm font-semibold text-white">
+              </Link>
+              <Link to="/admission" onClick={() => setOpen(false)} className="rounded-full gradient-brand px-4 py-2 text-center text-sm font-semibold text-white">
                 Apply Now
-              </a>
+              </Link>
             </div>
           </div>
         </div>
