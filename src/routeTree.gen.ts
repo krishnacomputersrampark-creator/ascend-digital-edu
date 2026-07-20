@@ -57,6 +57,7 @@ import { Route as AuthenticatedDashboardResultsRouteImport } from './routes/_aut
 import { Route as AuthenticatedDashboardFeesRouteImport } from './routes/_authenticated/dashboard.fees'
 import { Route as AuthenticatedDashboardAttendanceRouteImport } from './routes/_authenticated/dashboard.attendance'
 import { Route as AuthenticatedDashboardAdmissionsRouteImport } from './routes/_authenticated/dashboard.admissions'
+import { Route as StudentDashboardResultsViewIdRouteImport } from './routes/student-dashboard_.results.view.$id'
 import { Route as StudentDashboardFeesReceiptIdRouteImport } from './routes/student-dashboard_.fees.receipt.$id'
 import { Route as ApiPublicHooksFeeRemindersRouteImport } from './routes/api/public/hooks/fee-reminders'
 import { Route as AuthenticatedDashboardResultsPublishRouteImport } from './routes/_authenticated/dashboard.results.publish'
@@ -69,7 +70,6 @@ import { Route as AuthenticatedDashboardFeesCollectRouteImport } from './routes/
 import { Route as AuthenticatedDashboardAttendanceMarkRouteImport } from './routes/_authenticated/dashboard.attendance.mark'
 import { Route as AuthenticatedDashboardAttendanceHistoryRouteImport } from './routes/_authenticated/dashboard.attendance.history'
 import { Route as AuthenticatedDashboardAdmissionsIdRouteImport } from './routes/_authenticated/dashboard.admissions.$id'
-import { Route as StudentDashboardResultsViewRouteImport } from './routes/student-dashboard_.results.view.'
 import { Route as AuthenticatedDashboardFeesReceiptIdRouteImport } from './routes/_authenticated/dashboard.fees.receipt.$id'
 
 const VideosRoute = VideosRouteImport.update({
@@ -320,6 +320,12 @@ const AuthenticatedDashboardAdmissionsRoute =
     path: '/admissions',
     getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
+const StudentDashboardResultsViewIdRoute =
+  StudentDashboardResultsViewIdRouteImport.update({
+    id: '/view/$id',
+    path: '/view/$id',
+    getParentRoute: () => StudentDashboardResultsRoute,
+  } as any)
 const StudentDashboardFeesReceiptIdRoute =
   StudentDashboardFeesReceiptIdRouteImport.update({
     id: '/receipt/$id',
@@ -392,12 +398,6 @@ const AuthenticatedDashboardAdmissionsIdRoute =
     path: '/$id',
     getParentRoute: () => AuthenticatedDashboardAdmissionsRoute,
   } as any)
-const StudentDashboardResultsViewRoute =
-  StudentDashboardResultsViewRouteImport.update({
-    id: '/view/',
-    path: '/view/',
-    getParentRoute: () => StudentDashboardResultsRoute,
-  } as any)
 const AuthenticatedDashboardFeesReceiptIdRoute =
   AuthenticatedDashboardFeesReceiptIdRouteImport.update({
     id: '/receipt/$id',
@@ -453,7 +453,6 @@ export interface FileRoutesByFullPath {
   '/dashboard/students': typeof AuthenticatedDashboardStudentsRoute
   '/student-dashboard/fees/history': typeof StudentDashboardFeesHistoryRoute
   '/student-dashboard/profile/edit': typeof StudentDashboardProfileEditRoute
-  '/student-dashboard/results/view/': typeof StudentDashboardResultsViewRoute
   '/dashboard/admissions/$id': typeof AuthenticatedDashboardAdmissionsIdRoute
   '/dashboard/attendance/history': typeof AuthenticatedDashboardAttendanceHistoryRoute
   '/dashboard/attendance/mark': typeof AuthenticatedDashboardAttendanceMarkRoute
@@ -466,6 +465,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/results/publish': typeof AuthenticatedDashboardResultsPublishRoute
   '/api/public/hooks/fee-reminders': typeof ApiPublicHooksFeeRemindersRoute
   '/student-dashboard/fees/receipt/$id': typeof StudentDashboardFeesReceiptIdRoute
+  '/student-dashboard/results/view/$id': typeof StudentDashboardResultsViewIdRoute
   '/dashboard/fees/receipt/$id': typeof AuthenticatedDashboardFeesReceiptIdRoute
 }
 export interface FileRoutesByTo {
@@ -516,7 +516,6 @@ export interface FileRoutesByTo {
   '/dashboard/students': typeof AuthenticatedDashboardStudentsRoute
   '/student-dashboard/fees/history': typeof StudentDashboardFeesHistoryRoute
   '/student-dashboard/profile/edit': typeof StudentDashboardProfileEditRoute
-  '/student-dashboard/results/view': typeof StudentDashboardResultsViewRoute
   '/dashboard/admissions/$id': typeof AuthenticatedDashboardAdmissionsIdRoute
   '/dashboard/attendance/history': typeof AuthenticatedDashboardAttendanceHistoryRoute
   '/dashboard/attendance/mark': typeof AuthenticatedDashboardAttendanceMarkRoute
@@ -529,6 +528,7 @@ export interface FileRoutesByTo {
   '/dashboard/results/publish': typeof AuthenticatedDashboardResultsPublishRoute
   '/api/public/hooks/fee-reminders': typeof ApiPublicHooksFeeRemindersRoute
   '/student-dashboard/fees/receipt/$id': typeof StudentDashboardFeesReceiptIdRoute
+  '/student-dashboard/results/view/$id': typeof StudentDashboardResultsViewIdRoute
   '/dashboard/fees/receipt/$id': typeof AuthenticatedDashboardFeesReceiptIdRoute
 }
 export interface FileRoutesById {
@@ -581,7 +581,6 @@ export interface FileRoutesById {
   '/_authenticated/dashboard/students': typeof AuthenticatedDashboardStudentsRoute
   '/student-dashboard_/fees/history': typeof StudentDashboardFeesHistoryRoute
   '/student-dashboard_/profile/edit': typeof StudentDashboardProfileEditRoute
-  '/student-dashboard_/results/view/': typeof StudentDashboardResultsViewRoute
   '/_authenticated/dashboard/admissions/$id': typeof AuthenticatedDashboardAdmissionsIdRoute
   '/_authenticated/dashboard/attendance/history': typeof AuthenticatedDashboardAttendanceHistoryRoute
   '/_authenticated/dashboard/attendance/mark': typeof AuthenticatedDashboardAttendanceMarkRoute
@@ -594,6 +593,7 @@ export interface FileRoutesById {
   '/_authenticated/dashboard/results/publish': typeof AuthenticatedDashboardResultsPublishRoute
   '/api/public/hooks/fee-reminders': typeof ApiPublicHooksFeeRemindersRoute
   '/student-dashboard_/fees/receipt/$id': typeof StudentDashboardFeesReceiptIdRoute
+  '/student-dashboard_/results/view/$id': typeof StudentDashboardResultsViewIdRoute
   '/_authenticated/dashboard/fees/receipt/$id': typeof AuthenticatedDashboardFeesReceiptIdRoute
 }
 export interface FileRouteTypes {
@@ -646,7 +646,6 @@ export interface FileRouteTypes {
     | '/dashboard/students'
     | '/student-dashboard/fees/history'
     | '/student-dashboard/profile/edit'
-    | '/student-dashboard/results/view/'
     | '/dashboard/admissions/$id'
     | '/dashboard/attendance/history'
     | '/dashboard/attendance/mark'
@@ -659,6 +658,7 @@ export interface FileRouteTypes {
     | '/dashboard/results/publish'
     | '/api/public/hooks/fee-reminders'
     | '/student-dashboard/fees/receipt/$id'
+    | '/student-dashboard/results/view/$id'
     | '/dashboard/fees/receipt/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -709,7 +709,6 @@ export interface FileRouteTypes {
     | '/dashboard/students'
     | '/student-dashboard/fees/history'
     | '/student-dashboard/profile/edit'
-    | '/student-dashboard/results/view'
     | '/dashboard/admissions/$id'
     | '/dashboard/attendance/history'
     | '/dashboard/attendance/mark'
@@ -722,6 +721,7 @@ export interface FileRouteTypes {
     | '/dashboard/results/publish'
     | '/api/public/hooks/fee-reminders'
     | '/student-dashboard/fees/receipt/$id'
+    | '/student-dashboard/results/view/$id'
     | '/dashboard/fees/receipt/$id'
   id:
     | '__root__'
@@ -773,7 +773,6 @@ export interface FileRouteTypes {
     | '/_authenticated/dashboard/students'
     | '/student-dashboard_/fees/history'
     | '/student-dashboard_/profile/edit'
-    | '/student-dashboard_/results/view/'
     | '/_authenticated/dashboard/admissions/$id'
     | '/_authenticated/dashboard/attendance/history'
     | '/_authenticated/dashboard/attendance/mark'
@@ -786,6 +785,7 @@ export interface FileRouteTypes {
     | '/_authenticated/dashboard/results/publish'
     | '/api/public/hooks/fee-reminders'
     | '/student-dashboard_/fees/receipt/$id'
+    | '/student-dashboard_/results/view/$id'
     | '/_authenticated/dashboard/fees/receipt/$id'
   fileRoutesById: FileRoutesById
 }
@@ -1170,6 +1170,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardAdmissionsRouteImport
       parentRoute: typeof AuthenticatedDashboardRoute
     }
+    '/student-dashboard_/results/view/$id': {
+      id: '/student-dashboard_/results/view/$id'
+      path: '/view/$id'
+      fullPath: '/student-dashboard/results/view/$id'
+      preLoaderRoute: typeof StudentDashboardResultsViewIdRouteImport
+      parentRoute: typeof StudentDashboardResultsRoute
+    }
     '/student-dashboard_/fees/receipt/$id': {
       id: '/student-dashboard_/fees/receipt/$id'
       path: '/receipt/$id'
@@ -1253,13 +1260,6 @@ declare module '@tanstack/react-router' {
       fullPath: '/dashboard/admissions/$id'
       preLoaderRoute: typeof AuthenticatedDashboardAdmissionsIdRouteImport
       parentRoute: typeof AuthenticatedDashboardAdmissionsRoute
-    }
-    '/student-dashboard_/results/view/': {
-      id: '/student-dashboard_/results/view/'
-      path: '/view'
-      fullPath: '/student-dashboard/results/view/'
-      preLoaderRoute: typeof StudentDashboardResultsViewRouteImport
-      parentRoute: typeof StudentDashboardResultsRoute
     }
     '/_authenticated/dashboard/fees/receipt/$id': {
       id: '/_authenticated/dashboard/fees/receipt/$id'
@@ -1429,12 +1429,12 @@ const StudentDashboardProfileRouteWithChildren =
   )
 
 interface StudentDashboardResultsRouteChildren {
-  StudentDashboardResultsViewRoute: typeof StudentDashboardResultsViewRoute
+  StudentDashboardResultsViewIdRoute: typeof StudentDashboardResultsViewIdRoute
 }
 
 const StudentDashboardResultsRouteChildren: StudentDashboardResultsRouteChildren =
   {
-    StudentDashboardResultsViewRoute: StudentDashboardResultsViewRoute,
+    StudentDashboardResultsViewIdRoute: StudentDashboardResultsViewIdRoute,
   }
 
 const StudentDashboardResultsRouteWithChildren =

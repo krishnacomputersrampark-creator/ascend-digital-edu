@@ -5,7 +5,7 @@ import { Printer, ArrowLeft, QrCode, Loader2 } from "lucide-react";
 import { myResultDetail, EXAM_TYPE_LABEL } from "@/lib/results.functions";
 import logoAsset from "@/assets/logo.jpg.asset.json";
 
-export const Route = createFileRoute("/student-dashboard_/results/view/")({
+export const Route = createFileRoute("/student-dashboard_/results/view/$id")({
   head: () => ({ meta: [{ title: "Marksheet · KCC" }, { name: "robots", content: "noindex" }] }),
   component: MarksheetPage,
 });
