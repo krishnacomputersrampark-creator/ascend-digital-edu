@@ -1,7 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
-import { Search, Check, X, UserPlus, Download, Loader2 } from "lucide-react";
+import { Search, Check, X, UserPlus, Download, Loader2, Eye } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 import { DashboardShell } from "@/components/erp/DashboardShell";
 import {
   listAdmissions,
@@ -146,6 +147,9 @@ function AdmissionsPage() {
                   <td className="px-4 py-3 text-xs text-muted-foreground">{new Date(r.created_at as string).toLocaleDateString("en-IN")}</td>
                   <td className="px-4 py-3">
                     <div className="flex justify-end gap-1.5">
+                      <Link to="/dashboard/admissions/$id" params={{ id: r.id }} className="inline-flex items-center gap-1 rounded-lg border border-border bg-white px-2.5 py-1.5 text-xs font-semibold text-ink hover:bg-cyan-soft/50">
+                        <Eye className="h-3.5 w-3.5" /> View
+                      </Link>
                       {r.status === "pending" && (
                         <>
                           <button
