@@ -42,6 +42,7 @@ import { Route as StudentAttendanceRouteImport } from './routes/student.attendan
 import { Route as StudentAssignmentsRouteImport } from './routes/student.assignments'
 import { Route as StudentDashboardSecurityRouteImport } from './routes/student-dashboard_.security'
 import { Route as StudentDashboardProfileRouteImport } from './routes/student-dashboard_.profile'
+import { Route as StudentDashboardAttendanceRouteImport } from './routes/student-dashboard_.attendance'
 import { Route as SearchStudentRouteImport } from './routes/search.student'
 import { Route as SearchResultRouteImport } from './routes/search.result'
 import { Route as SearchCertificateRouteImport } from './routes/search.certificate'
@@ -49,7 +50,10 @@ import { Route as AdmissionSuccessRouteImport } from './routes/admission.success
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as StudentDashboardProfileEditRouteImport } from './routes/student-dashboard_.profile.edit'
 import { Route as AuthenticatedDashboardStudentsRouteImport } from './routes/_authenticated/dashboard.students'
+import { Route as AuthenticatedDashboardAttendanceRouteImport } from './routes/_authenticated/dashboard.attendance'
 import { Route as AuthenticatedDashboardAdmissionsRouteImport } from './routes/_authenticated/dashboard.admissions'
+import { Route as AuthenticatedDashboardAttendanceMarkRouteImport } from './routes/_authenticated/dashboard.attendance.mark'
+import { Route as AuthenticatedDashboardAttendanceHistoryRouteImport } from './routes/_authenticated/dashboard.attendance.history'
 import { Route as AuthenticatedDashboardAdmissionsIdRouteImport } from './routes/_authenticated/dashboard.admissions.$id'
 
 const VideosRoute = VideosRouteImport.update({
@@ -217,6 +221,12 @@ const StudentDashboardProfileRoute = StudentDashboardProfileRouteImport.update({
   path: '/student-dashboard/profile',
   getParentRoute: () => rootRouteImport,
 } as any)
+const StudentDashboardAttendanceRoute =
+  StudentDashboardAttendanceRouteImport.update({
+    id: '/student-dashboard_/attendance',
+    path: '/student-dashboard/attendance',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const SearchStudentRoute = SearchStudentRouteImport.update({
   id: '/search/student',
   path: '/search/student',
@@ -254,11 +264,29 @@ const AuthenticatedDashboardStudentsRoute =
     path: '/students',
     getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
+const AuthenticatedDashboardAttendanceRoute =
+  AuthenticatedDashboardAttendanceRouteImport.update({
+    id: '/attendance',
+    path: '/attendance',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
 const AuthenticatedDashboardAdmissionsRoute =
   AuthenticatedDashboardAdmissionsRouteImport.update({
     id: '/admissions',
     path: '/admissions',
     getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
+const AuthenticatedDashboardAttendanceMarkRoute =
+  AuthenticatedDashboardAttendanceMarkRouteImport.update({
+    id: '/mark',
+    path: '/mark',
+    getParentRoute: () => AuthenticatedDashboardAttendanceRoute,
+  } as any)
+const AuthenticatedDashboardAttendanceHistoryRoute =
+  AuthenticatedDashboardAttendanceHistoryRouteImport.update({
+    id: '/history',
+    path: '/history',
+    getParentRoute: () => AuthenticatedDashboardAttendanceRoute,
   } as any)
 const AuthenticatedDashboardAdmissionsIdRoute =
   AuthenticatedDashboardAdmissionsIdRouteImport.update({
@@ -294,6 +322,7 @@ export interface FileRoutesByFullPath {
   '/search/certificate': typeof SearchCertificateRoute
   '/search/result': typeof SearchResultRoute
   '/search/student': typeof SearchStudentRoute
+  '/student-dashboard/attendance': typeof StudentDashboardAttendanceRoute
   '/student-dashboard/profile': typeof StudentDashboardProfileRouteWithChildren
   '/student-dashboard/security': typeof StudentDashboardSecurityRoute
   '/student/assignments': typeof StudentAssignmentsRoute
@@ -306,9 +335,12 @@ export interface FileRoutesByFullPath {
   '/student/profile': typeof StudentProfileRoute
   '/student/results': typeof StudentResultsRoute
   '/dashboard/admissions': typeof AuthenticatedDashboardAdmissionsRouteWithChildren
+  '/dashboard/attendance': typeof AuthenticatedDashboardAttendanceRouteWithChildren
   '/dashboard/students': typeof AuthenticatedDashboardStudentsRoute
   '/student-dashboard/profile/edit': typeof StudentDashboardProfileEditRoute
   '/dashboard/admissions/$id': typeof AuthenticatedDashboardAdmissionsIdRoute
+  '/dashboard/attendance/history': typeof AuthenticatedDashboardAttendanceHistoryRoute
+  '/dashboard/attendance/mark': typeof AuthenticatedDashboardAttendanceMarkRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -337,6 +369,7 @@ export interface FileRoutesByTo {
   '/search/certificate': typeof SearchCertificateRoute
   '/search/result': typeof SearchResultRoute
   '/search/student': typeof SearchStudentRoute
+  '/student-dashboard/attendance': typeof StudentDashboardAttendanceRoute
   '/student-dashboard/profile': typeof StudentDashboardProfileRouteWithChildren
   '/student-dashboard/security': typeof StudentDashboardSecurityRoute
   '/student/assignments': typeof StudentAssignmentsRoute
@@ -349,9 +382,12 @@ export interface FileRoutesByTo {
   '/student/profile': typeof StudentProfileRoute
   '/student/results': typeof StudentResultsRoute
   '/dashboard/admissions': typeof AuthenticatedDashboardAdmissionsRouteWithChildren
+  '/dashboard/attendance': typeof AuthenticatedDashboardAttendanceRouteWithChildren
   '/dashboard/students': typeof AuthenticatedDashboardStudentsRoute
   '/student-dashboard/profile/edit': typeof StudentDashboardProfileEditRoute
   '/dashboard/admissions/$id': typeof AuthenticatedDashboardAdmissionsIdRoute
+  '/dashboard/attendance/history': typeof AuthenticatedDashboardAttendanceHistoryRoute
+  '/dashboard/attendance/mark': typeof AuthenticatedDashboardAttendanceMarkRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -382,6 +418,7 @@ export interface FileRoutesById {
   '/search/certificate': typeof SearchCertificateRoute
   '/search/result': typeof SearchResultRoute
   '/search/student': typeof SearchStudentRoute
+  '/student-dashboard_/attendance': typeof StudentDashboardAttendanceRoute
   '/student-dashboard_/profile': typeof StudentDashboardProfileRouteWithChildren
   '/student-dashboard_/security': typeof StudentDashboardSecurityRoute
   '/student/assignments': typeof StudentAssignmentsRoute
@@ -394,9 +431,12 @@ export interface FileRoutesById {
   '/student/profile': typeof StudentProfileRoute
   '/student/results': typeof StudentResultsRoute
   '/_authenticated/dashboard/admissions': typeof AuthenticatedDashboardAdmissionsRouteWithChildren
+  '/_authenticated/dashboard/attendance': typeof AuthenticatedDashboardAttendanceRouteWithChildren
   '/_authenticated/dashboard/students': typeof AuthenticatedDashboardStudentsRoute
   '/student-dashboard_/profile/edit': typeof StudentDashboardProfileEditRoute
   '/_authenticated/dashboard/admissions/$id': typeof AuthenticatedDashboardAdmissionsIdRoute
+  '/_authenticated/dashboard/attendance/history': typeof AuthenticatedDashboardAttendanceHistoryRoute
+  '/_authenticated/dashboard/attendance/mark': typeof AuthenticatedDashboardAttendanceMarkRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -427,6 +467,7 @@ export interface FileRouteTypes {
     | '/search/certificate'
     | '/search/result'
     | '/search/student'
+    | '/student-dashboard/attendance'
     | '/student-dashboard/profile'
     | '/student-dashboard/security'
     | '/student/assignments'
@@ -439,9 +480,12 @@ export interface FileRouteTypes {
     | '/student/profile'
     | '/student/results'
     | '/dashboard/admissions'
+    | '/dashboard/attendance'
     | '/dashboard/students'
     | '/student-dashboard/profile/edit'
     | '/dashboard/admissions/$id'
+    | '/dashboard/attendance/history'
+    | '/dashboard/attendance/mark'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -470,6 +514,7 @@ export interface FileRouteTypes {
     | '/search/certificate'
     | '/search/result'
     | '/search/student'
+    | '/student-dashboard/attendance'
     | '/student-dashboard/profile'
     | '/student-dashboard/security'
     | '/student/assignments'
@@ -482,9 +527,12 @@ export interface FileRouteTypes {
     | '/student/profile'
     | '/student/results'
     | '/dashboard/admissions'
+    | '/dashboard/attendance'
     | '/dashboard/students'
     | '/student-dashboard/profile/edit'
     | '/dashboard/admissions/$id'
+    | '/dashboard/attendance/history'
+    | '/dashboard/attendance/mark'
   id:
     | '__root__'
     | '/'
@@ -514,6 +562,7 @@ export interface FileRouteTypes {
     | '/search/certificate'
     | '/search/result'
     | '/search/student'
+    | '/student-dashboard_/attendance'
     | '/student-dashboard_/profile'
     | '/student-dashboard_/security'
     | '/student/assignments'
@@ -526,9 +575,12 @@ export interface FileRouteTypes {
     | '/student/profile'
     | '/student/results'
     | '/_authenticated/dashboard/admissions'
+    | '/_authenticated/dashboard/attendance'
     | '/_authenticated/dashboard/students'
     | '/student-dashboard_/profile/edit'
     | '/_authenticated/dashboard/admissions/$id'
+    | '/_authenticated/dashboard/attendance/history'
+    | '/_authenticated/dashboard/attendance/mark'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -557,6 +609,7 @@ export interface RootRouteChildren {
   SearchCertificateRoute: typeof SearchCertificateRoute
   SearchResultRoute: typeof SearchResultRoute
   SearchStudentRoute: typeof SearchStudentRoute
+  StudentDashboardAttendanceRoute: typeof StudentDashboardAttendanceRoute
   StudentDashboardProfileRoute: typeof StudentDashboardProfileRouteWithChildren
   StudentDashboardSecurityRoute: typeof StudentDashboardSecurityRoute
   StudentAssignmentsRoute: typeof StudentAssignmentsRoute
@@ -803,6 +856,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof StudentDashboardProfileRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/student-dashboard_/attendance': {
+      id: '/student-dashboard_/attendance'
+      path: '/student-dashboard/attendance'
+      fullPath: '/student-dashboard/attendance'
+      preLoaderRoute: typeof StudentDashboardAttendanceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/search/student': {
       id: '/search/student'
       path: '/search/student'
@@ -852,12 +912,33 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardStudentsRouteImport
       parentRoute: typeof AuthenticatedDashboardRoute
     }
+    '/_authenticated/dashboard/attendance': {
+      id: '/_authenticated/dashboard/attendance'
+      path: '/attendance'
+      fullPath: '/dashboard/attendance'
+      preLoaderRoute: typeof AuthenticatedDashboardAttendanceRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
     '/_authenticated/dashboard/admissions': {
       id: '/_authenticated/dashboard/admissions'
       path: '/admissions'
       fullPath: '/dashboard/admissions'
       preLoaderRoute: typeof AuthenticatedDashboardAdmissionsRouteImport
       parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/attendance/mark': {
+      id: '/_authenticated/dashboard/attendance/mark'
+      path: '/mark'
+      fullPath: '/dashboard/attendance/mark'
+      preLoaderRoute: typeof AuthenticatedDashboardAttendanceMarkRouteImport
+      parentRoute: typeof AuthenticatedDashboardAttendanceRoute
+    }
+    '/_authenticated/dashboard/attendance/history': {
+      id: '/_authenticated/dashboard/attendance/history'
+      path: '/history'
+      fullPath: '/dashboard/attendance/history'
+      preLoaderRoute: typeof AuthenticatedDashboardAttendanceHistoryRouteImport
+      parentRoute: typeof AuthenticatedDashboardAttendanceRoute
     }
     '/_authenticated/dashboard/admissions/$id': {
       id: '/_authenticated/dashboard/admissions/$id'
@@ -884,8 +965,27 @@ const AuthenticatedDashboardAdmissionsRouteWithChildren =
     AuthenticatedDashboardAdmissionsRouteChildren,
   )
 
+interface AuthenticatedDashboardAttendanceRouteChildren {
+  AuthenticatedDashboardAttendanceHistoryRoute: typeof AuthenticatedDashboardAttendanceHistoryRoute
+  AuthenticatedDashboardAttendanceMarkRoute: typeof AuthenticatedDashboardAttendanceMarkRoute
+}
+
+const AuthenticatedDashboardAttendanceRouteChildren: AuthenticatedDashboardAttendanceRouteChildren =
+  {
+    AuthenticatedDashboardAttendanceHistoryRoute:
+      AuthenticatedDashboardAttendanceHistoryRoute,
+    AuthenticatedDashboardAttendanceMarkRoute:
+      AuthenticatedDashboardAttendanceMarkRoute,
+  }
+
+const AuthenticatedDashboardAttendanceRouteWithChildren =
+  AuthenticatedDashboardAttendanceRoute._addFileChildren(
+    AuthenticatedDashboardAttendanceRouteChildren,
+  )
+
 interface AuthenticatedDashboardRouteChildren {
   AuthenticatedDashboardAdmissionsRoute: typeof AuthenticatedDashboardAdmissionsRouteWithChildren
+  AuthenticatedDashboardAttendanceRoute: typeof AuthenticatedDashboardAttendanceRouteWithChildren
   AuthenticatedDashboardStudentsRoute: typeof AuthenticatedDashboardStudentsRoute
 }
 
@@ -893,6 +993,8 @@ const AuthenticatedDashboardRouteChildren: AuthenticatedDashboardRouteChildren =
   {
     AuthenticatedDashboardAdmissionsRoute:
       AuthenticatedDashboardAdmissionsRouteWithChildren,
+    AuthenticatedDashboardAttendanceRoute:
+      AuthenticatedDashboardAttendanceRouteWithChildren,
     AuthenticatedDashboardStudentsRoute: AuthenticatedDashboardStudentsRoute,
   }
 
@@ -964,6 +1066,7 @@ const rootRouteChildren: RootRouteChildren = {
   SearchCertificateRoute: SearchCertificateRoute,
   SearchResultRoute: SearchResultRoute,
   SearchStudentRoute: SearchStudentRoute,
+  StudentDashboardAttendanceRoute: StudentDashboardAttendanceRoute,
   StudentDashboardProfileRoute: StudentDashboardProfileRouteWithChildren,
   StudentDashboardSecurityRoute: StudentDashboardSecurityRoute,
   StudentAssignmentsRoute: StudentAssignmentsRoute,
