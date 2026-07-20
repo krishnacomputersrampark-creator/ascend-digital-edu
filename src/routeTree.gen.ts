@@ -16,6 +16,7 @@ import { Route as StudentZoneRouteImport } from './routes/student-zone'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SetupRouteImport } from './routes/setup'
 import { Route as NoticeRouteImport } from './routes/notice'
+import { Route as LoginRouteImport } from './routes/login'
 import { Route as GalleryRouteImport } from './routes/gallery'
 import { Route as FranchiseRouteImport } from './routes/franchise'
 import { Route as FaqRouteImport } from './routes/faq'
@@ -76,6 +77,11 @@ const SetupRoute = SetupRouteImport.update({
 const NoticeRoute = NoticeRouteImport.update({
   id: '/notice',
   path: '/notice',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
 const GalleryRoute = GalleryRouteImport.update({
@@ -223,6 +229,7 @@ export interface FileRoutesByFullPath {
   '/faq': typeof FaqRoute
   '/franchise': typeof FranchiseRoute
   '/gallery': typeof GalleryRoute
+  '/login': typeof LoginRoute
   '/notice': typeof NoticeRoute
   '/setup': typeof SetupRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -257,6 +264,7 @@ export interface FileRoutesByTo {
   '/faq': typeof FaqRoute
   '/franchise': typeof FranchiseRoute
   '/gallery': typeof GalleryRoute
+  '/login': typeof LoginRoute
   '/notice': typeof NoticeRoute
   '/setup': typeof SetupRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -293,6 +301,7 @@ export interface FileRoutesById {
   '/faq': typeof FaqRoute
   '/franchise': typeof FranchiseRoute
   '/gallery': typeof GalleryRoute
+  '/login': typeof LoginRoute
   '/notice': typeof NoticeRoute
   '/setup': typeof SetupRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -329,6 +338,7 @@ export interface FileRouteTypes {
     | '/faq'
     | '/franchise'
     | '/gallery'
+    | '/login'
     | '/notice'
     | '/setup'
     | '/sitemap.xml'
@@ -363,6 +373,7 @@ export interface FileRouteTypes {
     | '/faq'
     | '/franchise'
     | '/gallery'
+    | '/login'
     | '/notice'
     | '/setup'
     | '/sitemap.xml'
@@ -398,6 +409,7 @@ export interface FileRouteTypes {
     | '/faq'
     | '/franchise'
     | '/gallery'
+    | '/login'
     | '/notice'
     | '/setup'
     | '/sitemap.xml'
@@ -434,6 +446,7 @@ export interface RootRouteChildren {
   FaqRoute: typeof FaqRoute
   FranchiseRoute: typeof FranchiseRoute
   GalleryRoute: typeof GalleryRoute
+  LoginRoute: typeof LoginRoute
   NoticeRoute: typeof NoticeRoute
   SetupRoute: typeof SetupRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
@@ -502,6 +515,13 @@ declare module '@tanstack/react-router' {
       path: '/notice'
       fullPath: '/notice'
       preLoaderRoute: typeof NoticeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/gallery': {
@@ -731,6 +751,7 @@ const rootRouteChildren: RootRouteChildren = {
   FaqRoute: FaqRoute,
   FranchiseRoute: FranchiseRoute,
   GalleryRoute: GalleryRoute,
+  LoginRoute: LoginRoute,
   NoticeRoute: NoticeRoute,
   SetupRoute: SetupRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
@@ -752,13 +773,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
