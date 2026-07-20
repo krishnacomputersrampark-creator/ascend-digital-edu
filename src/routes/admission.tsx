@@ -139,8 +139,8 @@ function AdmissionPage() {
       const path = `admissions/${draftId.current}/${key}-${Date.now()}.${ext}`;
       const { error } = await supabase.storage.from("documents").upload(path, file, { upsert: true, contentType: file.type });
       if (error) throw error;
-      const { data: pub } = supabase.storage.from("documents").getPublicUrl(path);
-      setUploads(prev => ({ ...prev, [key]: { url: pub.publicUrl, name: file.name } }));
+      // Store the storage path (private bucket → admin generates signed URL on view).
+      setUploads(prev => ({ ...prev, [key]: { url: path, name: file.name } }));
       toast.success(`${file.name} uploaded`);
     } catch (e: any) {
       toast.error(e?.message ?? "Upload failed");

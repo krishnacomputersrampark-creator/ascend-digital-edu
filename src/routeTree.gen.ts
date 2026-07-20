@@ -47,6 +47,7 @@ import { Route as AdmissionSuccessRouteImport } from './routes/admission.success
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedDashboardStudentsRouteImport } from './routes/_authenticated/dashboard.students'
 import { Route as AuthenticatedDashboardAdmissionsRouteImport } from './routes/_authenticated/dashboard.admissions'
+import { Route as AuthenticatedDashboardAdmissionsIdRouteImport } from './routes/_authenticated/dashboard.admissions.$id'
 
 const VideosRoute = VideosRouteImport.update({
   id: '/videos',
@@ -239,6 +240,12 @@ const AuthenticatedDashboardAdmissionsRoute =
     path: '/admissions',
     getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
+const AuthenticatedDashboardAdmissionsIdRoute =
+  AuthenticatedDashboardAdmissionsIdRouteImport.update({
+    id: '/$id',
+    path: '/$id',
+    getParentRoute: () => AuthenticatedDashboardAdmissionsRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -276,8 +283,9 @@ export interface FileRoutesByFullPath {
   '/student/online-test': typeof StudentOnlineTestRoute
   '/student/profile': typeof StudentProfileRoute
   '/student/results': typeof StudentResultsRoute
-  '/dashboard/admissions': typeof AuthenticatedDashboardAdmissionsRoute
+  '/dashboard/admissions': typeof AuthenticatedDashboardAdmissionsRouteWithChildren
   '/dashboard/students': typeof AuthenticatedDashboardStudentsRoute
+  '/dashboard/admissions/$id': typeof AuthenticatedDashboardAdmissionsIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -315,8 +323,9 @@ export interface FileRoutesByTo {
   '/student/online-test': typeof StudentOnlineTestRoute
   '/student/profile': typeof StudentProfileRoute
   '/student/results': typeof StudentResultsRoute
-  '/dashboard/admissions': typeof AuthenticatedDashboardAdmissionsRoute
+  '/dashboard/admissions': typeof AuthenticatedDashboardAdmissionsRouteWithChildren
   '/dashboard/students': typeof AuthenticatedDashboardStudentsRoute
+  '/dashboard/admissions/$id': typeof AuthenticatedDashboardAdmissionsIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -356,8 +365,9 @@ export interface FileRoutesById {
   '/student/online-test': typeof StudentOnlineTestRoute
   '/student/profile': typeof StudentProfileRoute
   '/student/results': typeof StudentResultsRoute
-  '/_authenticated/dashboard/admissions': typeof AuthenticatedDashboardAdmissionsRoute
+  '/_authenticated/dashboard/admissions': typeof AuthenticatedDashboardAdmissionsRouteWithChildren
   '/_authenticated/dashboard/students': typeof AuthenticatedDashboardStudentsRoute
+  '/_authenticated/dashboard/admissions/$id': typeof AuthenticatedDashboardAdmissionsIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -399,6 +409,7 @@ export interface FileRouteTypes {
     | '/student/results'
     | '/dashboard/admissions'
     | '/dashboard/students'
+    | '/dashboard/admissions/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -438,6 +449,7 @@ export interface FileRouteTypes {
     | '/student/results'
     | '/dashboard/admissions'
     | '/dashboard/students'
+    | '/dashboard/admissions/$id'
   id:
     | '__root__'
     | '/'
@@ -478,6 +490,7 @@ export interface FileRouteTypes {
     | '/student/results'
     | '/_authenticated/dashboard/admissions'
     | '/_authenticated/dashboard/students'
+    | '/_authenticated/dashboard/admissions/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -785,18 +798,40 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardAdmissionsRouteImport
       parentRoute: typeof AuthenticatedDashboardRoute
     }
+    '/_authenticated/dashboard/admissions/$id': {
+      id: '/_authenticated/dashboard/admissions/$id'
+      path: '/$id'
+      fullPath: '/dashboard/admissions/$id'
+      preLoaderRoute: typeof AuthenticatedDashboardAdmissionsIdRouteImport
+      parentRoute: typeof AuthenticatedDashboardAdmissionsRoute
+    }
   }
 }
 
+interface AuthenticatedDashboardAdmissionsRouteChildren {
+  AuthenticatedDashboardAdmissionsIdRoute: typeof AuthenticatedDashboardAdmissionsIdRoute
+}
+
+const AuthenticatedDashboardAdmissionsRouteChildren: AuthenticatedDashboardAdmissionsRouteChildren =
+  {
+    AuthenticatedDashboardAdmissionsIdRoute:
+      AuthenticatedDashboardAdmissionsIdRoute,
+  }
+
+const AuthenticatedDashboardAdmissionsRouteWithChildren =
+  AuthenticatedDashboardAdmissionsRoute._addFileChildren(
+    AuthenticatedDashboardAdmissionsRouteChildren,
+  )
+
 interface AuthenticatedDashboardRouteChildren {
-  AuthenticatedDashboardAdmissionsRoute: typeof AuthenticatedDashboardAdmissionsRoute
+  AuthenticatedDashboardAdmissionsRoute: typeof AuthenticatedDashboardAdmissionsRouteWithChildren
   AuthenticatedDashboardStudentsRoute: typeof AuthenticatedDashboardStudentsRoute
 }
 
 const AuthenticatedDashboardRouteChildren: AuthenticatedDashboardRouteChildren =
   {
     AuthenticatedDashboardAdmissionsRoute:
-      AuthenticatedDashboardAdmissionsRoute,
+      AuthenticatedDashboardAdmissionsRouteWithChildren,
     AuthenticatedDashboardStudentsRoute: AuthenticatedDashboardStudentsRoute,
   }
 
