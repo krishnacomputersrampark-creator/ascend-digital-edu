@@ -166,6 +166,83 @@ export type Database = {
           },
         ]
       }
+      attendance: {
+        Row: {
+          attendance_date: string
+          batch_id: string | null
+          branch_id: string | null
+          check_in_time: string | null
+          check_out_time: string | null
+          course_id: string | null
+          created_at: string
+          id: string
+          marked_by: string | null
+          remarks: string | null
+          status: Database["public"]["Enums"]["attendance_status"]
+          student_id: string
+          updated_at: string
+        }
+        Insert: {
+          attendance_date: string
+          batch_id?: string | null
+          branch_id?: string | null
+          check_in_time?: string | null
+          check_out_time?: string | null
+          course_id?: string | null
+          created_at?: string
+          id?: string
+          marked_by?: string | null
+          remarks?: string | null
+          status?: Database["public"]["Enums"]["attendance_status"]
+          student_id: string
+          updated_at?: string
+        }
+        Update: {
+          attendance_date?: string
+          batch_id?: string | null
+          branch_id?: string | null
+          check_in_time?: string | null
+          check_out_time?: string | null
+          course_id?: string | null
+          created_at?: string
+          id?: string
+          marked_by?: string | null
+          remarks?: string | null
+          status?: Database["public"]["Enums"]["attendance_status"]
+          student_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "attendance_batch_id_fkey"
+            columns: ["batch_id"]
+            isOneToOne: false
+            referencedRelation: "batches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "attendance_branch_id_fkey"
+            columns: ["branch_id"]
+            isOneToOne: false
+            referencedRelation: "branches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "attendance_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "attendance_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "students"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       audit_logs: {
         Row: {
           action: string
@@ -833,6 +910,13 @@ export type Database = {
         | "faculty"
         | "student"
         | "guest"
+      attendance_status:
+        | "present"
+        | "absent"
+        | "late"
+        | "half_day"
+        | "leave"
+        | "holiday"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -967,6 +1051,14 @@ export const Constants = {
         "faculty",
         "student",
         "guest",
+      ],
+      attendance_status: [
+        "present",
+        "absent",
+        "late",
+        "half_day",
+        "leave",
+        "holiday",
       ],
     },
   },
