@@ -11,7 +11,7 @@ const SIDEBAR = [
   { icon: LayoutDashboard, label: "Dashboard", to: "/student-dashboard" },
   { icon: UserIcon, label: "My Profile", to: "/student-dashboard/profile" },
   { icon: ShieldCheck, label: "Security", to: "/student-dashboard/security" },
-  { icon: CalendarCheck, label: "Attendance", to: "/student/attendance" },
+  { icon: CalendarCheck, label: "Attendance", to: "/student-dashboard/attendance" },
   { icon: GraduationCap, label: "Results", to: "/student/results" },
   { icon: Download, label: "Downloads", to: "/downloads" },
   { icon: FileBadge, label: "Certificates", to: "/student/certificates" },
