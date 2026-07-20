@@ -239,38 +239,38 @@ function AdmissionPage() {
               <motion.div key={step} initial={{ opacity: 0, x: 12 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -12 }}>
                 {step === 0 && (
                   <div className="grid gap-4 sm:grid-cols-2">
-                    <Field label="First Name *" value={form.first_name} onChange={v => set("first_name", v)} />
-                    <Field label="Last Name *" value={form.last_name} onChange={v => set("last_name", v)} />
-                    <SelectField label="Gender" value={form.gender} onChange={v => set("gender", v)} options={["", "Male", "Female", "Other"]} />
-                    <Field label="Date of Birth" type="date" value={form.dob} onChange={v => set("dob", v)} />
-                    <Field label="Father's Name *" value={form.father_name} onChange={v => set("father_name", v)} />
-                    <Field label="Mother's Name" value={form.mother_name} onChange={v => set("mother_name", v)} />
-                    <Field label="Mobile Number *" type="tel" inputMode="numeric" maxLength={10} value={form.mobile} onChange={v => set("mobile", v)} />
-                    <Field label="Alternate Mobile" type="tel" inputMode="numeric" maxLength={10} value={form.alternate_mobile} onChange={v => set("alternate_mobile", v)} />
-                    <Field label="Email" type="email" value={form.email} onChange={v => set("email", v)} />
-                    <Field label="Aadhaar Number" inputMode="numeric" maxLength={12} value={form.aadhaar_number} onChange={v => set("aadhaar_number", v)} />
+                    <Field label="First Name *" value={form.first_name} onChange={(v: string) => set("first_name", v)} />
+                    <Field label="Last Name *" value={form.last_name} onChange={(v: string) => set("last_name", v)} />
+                    <SelectField label="Gender" value={form.gender} onChange={(v: string) => set("gender", v)} options={["", "Male", "Female", "Other"]} />
+                    <Field label="Date of Birth" type="date" value={form.dob} onChange={(v: string) => set("dob", v)} />
+                    <Field label="Father's Name *" value={form.father_name} onChange={(v: string) => set("father_name", v)} />
+                    <Field label="Mother's Name" value={form.mother_name} onChange={(v: string) => set("mother_name", v)} />
+                    <Field label="Mobile Number *" type="tel" inputMode="numeric" maxLength={10} value={form.mobile} onChange={(v: string) => set("mobile", v)} />
+                    <Field label="Alternate Mobile" type="tel" inputMode="numeric" maxLength={10} value={form.alternate_mobile} onChange={(v: string) => set("alternate_mobile", v)} />
+                    <Field label="Email" type="email" value={form.email} onChange={(v: string) => set("email", v)} />
+                    <Field label="Aadhaar Number" inputMode="numeric" maxLength={12} value={form.aadhaar_number} onChange={(v: string) => set("aadhaar_number", v)} />
                   </div>
                 )}
 
                 {step === 1 && (
                   <div className="grid gap-4 sm:grid-cols-2">
-                    <Field label="Address *" className="sm:col-span-2" value={form.address} onChange={v => set("address", v)} />
-                    <Field label="City *" value={form.city} onChange={v => set("city", v)} />
-                    <Field label="State" value={form.state} onChange={v => set("state", v)} />
-                    <Field label="Pincode" inputMode="numeric" maxLength={6} value={form.pincode} onChange={v => set("pincode", v)} />
-                    <SelectField label="Qualification" value={form.qualification} onChange={v => set("qualification", v)} options={["", "10th", "12th", "Graduate", "Post Graduate"]} />
+                    <Field label="Address *" className="sm:col-span-2" value={form.address} onChange={(v: string) => set("address", v)} />
+                    <Field label="City *" value={form.city} onChange={(v: string) => set("city", v)} />
+                    <Field label="State" value={form.state} onChange={(v: string) => set("state", v)} />
+                    <Field label="Pincode" inputMode="numeric" maxLength={6} value={form.pincode} onChange={(v: string) => set("pincode", v)} />
+                    <SelectField label="Qualification" value={form.qualification} onChange={(v: string) => set("qualification", v)} options={["", "10th", "12th", "Graduate", "Post Graduate"]} />
                   </div>
                 )}
 
                 {step === 2 && (
                   <div className="grid gap-4 sm:grid-cols-2">
-                    <SelectField label="Select Branch *" value={form.branch_id} onChange={v => set("branch_id", v)}
+                    <SelectField label="Select Branch *" value={form.branch_id} onChange={(v: string) => set("branch_id", v)}
                       options={[{ value: "", label: "— Select a branch —" }, ...branches.map(b => ({ value: b.id, label: `${b.name}${b.city ? ` · ${b.city}` : ""}` }))]} />
-                    <SelectField label="Select Course *" value={form.course_id} onChange={v => set("course_id", v)}
+                    <SelectField label="Select Course *" value={form.course_id} onChange={(v: string) => set("course_id", v)}
                       options={[{ value: "", label: "— Select a course —" }, ...courses.map(c => ({ value: c.id, label: `${c.code} · ${c.name}` }))]} />
-                    <SelectField label="Select Batch" value={form.batch_id} onChange={v => set("batch_id", v)}
+                    <SelectField label="Select Batch" value={form.batch_id} onChange={(v: string) => set("batch_id", v)}
                       options={[{ value: "", label: batches.length ? "— Select a batch —" : "No active batches" }, ...batches.map(b => ({ value: b.id, label: `${b.name}${b.timing ? ` · ${b.timing}` : ""}` }))]} />
-                    <SelectField label="Preferred Timing" value={form.preferred_timing} onChange={v => set("preferred_timing", v)} options={["", "Morning", "Afternoon", "Evening", "Weekend"]} />
+                    <SelectField label="Preferred Timing" value={form.preferred_timing} onChange={(v: string) => set("preferred_timing", v)} options={["", "Morning", "Afternoon", "Evening", "Weekend"]} />
                   </div>
                 )}
 
