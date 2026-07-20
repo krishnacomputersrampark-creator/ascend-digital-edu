@@ -41,12 +41,12 @@ const admissionSchema = z.object({
   pincode: z.string().max(10).optional().or(z.literal("")),
   batch_id: z.string().uuid().optional().or(z.literal("")),
   preferred_timing: z.string().max(60).optional().or(z.literal("")),
-  photo_url: z.string().url().optional().or(z.literal("")),
-  signature_url: z.string().url().optional().or(z.literal("")),
-  aadhaar_front_url: z.string().url().optional().or(z.literal("")),
-  aadhaar_back_url: z.string().url().optional().or(z.literal("")),
-  qualification_url: z.string().url().optional().or(z.literal("")),
-  passport_photo_url: z.string().url().optional().or(z.literal("")),
+  photo_url: z.string().max(500).optional().or(z.literal("")),
+  signature_url: z.string().max(500).optional().or(z.literal("")),
+  aadhaar_front_url: z.string().max(500).optional().or(z.literal("")),
+  aadhaar_back_url: z.string().max(500).optional().or(z.literal("")),
+  qualification_url: z.string().max(500).optional().or(z.literal("")),
+  passport_photo_url: z.string().max(500).optional().or(z.literal("")),
 });
 
 export const submitAdmission = createServerFn({ method: "POST" })
