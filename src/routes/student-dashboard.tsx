@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { getStudentByUserId, type StudentRecord } from "@/lib/students.repo";
 
 export const Route = createFileRoute("/student-dashboard")({
   head: () => ({
@@ -50,7 +51,25 @@ function StudentDashboardPage() {
   const navigate = useNavigate();
   const [session, setSession] = useState<Session | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
+  const [student, setStudent] = useState<StudentRecord | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const loadData = async (uid: string) => {
+    setError(null);
+    try {
+      const [{ data: p }, s] = await Promise.all([
+        supabase.from("profiles").select("full_name, email, photo_url, student_id").eq("id", uid).maybeSingle(),
+        getStudentByUserId(uid).catch(() => null),
+      ]);
+      setProfile(p ?? null);
+      setStudent(s);
+    } catch (e: any) {
+      setError(e?.message ?? "Failed to load your dashboard.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     let mounted = true;
@@ -66,14 +85,8 @@ function StudentDashboardPage() {
         return;
       }
       setSession(data.session);
-      const { data: p } = await supabase
-        .from("profiles")
-        .select("full_name, email, photo_url, student_id")
-        .eq("id", data.session.user.id)
-        .maybeSingle();
       if (!mounted) return;
-      setProfile(p ?? null);
-      setLoading(false);
+      await loadData(data.session.user.id);
     });
     return () => { mounted = false; sub.data.subscription.unsubscribe(); };
   }, [navigate]);
@@ -92,8 +105,9 @@ function StudentDashboardPage() {
     );
   }
 
-  const name = profile?.full_name ?? session.user.email?.split("@")[0] ?? "Student";
+  const name = student?.full_name ?? profile?.full_name ?? session.user.email?.split("@")[0] ?? "Student";
   const initials = name.split(" ").map((n) => n[0]).slice(0, 2).join("").toUpperCase();
+  const isDemo = !student;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-cyan-soft/40 via-white to-white">
@@ -163,15 +177,15 @@ function StudentDashboardPage() {
                   <div>
                     <p className="text-xs font-semibold uppercase tracking-wider text-cyan-soft">Welcome Student</p>
                     <h1 className="mt-1 text-2xl font-extrabold sm:text-3xl">{name}</h1>
-                    <p className="mt-1 text-sm text-white/80">{profile?.email ?? session.user.email}</p>
+                    <p className="mt-1 text-sm text-white/80">{student?.email ?? profile?.email ?? session.user.email}</p>
                   </div>
                 </div>
                 <dl className="grid grid-cols-2 gap-3 sm:grid-cols-4">
                   {[
-                    ["Course", "ADCA"],
-                    ["Student ID", profile?.student_id ?? "Demo"],
-                    ["Branch", "Karawal Nagar"],
-                    ["Batch", "Morning 2024"],
+                    ["Course", student?.course?.code ?? "—"],
+                    ["Student ID", student?.student_code ?? profile?.student_id ?? "—"],
+                    ["Branch", student?.branch?.name ?? "—"],
+                    ["Batch", student?.batch?.name ?? "—"],
                   ].map(([k, v]) => (
                     <div key={k} className="rounded-xl bg-white/10 p-3 backdrop-blur">
                       <dt className="text-[10px] font-semibold uppercase text-cyan-soft">{k}</dt>
@@ -180,7 +194,16 @@ function StudentDashboardPage() {
                   ))}
                 </dl>
               </div>
-              <p className="relative mt-4 text-[11px] uppercase tracking-wider text-white/60">Demo data · will sync from Student Management</p>
+              {error ? (
+                <div className="relative mt-4 flex items-center justify-between rounded-xl bg-red-500/20 px-4 py-2 text-[12px] text-white">
+                  <span>Couldn't load your record: {error}</span>
+                  <button onClick={() => session && loadData(session.user.id)} className="rounded-full bg-white/20 px-3 py-1 text-xs font-semibold hover:bg-white/30">Retry</button>
+                </div>
+              ) : isDemo ? (
+                <p className="relative mt-4 text-[11px] uppercase tracking-wider text-white/60">Demo placeholder · no student record linked to this account yet</p>
+              ) : (
+                <p className="relative mt-4 text-[11px] uppercase tracking-wider text-white/60">Enrollment: {student?.enrollment_no} · Joined {new Date(student!.joined_at).toLocaleDateString()}</p>
+              )}
             </div>
           </section>
 
