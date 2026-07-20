@@ -15,7 +15,7 @@ const SIDEBAR = [
   { icon: GraduationCap, label: "Results", to: "/student/results" },
   { icon: Download, label: "Downloads", to: "/downloads" },
   { icon: FileBadge, label: "Certificates", to: "/student/certificates" },
-  { icon: Wallet, label: "Fees", to: "/student/fees" },
+  { icon: Wallet, label: "Fees", to: "/student-dashboard/fees" },
   { icon: ClipboardList, label: "Assignments", to: "/student/assignments" },
   { icon: Bell, label: "Notifications", to: "/student/notifications" },
 ] as const;

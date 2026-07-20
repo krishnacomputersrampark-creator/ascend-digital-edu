@@ -448,6 +448,143 @@ export type Database = {
         }
         Relationships: []
       }
+      fee_installments: {
+        Row: {
+          amount: number
+          collected_by: string | null
+          created_at: string
+          discount_amount: number
+          due_date: string | null
+          fine_amount: number
+          id: string
+          installment_number: number
+          paid_amount: number
+          payment_date: string | null
+          payment_mode: Database["public"]["Enums"]["fee_payment_mode"] | null
+          receipt_number: string | null
+          remarks: string | null
+          status: Database["public"]["Enums"]["fee_payment_status"]
+          student_fee_id: string
+          transaction_reference: string | null
+          updated_at: string
+        }
+        Insert: {
+          amount?: number
+          collected_by?: string | null
+          created_at?: string
+          discount_amount?: number
+          due_date?: string | null
+          fine_amount?: number
+          id?: string
+          installment_number?: number
+          paid_amount?: number
+          payment_date?: string | null
+          payment_mode?: Database["public"]["Enums"]["fee_payment_mode"] | null
+          receipt_number?: string | null
+          remarks?: string | null
+          status?: Database["public"]["Enums"]["fee_payment_status"]
+          student_fee_id: string
+          transaction_reference?: string | null
+          updated_at?: string
+        }
+        Update: {
+          amount?: number
+          collected_by?: string | null
+          created_at?: string
+          discount_amount?: number
+          due_date?: string | null
+          fine_amount?: number
+          id?: string
+          installment_number?: number
+          paid_amount?: number
+          payment_date?: string | null
+          payment_mode?: Database["public"]["Enums"]["fee_payment_mode"] | null
+          receipt_number?: string | null
+          remarks?: string | null
+          status?: Database["public"]["Enums"]["fee_payment_status"]
+          student_fee_id?: string
+          transaction_reference?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fee_installments_student_fee_id_fkey"
+            columns: ["student_fee_id"]
+            isOneToOne: false
+            referencedRelation: "student_fees"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      fee_structure: {
+        Row: {
+          admission_fee: number
+          branch_id: string | null
+          certificate_fee: number
+          course_id: string | null
+          created_at: string
+          created_by: string | null
+          discount_allowed: number
+          exam_fee: number
+          id: string
+          name: string | null
+          registration_fee: number
+          status: string
+          study_material_fee: number
+          total_fee: number
+          updated_at: string
+        }
+        Insert: {
+          admission_fee?: number
+          branch_id?: string | null
+          certificate_fee?: number
+          course_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          discount_allowed?: number
+          exam_fee?: number
+          id?: string
+          name?: string | null
+          registration_fee?: number
+          status?: string
+          study_material_fee?: number
+          total_fee?: number
+          updated_at?: string
+        }
+        Update: {
+          admission_fee?: number
+          branch_id?: string | null
+          certificate_fee?: number
+          course_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          discount_allowed?: number
+          exam_fee?: number
+          id?: string
+          name?: string | null
+          registration_fee?: number
+          status?: string
+          study_material_fee?: number
+          total_fee?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fee_structure_branch_id_fkey"
+            columns: ["branch_id"]
+            isOneToOne: false
+            referencedRelation: "branches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fee_structure_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       notification_reads: {
         Row: {
           notification_id: string
@@ -652,6 +789,69 @@ export type Database = {
           },
         ]
       }
+      student_fees: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          discount_amount: number
+          due_amount: number
+          fee_structure_id: string | null
+          final_fee: number
+          id: string
+          notes: string | null
+          paid_amount: number
+          payment_status: Database["public"]["Enums"]["fee_payment_status"]
+          student_id: string
+          total_fee: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          discount_amount?: number
+          due_amount?: number
+          fee_structure_id?: string | null
+          final_fee?: number
+          id?: string
+          notes?: string | null
+          paid_amount?: number
+          payment_status?: Database["public"]["Enums"]["fee_payment_status"]
+          student_id: string
+          total_fee?: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          discount_amount?: number
+          due_amount?: number
+          fee_structure_id?: string | null
+          final_fee?: number
+          id?: string
+          notes?: string | null
+          paid_amount?: number
+          payment_status?: Database["public"]["Enums"]["fee_payment_status"]
+          student_id?: string
+          total_fee?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "student_fees_fee_structure_id_fkey"
+            columns: ["fee_structure_id"]
+            isOneToOne: false
+            referencedRelation: "fee_structure"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "student_fees_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: true
+            referencedRelation: "students"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       students: {
         Row: {
           aadhaar_number: string | null
@@ -840,7 +1040,9 @@ export type Database = {
       next_admission_no: { Args: never; Returns: string }
       next_application_no: { Args: never; Returns: string }
       next_enrollment_no: { Args: never; Returns: string }
+      next_receipt_no: { Args: never; Returns: string }
       next_student_code: { Args: never; Returns: string }
+      recalc_student_fee: { Args: { _sf: string }; Returns: undefined }
       show_limit: { Args: never; Returns: number }
       show_trgm: { Args: { "": string }; Returns: string[] }
       update_my_student_profile: {
@@ -917,6 +1119,19 @@ export type Database = {
         | "half_day"
         | "leave"
         | "holiday"
+      fee_payment_mode:
+        | "cash"
+        | "upi"
+        | "bank_transfer"
+        | "card"
+        | "cheque"
+        | "online"
+      fee_payment_status:
+        | "pending"
+        | "partially_paid"
+        | "paid"
+        | "overdue"
+        | "cancelled"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -1059,6 +1274,21 @@ export const Constants = {
         "half_day",
         "leave",
         "holiday",
+      ],
+      fee_payment_mode: [
+        "cash",
+        "upi",
+        "bank_transfer",
+        "card",
+        "cheque",
+        "online",
+      ],
+      fee_payment_status: [
+        "pending",
+        "partially_paid",
+        "paid",
+        "overdue",
+        "cancelled",
       ],
     },
   },
