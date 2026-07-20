@@ -60,6 +60,7 @@ import { Route as StudentDashboardFeesReceiptIdRouteImport } from './routes/stud
 import { Route as ApiPublicHooksFeeRemindersRouteImport } from './routes/api/public/hooks/fee-reminders'
 import { Route as AuthenticatedDashboardResultsPublishRouteImport } from './routes/_authenticated/dashboard.results.publish'
 import { Route as AuthenticatedDashboardResultsMarksEntryRouteImport } from './routes/_authenticated/dashboard.results.marks-entry'
+import { Route as AuthenticatedDashboardResultsHistoryRouteImport } from './routes/_authenticated/dashboard.results.history'
 import { Route as AuthenticatedDashboardResultsCreateRouteImport } from './routes/_authenticated/dashboard.results.create'
 import { Route as AuthenticatedDashboardFeesReportsRouteImport } from './routes/_authenticated/dashboard.fees.reports'
 import { Route as AuthenticatedDashboardFeesHistoryRouteImport } from './routes/_authenticated/dashboard.fees.history'
@@ -336,6 +337,12 @@ const AuthenticatedDashboardResultsMarksEntryRoute =
     path: '/marks-entry',
     getParentRoute: () => AuthenticatedDashboardResultsRoute,
   } as any)
+const AuthenticatedDashboardResultsHistoryRoute =
+  AuthenticatedDashboardResultsHistoryRouteImport.update({
+    id: '/history',
+    path: '/history',
+    getParentRoute: () => AuthenticatedDashboardResultsRoute,
+  } as any)
 const AuthenticatedDashboardResultsCreateRoute =
   AuthenticatedDashboardResultsCreateRouteImport.update({
     id: '/create',
@@ -439,6 +446,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/fees/history': typeof AuthenticatedDashboardFeesHistoryRoute
   '/dashboard/fees/reports': typeof AuthenticatedDashboardFeesReportsRoute
   '/dashboard/results/create': typeof AuthenticatedDashboardResultsCreateRoute
+  '/dashboard/results/history': typeof AuthenticatedDashboardResultsHistoryRoute
   '/dashboard/results/marks-entry': typeof AuthenticatedDashboardResultsMarksEntryRoute
   '/dashboard/results/publish': typeof AuthenticatedDashboardResultsPublishRoute
   '/api/public/hooks/fee-reminders': typeof ApiPublicHooksFeeRemindersRoute
@@ -499,6 +507,7 @@ export interface FileRoutesByTo {
   '/dashboard/fees/history': typeof AuthenticatedDashboardFeesHistoryRoute
   '/dashboard/fees/reports': typeof AuthenticatedDashboardFeesReportsRoute
   '/dashboard/results/create': typeof AuthenticatedDashboardResultsCreateRoute
+  '/dashboard/results/history': typeof AuthenticatedDashboardResultsHistoryRoute
   '/dashboard/results/marks-entry': typeof AuthenticatedDashboardResultsMarksEntryRoute
   '/dashboard/results/publish': typeof AuthenticatedDashboardResultsPublishRoute
   '/api/public/hooks/fee-reminders': typeof ApiPublicHooksFeeRemindersRoute
@@ -561,6 +570,7 @@ export interface FileRoutesById {
   '/_authenticated/dashboard/fees/history': typeof AuthenticatedDashboardFeesHistoryRoute
   '/_authenticated/dashboard/fees/reports': typeof AuthenticatedDashboardFeesReportsRoute
   '/_authenticated/dashboard/results/create': typeof AuthenticatedDashboardResultsCreateRoute
+  '/_authenticated/dashboard/results/history': typeof AuthenticatedDashboardResultsHistoryRoute
   '/_authenticated/dashboard/results/marks-entry': typeof AuthenticatedDashboardResultsMarksEntryRoute
   '/_authenticated/dashboard/results/publish': typeof AuthenticatedDashboardResultsPublishRoute
   '/api/public/hooks/fee-reminders': typeof ApiPublicHooksFeeRemindersRoute
@@ -623,6 +633,7 @@ export interface FileRouteTypes {
     | '/dashboard/fees/history'
     | '/dashboard/fees/reports'
     | '/dashboard/results/create'
+    | '/dashboard/results/history'
     | '/dashboard/results/marks-entry'
     | '/dashboard/results/publish'
     | '/api/public/hooks/fee-reminders'
@@ -683,6 +694,7 @@ export interface FileRouteTypes {
     | '/dashboard/fees/history'
     | '/dashboard/fees/reports'
     | '/dashboard/results/create'
+    | '/dashboard/results/history'
     | '/dashboard/results/marks-entry'
     | '/dashboard/results/publish'
     | '/api/public/hooks/fee-reminders'
@@ -744,6 +756,7 @@ export interface FileRouteTypes {
     | '/_authenticated/dashboard/fees/history'
     | '/_authenticated/dashboard/fees/reports'
     | '/_authenticated/dashboard/results/create'
+    | '/_authenticated/dashboard/results/history'
     | '/_authenticated/dashboard/results/marks-entry'
     | '/_authenticated/dashboard/results/publish'
     | '/api/public/hooks/fee-reminders'
@@ -1152,6 +1165,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardResultsMarksEntryRouteImport
       parentRoute: typeof AuthenticatedDashboardResultsRoute
     }
+    '/_authenticated/dashboard/results/history': {
+      id: '/_authenticated/dashboard/results/history'
+      path: '/history'
+      fullPath: '/dashboard/results/history'
+      preLoaderRoute: typeof AuthenticatedDashboardResultsHistoryRouteImport
+      parentRoute: typeof AuthenticatedDashboardResultsRoute
+    }
     '/_authenticated/dashboard/results/create': {
       id: '/_authenticated/dashboard/results/create'
       path: '/create'
@@ -1270,6 +1290,7 @@ const AuthenticatedDashboardFeesRouteWithChildren =
 
 interface AuthenticatedDashboardResultsRouteChildren {
   AuthenticatedDashboardResultsCreateRoute: typeof AuthenticatedDashboardResultsCreateRoute
+  AuthenticatedDashboardResultsHistoryRoute: typeof AuthenticatedDashboardResultsHistoryRoute
   AuthenticatedDashboardResultsMarksEntryRoute: typeof AuthenticatedDashboardResultsMarksEntryRoute
   AuthenticatedDashboardResultsPublishRoute: typeof AuthenticatedDashboardResultsPublishRoute
 }
@@ -1278,6 +1299,8 @@ const AuthenticatedDashboardResultsRouteChildren: AuthenticatedDashboardResultsR
   {
     AuthenticatedDashboardResultsCreateRoute:
       AuthenticatedDashboardResultsCreateRoute,
+    AuthenticatedDashboardResultsHistoryRoute:
+      AuthenticatedDashboardResultsHistoryRoute,
     AuthenticatedDashboardResultsMarksEntryRoute:
       AuthenticatedDashboardResultsMarksEntryRoute,
     AuthenticatedDashboardResultsPublishRoute:
