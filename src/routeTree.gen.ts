@@ -32,6 +32,7 @@ import { Route as AdmissionRouteImport } from './routes/admission'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as StudentResultsRouteImport } from './routes/student.results'
+import { Route as StudentProfileRouteImport } from './routes/student.profile'
 import { Route as StudentOnlineTestRouteImport } from './routes/student.online-test'
 import { Route as StudentLoginRouteImport } from './routes/student.login'
 import { Route as StudentFeesRouteImport } from './routes/student.fees'
@@ -159,6 +160,11 @@ const StudentResultsRoute = StudentResultsRouteImport.update({
   path: '/student/results',
   getParentRoute: () => rootRouteImport,
 } as any)
+const StudentProfileRoute = StudentProfileRouteImport.update({
+  id: '/student/profile',
+  path: '/student/profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const StudentOnlineTestRoute = StudentOnlineTestRouteImport.update({
   id: '/student/online-test',
   path: '/student/online-test',
@@ -254,6 +260,7 @@ export interface FileRoutesByFullPath {
   '/student/fees': typeof StudentFeesRoute
   '/student/login': typeof StudentLoginRoute
   '/student/online-test': typeof StudentOnlineTestRoute
+  '/student/profile': typeof StudentProfileRoute
   '/student/results': typeof StudentResultsRoute
   '/dashboard/admissions': typeof AuthenticatedDashboardAdmissionsRoute
   '/dashboard/students': typeof AuthenticatedDashboardStudentsRoute
@@ -290,6 +297,7 @@ export interface FileRoutesByTo {
   '/student/fees': typeof StudentFeesRoute
   '/student/login': typeof StudentLoginRoute
   '/student/online-test': typeof StudentOnlineTestRoute
+  '/student/profile': typeof StudentProfileRoute
   '/student/results': typeof StudentResultsRoute
   '/dashboard/admissions': typeof AuthenticatedDashboardAdmissionsRoute
   '/dashboard/students': typeof AuthenticatedDashboardStudentsRoute
@@ -328,6 +336,7 @@ export interface FileRoutesById {
   '/student/fees': typeof StudentFeesRoute
   '/student/login': typeof StudentLoginRoute
   '/student/online-test': typeof StudentOnlineTestRoute
+  '/student/profile': typeof StudentProfileRoute
   '/student/results': typeof StudentResultsRoute
   '/_authenticated/dashboard/admissions': typeof AuthenticatedDashboardAdmissionsRoute
   '/_authenticated/dashboard/students': typeof AuthenticatedDashboardStudentsRoute
@@ -366,6 +375,7 @@ export interface FileRouteTypes {
     | '/student/fees'
     | '/student/login'
     | '/student/online-test'
+    | '/student/profile'
     | '/student/results'
     | '/dashboard/admissions'
     | '/dashboard/students'
@@ -402,6 +412,7 @@ export interface FileRouteTypes {
     | '/student/fees'
     | '/student/login'
     | '/student/online-test'
+    | '/student/profile'
     | '/student/results'
     | '/dashboard/admissions'
     | '/dashboard/students'
@@ -439,6 +450,7 @@ export interface FileRouteTypes {
     | '/student/fees'
     | '/student/login'
     | '/student/online-test'
+    | '/student/profile'
     | '/student/results'
     | '/_authenticated/dashboard/admissions'
     | '/_authenticated/dashboard/students'
@@ -476,6 +488,7 @@ export interface RootRouteChildren {
   StudentFeesRoute: typeof StudentFeesRoute
   StudentLoginRoute: typeof StudentLoginRoute
   StudentOnlineTestRoute: typeof StudentOnlineTestRoute
+  StudentProfileRoute: typeof StudentProfileRoute
   StudentResultsRoute: typeof StudentResultsRoute
 }
 
@@ -642,6 +655,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof StudentResultsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/student/profile': {
+      id: '/student/profile'
+      path: '/student/profile'
+      fullPath: '/student/profile'
+      preLoaderRoute: typeof StudentProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/student/online-test': {
       id: '/student/online-test'
       path: '/student/online-test'
@@ -789,6 +809,7 @@ const rootRouteChildren: RootRouteChildren = {
   StudentFeesRoute: StudentFeesRoute,
   StudentLoginRoute: StudentLoginRoute,
   StudentOnlineTestRoute: StudentOnlineTestRoute,
+  StudentProfileRoute: StudentProfileRoute,
   StudentResultsRoute: StudentResultsRoute,
 }
 export const routeTree = rootRouteImport
