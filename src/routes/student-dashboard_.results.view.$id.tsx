@@ -45,7 +45,7 @@ function MarksheetPage() {
         <div className="marksheet rounded-3xl border-2 border-brand/30 bg-white p-8 shadow-xl print:border-brand print:shadow-none">
           {/* Header */}
           <div className="flex items-center gap-4 border-b-2 border-brand/40 pb-4">
-            <img src={logoAsset.src} alt="KCC" className="h-16 w-16 rounded-xl object-cover"/>
+            <img src={logoAsset.url} alt="KCC" className="h-16 w-16 rounded-xl object-cover"/>
             <div className="flex-1 text-center">
               <div className="text-2xl font-black text-brand">KRISHNA COMPUTER CENTER</div>
               <div className="text-[11px] font-semibold uppercase tracking-widest text-slate-500">Institute of Computer Education & Vocational Training</div>
