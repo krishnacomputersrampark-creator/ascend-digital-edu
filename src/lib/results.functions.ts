@@ -135,9 +135,10 @@ export const loadMarksEntry = createServerFn({ method: "POST" })
     if (exErr) throw new Error(exErr.message);
 
     // Subjects for course
+    if (!exam.course_id) throw new Error("Exam is not linked to a course");
     const { data: subjects, error: sErr } = await supabase
       .from("subjects").select("*")
-      .eq("course_id", exam.course_id)
+      .eq("course_id", exam.course_id as string)
       .order("subject_code", { ascending: true });
     if (sErr) throw new Error(sErr.message);
 
@@ -186,7 +187,8 @@ export const saveMarksEntry = createServerFn({ method: "POST" })
     // Fetch subjects to validate maxima and compute totals
     const { data: exam, error: exErr } = await supabase.from("exams").select("id, course_id").eq("id", data.exam_id).single();
     if (exErr) throw new Error(exErr.message);
-    const { data: subjects, error: sErr } = await supabase.from("subjects").select("id, maximum_marks").eq("course_id", exam.course_id);
+    if (!exam.course_id) throw new Error("Exam has no course");
+    const { data: subjects, error: sErr } = await supabase.from("subjects").select("id, maximum_marks").eq("course_id", exam.course_id as string);
     if (sErr) throw new Error(sErr.message);
     const subMap = new Map<string, number>((subjects ?? []).map(s => [s.id, Number(s.maximum_marks)]));
 
@@ -257,9 +259,9 @@ export const setResultsStatus = createServerFn({ method: "POST" })
     } else {
       patch.published_at = null;
     }
-    let q = context.supabase.from("student_results").update(patch).eq("exam_id", data.exam_id);
+    let q = context.supabase.from("student_results").update(patch, { count: "exact" }).eq("exam_id", data.exam_id);
     if (data.student_ids && data.student_ids.length) q = q.in("student_id", data.student_ids);
-    const { error, count } = await q.select("id", { count: "exact" });
+    const { error, count } = await q.select("id");
     if (error) throw new Error(error.message);
     return { ok: true, count: count ?? 0 };
   });
