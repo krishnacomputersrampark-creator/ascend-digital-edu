@@ -67,7 +67,7 @@ export type EditableStudentProfile = {
 };
 
 export async function updateMyStudentProfile(payload: EditableStudentProfile) {
-  const { data, error } = await supabase.rpc("update_my_student_profile", {
+  const args = {
     _phone: payload.phone,
     _alternate_mobile: payload.alternate_mobile,
     _email: payload.email,
@@ -81,7 +81,8 @@ export async function updateMyStudentProfile(payload: EditableStudentProfile) {
     _blood_group: payload.blood_group,
     _occupation: payload.occupation,
     _photo_url: payload.photo_url,
-  });
+  } as any;
+  const { data, error } = await (supabase.rpc as any)("update_my_student_profile", args);
   if (error) throw error;
   return data;
 }
