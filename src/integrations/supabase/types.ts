@@ -577,9 +577,12 @@ export type Database = {
       }
       students: {
         Row: {
+          aadhaar_number: string | null
           address: string | null
           admission_id: string | null
+          alternate_mobile: string | null
           batch_id: string | null
+          blood_group: string | null
           branch_id: string
           city: string | null
           course_id: string | null
@@ -596,6 +599,7 @@ export type Database = {
           id: string
           joined_at: string
           notes: string | null
+          occupation: string | null
           phone: string
           photo_url: string | null
           pincode: string | null
@@ -608,9 +612,12 @@ export type Database = {
           user_id: string | null
         }
         Insert: {
+          aadhaar_number?: string | null
           address?: string | null
           admission_id?: string | null
+          alternate_mobile?: string | null
           batch_id?: string | null
+          blood_group?: string | null
           branch_id: string
           city?: string | null
           course_id?: string | null
@@ -627,6 +634,7 @@ export type Database = {
           id?: string
           joined_at?: string
           notes?: string | null
+          occupation?: string | null
           phone: string
           photo_url?: string | null
           pincode?: string | null
@@ -639,9 +647,12 @@ export type Database = {
           user_id?: string | null
         }
         Update: {
+          aadhaar_number?: string | null
           address?: string | null
           admission_id?: string | null
+          alternate_mobile?: string | null
           batch_id?: string | null
+          blood_group?: string | null
           branch_id?: string
           city?: string | null
           course_id?: string | null
@@ -658,6 +669,7 @@ export type Database = {
           id?: string
           joined_at?: string
           notes?: string | null
+          occupation?: string | null
           phone?: string
           photo_url?: string | null
           pincode?: string | null
@@ -754,6 +766,64 @@ export type Database = {
       next_student_code: { Args: never; Returns: string }
       show_limit: { Args: never; Returns: number }
       show_trgm: { Args: { "": string }; Returns: string[] }
+      update_my_student_profile: {
+        Args: {
+          _address: string
+          _alternate_mobile: string
+          _blood_group: string
+          _city: string
+          _email: string
+          _emergency_contact: string
+          _guardian_name: string
+          _guardian_phone: string
+          _occupation: string
+          _phone: string
+          _photo_url: string
+          _pincode: string
+          _state: string
+        }
+        Returns: {
+          aadhaar_number: string | null
+          address: string | null
+          admission_id: string | null
+          alternate_mobile: string | null
+          batch_id: string | null
+          blood_group: string | null
+          branch_id: string
+          city: string | null
+          course_id: string | null
+          created_at: string
+          date_of_birth: string | null
+          deleted_at: string | null
+          email: string | null
+          emergency_contact: string | null
+          enrollment_no: string
+          full_name: string
+          gender: string | null
+          guardian_name: string | null
+          guardian_phone: string | null
+          id: string
+          joined_at: string
+          notes: string | null
+          occupation: string | null
+          phone: string
+          photo_url: string | null
+          pincode: string | null
+          qualification: string | null
+          roll_no: string | null
+          state: string | null
+          status: string
+          student_code: string
+          updated_at: string
+          user_id: string | null
+        }
+        SetofOptions: {
+          from: "*"
+          to: "students"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
     }
     Enums: {
       app_role:
