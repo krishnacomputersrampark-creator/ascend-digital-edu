@@ -12,7 +12,7 @@ import {
   type StudentRecord,
 } from "@/lib/students.repo";
 
-export const Route = createFileRoute("/student-dashboard/profile/edit")({
+export const Route = createFileRoute("/student-dashboard_/profile/edit")({
   head: () => ({ meta: [{ title: "Edit Profile · Krishna Computer Center" }, { name: "robots", content: "noindex" }] }),
   component: EditProfilePage,
 });
