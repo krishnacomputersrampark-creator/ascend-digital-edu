@@ -37,7 +37,6 @@ import { Route as StudentOnlineTestRouteImport } from './routes/student.online-t
 import { Route as StudentNotificationsRouteImport } from './routes/student.notifications'
 import { Route as StudentLoginRouteImport } from './routes/student.login'
 import { Route as StudentFeesRouteImport } from './routes/student.fees'
-import { Route as StudentDashboardRouteImport } from './routes/student.dashboard'
 import { Route as StudentCertificatesRouteImport } from './routes/student.certificates'
 import { Route as StudentAttendanceRouteImport } from './routes/student.attendance'
 import { Route as StudentAssignmentsRouteImport } from './routes/student.assignments'
@@ -187,11 +186,6 @@ const StudentFeesRoute = StudentFeesRouteImport.update({
   path: '/student/fees',
   getParentRoute: () => rootRouteImport,
 } as any)
-const StudentDashboardRoute = StudentDashboardRouteImport.update({
-  id: '/student/dashboard',
-  path: '/student/dashboard',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const StudentCertificatesRoute = StudentCertificatesRouteImport.update({
   id: '/student/certificates',
   path: '/student/certificates',
@@ -269,7 +263,6 @@ export interface FileRoutesByFullPath {
   '/student/assignments': typeof StudentAssignmentsRoute
   '/student/attendance': typeof StudentAttendanceRoute
   '/student/certificates': typeof StudentCertificatesRoute
-  '/student/dashboard': typeof StudentDashboardRoute
   '/student/fees': typeof StudentFeesRoute
   '/student/login': typeof StudentLoginRoute
   '/student/notifications': typeof StudentNotificationsRoute
@@ -308,7 +301,6 @@ export interface FileRoutesByTo {
   '/student/assignments': typeof StudentAssignmentsRoute
   '/student/attendance': typeof StudentAttendanceRoute
   '/student/certificates': typeof StudentCertificatesRoute
-  '/student/dashboard': typeof StudentDashboardRoute
   '/student/fees': typeof StudentFeesRoute
   '/student/login': typeof StudentLoginRoute
   '/student/notifications': typeof StudentNotificationsRoute
@@ -349,7 +341,6 @@ export interface FileRoutesById {
   '/student/assignments': typeof StudentAssignmentsRoute
   '/student/attendance': typeof StudentAttendanceRoute
   '/student/certificates': typeof StudentCertificatesRoute
-  '/student/dashboard': typeof StudentDashboardRoute
   '/student/fees': typeof StudentFeesRoute
   '/student/login': typeof StudentLoginRoute
   '/student/notifications': typeof StudentNotificationsRoute
@@ -390,7 +381,6 @@ export interface FileRouteTypes {
     | '/student/assignments'
     | '/student/attendance'
     | '/student/certificates'
-    | '/student/dashboard'
     | '/student/fees'
     | '/student/login'
     | '/student/notifications'
@@ -429,7 +419,6 @@ export interface FileRouteTypes {
     | '/student/assignments'
     | '/student/attendance'
     | '/student/certificates'
-    | '/student/dashboard'
     | '/student/fees'
     | '/student/login'
     | '/student/notifications'
@@ -469,7 +458,6 @@ export interface FileRouteTypes {
     | '/student/assignments'
     | '/student/attendance'
     | '/student/certificates'
-    | '/student/dashboard'
     | '/student/fees'
     | '/student/login'
     | '/student/notifications'
@@ -509,7 +497,6 @@ export interface RootRouteChildren {
   StudentAssignmentsRoute: typeof StudentAssignmentsRoute
   StudentAttendanceRoute: typeof StudentAttendanceRoute
   StudentCertificatesRoute: typeof StudentCertificatesRoute
-  StudentDashboardRoute: typeof StudentDashboardRoute
   StudentFeesRoute: typeof StudentFeesRoute
   StudentLoginRoute: typeof StudentLoginRoute
   StudentNotificationsRoute: typeof StudentNotificationsRoute
@@ -716,13 +703,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof StudentFeesRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/student/dashboard': {
-      id: '/student/dashboard'
-      path: '/student/dashboard'
-      fullPath: '/student/dashboard'
-      preLoaderRoute: typeof StudentDashboardRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/student/certificates': {
       id: '/student/certificates'
       path: '/student/certificates'
@@ -846,7 +826,6 @@ const rootRouteChildren: RootRouteChildren = {
   StudentAssignmentsRoute: StudentAssignmentsRoute,
   StudentAttendanceRoute: StudentAttendanceRoute,
   StudentCertificatesRoute: StudentCertificatesRoute,
-  StudentDashboardRoute: StudentDashboardRoute,
   StudentFeesRoute: StudentFeesRoute,
   StudentLoginRoute: StudentLoginRoute,
   StudentNotificationsRoute: StudentNotificationsRoute,

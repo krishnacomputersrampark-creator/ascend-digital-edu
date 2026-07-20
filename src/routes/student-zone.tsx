@@ -20,7 +20,7 @@ export const Route = createFileRoute("/student-zone")({
 
 const CARDS = [
   { icon: LogIn, title: "Student Login", desc: "Sign in with your Student ID, email or mobile.", to: "/student/login", accent: "from-brand to-cyan" },
-  { icon: LayoutDashboard, title: "Dashboard", desc: "Your personalized academic overview.", to: "/student/dashboard" },
+  { icon: LayoutDashboard, title: "Dashboard", desc: "Your personalized academic overview.", to: "/student-dashboard" },
   { icon: CalendarCheck, title: "Attendance", desc: "Monthly presence, leave & percentage.", to: "/student/attendance" },
   { icon: GraduationCap, title: "Results", desc: "Semester, internal & final marksheets.", to: "/student/results" },
   { icon: MonitorPlay, title: "Online Test", desc: "Take upcoming exams from anywhere.", to: "/student/online-test" },
