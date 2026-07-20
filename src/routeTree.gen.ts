@@ -56,6 +56,7 @@ import { Route as AuthenticatedDashboardFeesRouteImport } from './routes/_authen
 import { Route as AuthenticatedDashboardAttendanceRouteImport } from './routes/_authenticated/dashboard.attendance'
 import { Route as AuthenticatedDashboardAdmissionsRouteImport } from './routes/_authenticated/dashboard.admissions'
 import { Route as StudentDashboardFeesReceiptIdRouteImport } from './routes/student-dashboard_.fees.receipt.$id'
+import { Route as ApiPublicHooksFeeRemindersRouteImport } from './routes/api/public/hooks/fee-reminders'
 import { Route as AuthenticatedDashboardFeesReportsRouteImport } from './routes/_authenticated/dashboard.fees.reports'
 import { Route as AuthenticatedDashboardFeesHistoryRouteImport } from './routes/_authenticated/dashboard.fees.history'
 import { Route as AuthenticatedDashboardFeesCollectRouteImport } from './routes/_authenticated/dashboard.fees.collect'
@@ -307,6 +308,12 @@ const StudentDashboardFeesReceiptIdRoute =
     path: '/receipt/$id',
     getParentRoute: () => StudentDashboardFeesRoute,
   } as any)
+const ApiPublicHooksFeeRemindersRoute =
+  ApiPublicHooksFeeRemindersRouteImport.update({
+    id: '/api/public/hooks/fee-reminders',
+    path: '/api/public/hooks/fee-reminders',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const AuthenticatedDashboardFeesReportsRoute =
   AuthenticatedDashboardFeesReportsRouteImport.update({
     id: '/reports',
@@ -402,6 +409,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/fees/collect': typeof AuthenticatedDashboardFeesCollectRoute
   '/dashboard/fees/history': typeof AuthenticatedDashboardFeesHistoryRoute
   '/dashboard/fees/reports': typeof AuthenticatedDashboardFeesReportsRoute
+  '/api/public/hooks/fee-reminders': typeof ApiPublicHooksFeeRemindersRoute
   '/student-dashboard/fees/receipt/$id': typeof StudentDashboardFeesReceiptIdRoute
   '/dashboard/fees/receipt/$id': typeof AuthenticatedDashboardFeesReceiptIdRoute
 }
@@ -457,6 +465,7 @@ export interface FileRoutesByTo {
   '/dashboard/fees/collect': typeof AuthenticatedDashboardFeesCollectRoute
   '/dashboard/fees/history': typeof AuthenticatedDashboardFeesHistoryRoute
   '/dashboard/fees/reports': typeof AuthenticatedDashboardFeesReportsRoute
+  '/api/public/hooks/fee-reminders': typeof ApiPublicHooksFeeRemindersRoute
   '/student-dashboard/fees/receipt/$id': typeof StudentDashboardFeesReceiptIdRoute
   '/dashboard/fees/receipt/$id': typeof AuthenticatedDashboardFeesReceiptIdRoute
 }
@@ -514,6 +523,7 @@ export interface FileRoutesById {
   '/_authenticated/dashboard/fees/collect': typeof AuthenticatedDashboardFeesCollectRoute
   '/_authenticated/dashboard/fees/history': typeof AuthenticatedDashboardFeesHistoryRoute
   '/_authenticated/dashboard/fees/reports': typeof AuthenticatedDashboardFeesReportsRoute
+  '/api/public/hooks/fee-reminders': typeof ApiPublicHooksFeeRemindersRoute
   '/student-dashboard_/fees/receipt/$id': typeof StudentDashboardFeesReceiptIdRoute
   '/_authenticated/dashboard/fees/receipt/$id': typeof AuthenticatedDashboardFeesReceiptIdRoute
 }
@@ -571,6 +581,7 @@ export interface FileRouteTypes {
     | '/dashboard/fees/collect'
     | '/dashboard/fees/history'
     | '/dashboard/fees/reports'
+    | '/api/public/hooks/fee-reminders'
     | '/student-dashboard/fees/receipt/$id'
     | '/dashboard/fees/receipt/$id'
   fileRoutesByTo: FileRoutesByTo
@@ -626,6 +637,7 @@ export interface FileRouteTypes {
     | '/dashboard/fees/collect'
     | '/dashboard/fees/history'
     | '/dashboard/fees/reports'
+    | '/api/public/hooks/fee-reminders'
     | '/student-dashboard/fees/receipt/$id'
     | '/dashboard/fees/receipt/$id'
   id:
@@ -682,6 +694,7 @@ export interface FileRouteTypes {
     | '/_authenticated/dashboard/fees/collect'
     | '/_authenticated/dashboard/fees/history'
     | '/_authenticated/dashboard/fees/reports'
+    | '/api/public/hooks/fee-reminders'
     | '/student-dashboard_/fees/receipt/$id'
     | '/_authenticated/dashboard/fees/receipt/$id'
   fileRoutesById: FileRoutesById
@@ -725,6 +738,7 @@ export interface RootRouteChildren {
   StudentOnlineTestRoute: typeof StudentOnlineTestRoute
   StudentProfileRoute: typeof StudentProfileRoute
   StudentResultsRoute: typeof StudentResultsRoute
+  ApiPublicHooksFeeRemindersRoute: typeof ApiPublicHooksFeeRemindersRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -1058,6 +1072,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof StudentDashboardFeesReceiptIdRouteImport
       parentRoute: typeof StudentDashboardFeesRoute
     }
+    '/api/public/hooks/fee-reminders': {
+      id: '/api/public/hooks/fee-reminders'
+      path: '/api/public/hooks/fee-reminders'
+      fullPath: '/api/public/hooks/fee-reminders'
+      preLoaderRoute: typeof ApiPublicHooksFeeRemindersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_authenticated/dashboard/fees/reports': {
       id: '/_authenticated/dashboard/fees/reports'
       path: '/reports'
@@ -1279,6 +1300,7 @@ const rootRouteChildren: RootRouteChildren = {
   StudentOnlineTestRoute: StudentOnlineTestRoute,
   StudentProfileRoute: StudentProfileRoute,
   StudentResultsRoute: StudentResultsRoute,
+  ApiPublicHooksFeeRemindersRoute: ApiPublicHooksFeeRemindersRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
