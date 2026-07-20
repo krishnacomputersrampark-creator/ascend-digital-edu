@@ -4,11 +4,11 @@ import type { Session } from "@supabase/supabase-js";
 import { motion } from "motion/react";
 import {
   LayoutDashboard, CalendarCheck, GraduationCap, Download, FileBadge, Wallet,
-  ClipboardList, User as UserIcon, Bell, MonitorPlay, LogOut, Loader2, ArrowRight,
+  ClipboardList, User as UserIcon, Bell, MonitorPlay, LogOut, Loader2, ArrowRight, ShieldCheck,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { getStudentByUserId, type StudentRecord } from "@/lib/students.repo";
+import { calcProfileCompletion, getPhotoSignedUrl, getStudentByUserId, type StudentRecord } from "@/lib/students.repo";
 
 export const Route = createFileRoute("/student-dashboard")({
   head: () => ({
@@ -25,7 +25,8 @@ type Profile = { full_name: string | null; email: string | null; photo_url: stri
 
 const SIDEBAR = [
   { icon: LayoutDashboard, label: "Dashboard", to: "/student-dashboard" },
-  { icon: UserIcon, label: "My Profile", to: "/student/profile" },
+  { icon: UserIcon, label: "My Profile", to: "/student-dashboard/profile" },
+  { icon: ShieldCheck, label: "Security", to: "/student-dashboard/security" },
   { icon: CalendarCheck, label: "Attendance", to: "/student/attendance" },
   { icon: GraduationCap, label: "Results", to: "/student/results" },
   { icon: Download, label: "Downloads", to: "/downloads" },
@@ -42,7 +43,8 @@ const CARDS = [
   { icon: FileBadge, title: "Certificates", desc: "Course completion certificates.", to: "/student/certificates", stat: "3" },
   { icon: Wallet, title: "Fee Status", desc: "Dues, receipts & installments.", to: "/student/fees", stat: "Paid" },
   { icon: ClipboardList, title: "Assignments", desc: "Submissions & pending tasks.", to: "/student/assignments", stat: "2" },
-  { icon: UserIcon, title: "Profile", desc: "Personal & academic details.", to: "/student/profile", stat: "—" },
+  { icon: UserIcon, title: "Profile", desc: "Personal & academic details.", to: "/student-dashboard/profile", stat: "View" },
+  { icon: ShieldCheck, title: "Security", desc: "Change password & sessions.", to: "/student-dashboard/security", stat: "Manage" },
   { icon: Bell, title: "Notifications", desc: "Latest notices & alerts.", to: "/student/notifications", stat: "5" },
   { icon: MonitorPlay, title: "Online Test", desc: "Take upcoming exams online.", to: "/student/online-test", stat: "1" },
 ];
@@ -52,6 +54,7 @@ function StudentDashboardPage() {
   const [session, setSession] = useState<Session | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [student, setStudent] = useState<StudentRecord | null>(null);
+  const [photoUrl, setPhotoUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -64,6 +67,7 @@ function StudentDashboardPage() {
       ]);
       setProfile(p ?? null);
       setStudent(s);
+      setPhotoUrl(await getPhotoSignedUrl(s?.photo_url ?? null));
     } catch (e: any) {
       setError(e?.message ?? "Failed to load your dashboard.");
     } finally {
@@ -108,6 +112,7 @@ function StudentDashboardPage() {
   const name = student?.full_name ?? profile?.full_name ?? session.user.email?.split("@")[0] ?? "Student";
   const initials = name.split(" ").map((n) => n[0]).slice(0, 2).join("").toUpperCase();
   const isDemo = !student;
+  const pct = calcProfileCompletion(student);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-cyan-soft/40 via-white to-white">
@@ -171,13 +176,27 @@ function StudentDashboardPage() {
               <div className="absolute -bottom-16 -left-10 h-56 w-56 rounded-full bg-white/10 blur-3xl" />
               <div className="relative flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
                 <div className="flex items-center gap-5">
-                  <div className="grid h-20 w-20 place-items-center rounded-2xl bg-white/15 text-2xl font-black backdrop-blur ring-2 ring-white/25">
-                    {initials || "S"}
-                  </div>
+                  {photoUrl ? (
+                    <img src={photoUrl} alt={name} className="h-20 w-20 rounded-2xl object-cover ring-2 ring-white/25" />
+                  ) : (
+                    <div className="grid h-20 w-20 place-items-center rounded-2xl bg-white/15 text-2xl font-black backdrop-blur ring-2 ring-white/25">
+                      {initials || "S"}
+                    </div>
+                  )}
                   <div>
                     <p className="text-xs font-semibold uppercase tracking-wider text-cyan-soft">Welcome Student</p>
                     <h1 className="mt-1 text-2xl font-extrabold sm:text-3xl">{name}</h1>
                     <p className="mt-1 text-sm text-white/80">{student?.email ?? profile?.email ?? session.user.email}</p>
+                    {student && (
+                      <div className="mt-3 w-full max-w-xs">
+                        <div className="flex items-center justify-between text-[10px] font-semibold uppercase tracking-wider text-cyan-soft">
+                          <span>Profile Completion</span><span>{pct}%</span>
+                        </div>
+                        <div className="mt-1 h-1.5 overflow-hidden rounded-full bg-white/20">
+                          <div className="h-full rounded-full bg-cyan" style={{ width: `${pct}%` }} />
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </div>
                 <dl className="grid grid-cols-2 gap-3 sm:grid-cols-4">
