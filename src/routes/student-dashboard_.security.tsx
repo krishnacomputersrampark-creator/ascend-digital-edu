@@ -8,7 +8,7 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { PortalShell } from "@/components/student/PortalShell";
 
-export const Route = createFileRoute("/student-dashboard/security")({
+export const Route = createFileRoute("/student-dashboard_/security")({
   head: () => ({ meta: [{ title: "Account Security · Krishna Computer Center" }, { name: "robots", content: "noindex" }] }),
   component: SecurityPage,
 });
