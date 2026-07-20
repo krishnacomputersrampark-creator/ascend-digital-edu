@@ -448,6 +448,73 @@ export type Database = {
         }
         Relationships: []
       }
+      exams: {
+        Row: {
+          batch_id: string | null
+          branch_id: string | null
+          course_id: string | null
+          created_at: string
+          created_by: string | null
+          exam_date: string | null
+          exam_name: string
+          exam_type: Database["public"]["Enums"]["exam_type"]
+          id: string
+          result_publish_date: string | null
+          status: Database["public"]["Enums"]["exam_status"]
+          updated_at: string
+        }
+        Insert: {
+          batch_id?: string | null
+          branch_id?: string | null
+          course_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          exam_date?: string | null
+          exam_name: string
+          exam_type?: Database["public"]["Enums"]["exam_type"]
+          id?: string
+          result_publish_date?: string | null
+          status?: Database["public"]["Enums"]["exam_status"]
+          updated_at?: string
+        }
+        Update: {
+          batch_id?: string | null
+          branch_id?: string | null
+          course_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          exam_date?: string | null
+          exam_name?: string
+          exam_type?: Database["public"]["Enums"]["exam_type"]
+          id?: string
+          result_publish_date?: string | null
+          status?: Database["public"]["Enums"]["exam_status"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "exams_batch_id_fkey"
+            columns: ["batch_id"]
+            isOneToOne: false
+            referencedRelation: "batches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "exams_branch_id_fkey"
+            columns: ["branch_id"]
+            isOneToOne: false
+            referencedRelation: "branches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "exams_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       fee_installments: {
         Row: {
           amount: number
@@ -739,6 +806,63 @@ export type Database = {
           },
         ]
       }
+      result_details: {
+        Row: {
+          created_at: string
+          grade: string | null
+          id: string
+          internal_marks: number
+          practical_marks: number
+          remarks: string | null
+          student_result_id: string
+          subject_id: string
+          theory_marks: number
+          total_marks: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          grade?: string | null
+          id?: string
+          internal_marks?: number
+          practical_marks?: number
+          remarks?: string | null
+          student_result_id: string
+          subject_id: string
+          theory_marks?: number
+          total_marks?: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          grade?: string | null
+          id?: string
+          internal_marks?: number
+          practical_marks?: number
+          remarks?: string | null
+          student_result_id?: string
+          subject_id?: string
+          theory_marks?: number
+          total_marks?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "result_details_student_result_id_fkey"
+            columns: ["student_result_id"]
+            isOneToOne: false
+            referencedRelation: "student_results"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "result_details_subject_id_fkey"
+            columns: ["subject_id"]
+            isOneToOne: false
+            referencedRelation: "subjects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       student_documents: {
         Row: {
           created_at: string
@@ -847,6 +971,75 @@ export type Database = {
             foreignKeyName: "student_fees_student_id_fkey"
             columns: ["student_id"]
             isOneToOne: true
+            referencedRelation: "students"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      student_results: {
+        Row: {
+          created_at: string
+          division: string | null
+          exam_id: string
+          grade: string | null
+          id: string
+          obtained_marks: number
+          pass_fail: string | null
+          percentage: number
+          published_at: string | null
+          published_by: string | null
+          remarks: string | null
+          result_status: Database["public"]["Enums"]["result_status"]
+          student_id: string
+          total_marks: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          division?: string | null
+          exam_id: string
+          grade?: string | null
+          id?: string
+          obtained_marks?: number
+          pass_fail?: string | null
+          percentage?: number
+          published_at?: string | null
+          published_by?: string | null
+          remarks?: string | null
+          result_status?: Database["public"]["Enums"]["result_status"]
+          student_id: string
+          total_marks?: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          division?: string | null
+          exam_id?: string
+          grade?: string | null
+          id?: string
+          obtained_marks?: number
+          pass_fail?: string | null
+          percentage?: number
+          published_at?: string | null
+          published_by?: string | null
+          remarks?: string | null
+          result_status?: Database["public"]["Enums"]["result_status"]
+          student_id?: string
+          total_marks?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "student_results_exam_id_fkey"
+            columns: ["exam_id"]
+            isOneToOne: false
+            referencedRelation: "exams"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "student_results_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
             referencedRelation: "students"
             referencedColumns: ["id"]
           },
@@ -989,6 +1182,56 @@ export type Database = {
           },
         ]
       }
+      subjects: {
+        Row: {
+          course_id: string | null
+          created_at: string
+          id: string
+          maximum_marks: number
+          minimum_passing_marks: number
+          practical_marks: number
+          status: string
+          subject_code: string
+          subject_name: string
+          theory_marks: number
+          updated_at: string
+        }
+        Insert: {
+          course_id?: string | null
+          created_at?: string
+          id?: string
+          maximum_marks?: number
+          minimum_passing_marks?: number
+          practical_marks?: number
+          status?: string
+          subject_code: string
+          subject_name: string
+          theory_marks?: number
+          updated_at?: string
+        }
+        Update: {
+          course_id?: string | null
+          created_at?: string
+          id?: string
+          maximum_marks?: number
+          minimum_passing_marks?: number
+          practical_marks?: number
+          status?: string
+          subject_code?: string
+          subject_name?: string
+          theory_marks?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "subjects_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_roles: {
         Row: {
           branch_id: string | null
@@ -1026,6 +1269,8 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      calc_division: { Args: { _pct: number }; Returns: string }
+      calc_grade: { Args: { _pct: number }; Returns: string }
       get_current_user_role: {
         Args: never
         Returns: Database["public"]["Enums"]["app_role"]
@@ -1119,6 +1364,15 @@ export type Database = {
         | "half_day"
         | "leave"
         | "holiday"
+      exam_status: "scheduled" | "ongoing" | "completed" | "cancelled"
+      exam_type:
+        | "monthly_test"
+        | "quarterly_exam"
+        | "half_yearly"
+        | "annual_exam"
+        | "practical_exam"
+        | "internal_assessment"
+        | "final_examination"
       fee_payment_mode:
         | "cash"
         | "upi"
@@ -1131,6 +1385,12 @@ export type Database = {
         | "partially_paid"
         | "paid"
         | "overdue"
+        | "cancelled"
+      result_status:
+        | "draft"
+        | "published"
+        | "withheld"
+        | "re_evaluation"
         | "cancelled"
     }
     CompositeTypes: {
@@ -1275,6 +1535,16 @@ export const Constants = {
         "leave",
         "holiday",
       ],
+      exam_status: ["scheduled", "ongoing", "completed", "cancelled"],
+      exam_type: [
+        "monthly_test",
+        "quarterly_exam",
+        "half_yearly",
+        "annual_exam",
+        "practical_exam",
+        "internal_assessment",
+        "final_examination",
+      ],
       fee_payment_mode: [
         "cash",
         "upi",
@@ -1288,6 +1558,13 @@ export const Constants = {
         "partially_paid",
         "paid",
         "overdue",
+        "cancelled",
+      ],
+      result_status: [
+        "draft",
+        "published",
+        "withheld",
+        "re_evaluation",
         "cancelled",
       ],
     },
