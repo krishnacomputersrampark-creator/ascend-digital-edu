@@ -45,6 +45,7 @@ import { Route as StudentDashboardSecurityRouteImport } from './routes/student-d
 import { Route as StudentDashboardResultsRouteImport } from './routes/student-dashboard_.results'
 import { Route as StudentDashboardProfileRouteImport } from './routes/student-dashboard_.profile'
 import { Route as StudentDashboardFeesRouteImport } from './routes/student-dashboard_.fees'
+import { Route as StudentDashboardDownloadsRouteImport } from './routes/student-dashboard_.downloads'
 import { Route as StudentDashboardCertificatesRouteImport } from './routes/student-dashboard_.certificates'
 import { Route as StudentDashboardAttendanceRouteImport } from './routes/student-dashboard_.attendance'
 import { Route as SearchStudentRouteImport } from './routes/search.student'
@@ -55,16 +56,21 @@ import { Route as AdmissionSuccessRouteImport } from './routes/admission.success
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as StudentDashboardProfileEditRouteImport } from './routes/student-dashboard_.profile.edit'
 import { Route as StudentDashboardFeesHistoryRouteImport } from './routes/student-dashboard_.fees.history'
+import { Route as StudentDashboardDownloadsIdRouteImport } from './routes/student-dashboard_.downloads.$id'
+import { Route as AuthenticatedFacultyDownloadsRouteImport } from './routes/_authenticated/faculty.downloads'
 import { Route as AuthenticatedDashboardStudentsRouteImport } from './routes/_authenticated/dashboard.students'
 import { Route as AuthenticatedDashboardResultsRouteImport } from './routes/_authenticated/dashboard.results'
 import { Route as AuthenticatedDashboardFeesRouteImport } from './routes/_authenticated/dashboard.fees'
+import { Route as AuthenticatedDashboardDownloadsRouteImport } from './routes/_authenticated/dashboard.downloads'
 import { Route as AuthenticatedDashboardCertificatesRouteImport } from './routes/_authenticated/dashboard.certificates'
 import { Route as AuthenticatedDashboardAttendanceRouteImport } from './routes/_authenticated/dashboard.attendance'
 import { Route as AuthenticatedDashboardAdmissionsRouteImport } from './routes/_authenticated/dashboard.admissions'
+import { Route as AuthenticatedAdminDownloadsRouteImport } from './routes/_authenticated/admin.downloads'
 import { Route as StudentDashboardResultsViewIdRouteImport } from './routes/student-dashboard_.results.view.$id'
 import { Route as StudentDashboardFeesReceiptIdRouteImport } from './routes/student-dashboard_.fees.receipt.$id'
 import { Route as StudentDashboardCertificatesViewIdRouteImport } from './routes/student-dashboard_.certificates.view.$id'
 import { Route as ApiPublicHooksFeeRemindersRouteImport } from './routes/api/public/hooks/fee-reminders'
+import { Route as AuthenticatedFacultyDownloadsUploadRouteImport } from './routes/_authenticated/faculty.downloads.upload'
 import { Route as AuthenticatedDashboardResultsPublishRouteImport } from './routes/_authenticated/dashboard.results.publish'
 import { Route as AuthenticatedDashboardResultsMarksEntryRouteImport } from './routes/_authenticated/dashboard.results.marks-entry'
 import { Route as AuthenticatedDashboardResultsHistoryRouteImport } from './routes/_authenticated/dashboard.results.history'
@@ -78,6 +84,9 @@ import { Route as AuthenticatedDashboardCertificatesCreateRouteImport } from './
 import { Route as AuthenticatedDashboardAttendanceMarkRouteImport } from './routes/_authenticated/dashboard.attendance.mark'
 import { Route as AuthenticatedDashboardAttendanceHistoryRouteImport } from './routes/_authenticated/dashboard.attendance.history'
 import { Route as AuthenticatedDashboardAdmissionsIdRouteImport } from './routes/_authenticated/dashboard.admissions.$id'
+import { Route as AuthenticatedAdminDownloadsUploadRouteImport } from './routes/_authenticated/admin.downloads.upload'
+import { Route as AuthenticatedAdminDownloadsHistoryRouteImport } from './routes/_authenticated/admin.downloads.history'
+import { Route as AuthenticatedAdminDownloadsCategoriesRouteImport } from './routes/_authenticated/admin.downloads.categories'
 import { Route as AuthenticatedDashboardFeesReceiptIdRouteImport } from './routes/_authenticated/dashboard.fees.receipt.$id'
 
 const VideosRoute = VideosRouteImport.update({
@@ -260,6 +269,12 @@ const StudentDashboardFeesRoute = StudentDashboardFeesRouteImport.update({
   path: '/student-dashboard/fees',
   getParentRoute: () => rootRouteImport,
 } as any)
+const StudentDashboardDownloadsRoute =
+  StudentDashboardDownloadsRouteImport.update({
+    id: '/student-dashboard_/downloads',
+    path: '/student-dashboard/downloads',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const StudentDashboardCertificatesRoute =
   StudentDashboardCertificatesRouteImport.update({
     id: '/student-dashboard_/certificates',
@@ -315,6 +330,18 @@ const StudentDashboardFeesHistoryRoute =
     path: '/history',
     getParentRoute: () => StudentDashboardFeesRoute,
   } as any)
+const StudentDashboardDownloadsIdRoute =
+  StudentDashboardDownloadsIdRouteImport.update({
+    id: '/$id',
+    path: '/$id',
+    getParentRoute: () => StudentDashboardDownloadsRoute,
+  } as any)
+const AuthenticatedFacultyDownloadsRoute =
+  AuthenticatedFacultyDownloadsRouteImport.update({
+    id: '/faculty/downloads',
+    path: '/faculty/downloads',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedDashboardStudentsRoute =
   AuthenticatedDashboardStudentsRouteImport.update({
     id: '/students',
@@ -331,6 +358,12 @@ const AuthenticatedDashboardFeesRoute =
   AuthenticatedDashboardFeesRouteImport.update({
     id: '/fees',
     path: '/fees',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
+const AuthenticatedDashboardDownloadsRoute =
+  AuthenticatedDashboardDownloadsRouteImport.update({
+    id: '/downloads',
+    path: '/downloads',
     getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
 const AuthenticatedDashboardCertificatesRoute =
@@ -350,6 +383,12 @@ const AuthenticatedDashboardAdmissionsRoute =
     id: '/admissions',
     path: '/admissions',
     getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
+const AuthenticatedAdminDownloadsRoute =
+  AuthenticatedAdminDownloadsRouteImport.update({
+    id: '/admin/downloads',
+    path: '/admin/downloads',
+    getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
 const StudentDashboardResultsViewIdRoute =
   StudentDashboardResultsViewIdRouteImport.update({
@@ -374,6 +413,12 @@ const ApiPublicHooksFeeRemindersRoute =
     id: '/api/public/hooks/fee-reminders',
     path: '/api/public/hooks/fee-reminders',
     getParentRoute: () => rootRouteImport,
+  } as any)
+const AuthenticatedFacultyDownloadsUploadRoute =
+  AuthenticatedFacultyDownloadsUploadRouteImport.update({
+    id: '/upload',
+    path: '/upload',
+    getParentRoute: () => AuthenticatedFacultyDownloadsRoute,
   } as any)
 const AuthenticatedDashboardResultsPublishRoute =
   AuthenticatedDashboardResultsPublishRouteImport.update({
@@ -453,6 +498,24 @@ const AuthenticatedDashboardAdmissionsIdRoute =
     path: '/$id',
     getParentRoute: () => AuthenticatedDashboardAdmissionsRoute,
   } as any)
+const AuthenticatedAdminDownloadsUploadRoute =
+  AuthenticatedAdminDownloadsUploadRouteImport.update({
+    id: '/upload',
+    path: '/upload',
+    getParentRoute: () => AuthenticatedAdminDownloadsRoute,
+  } as any)
+const AuthenticatedAdminDownloadsHistoryRoute =
+  AuthenticatedAdminDownloadsHistoryRouteImport.update({
+    id: '/history',
+    path: '/history',
+    getParentRoute: () => AuthenticatedAdminDownloadsRoute,
+  } as any)
+const AuthenticatedAdminDownloadsCategoriesRoute =
+  AuthenticatedAdminDownloadsCategoriesRouteImport.update({
+    id: '/categories',
+    path: '/categories',
+    getParentRoute: () => AuthenticatedAdminDownloadsRoute,
+  } as any)
 const AuthenticatedDashboardFeesReceiptIdRoute =
   AuthenticatedDashboardFeesReceiptIdRouteImport.update({
     id: '/receipt/$id',
@@ -491,6 +554,7 @@ export interface FileRoutesByFullPath {
   '/search/student': typeof SearchStudentRoute
   '/student-dashboard/attendance': typeof StudentDashboardAttendanceRoute
   '/student-dashboard/certificates': typeof StudentDashboardCertificatesRouteWithChildren
+  '/student-dashboard/downloads': typeof StudentDashboardDownloadsRouteWithChildren
   '/student-dashboard/fees': typeof StudentDashboardFeesRouteWithChildren
   '/student-dashboard/profile': typeof StudentDashboardProfileRouteWithChildren
   '/student-dashboard/results': typeof StudentDashboardResultsRouteWithChildren
@@ -504,14 +568,21 @@ export interface FileRoutesByFullPath {
   '/student/online-test': typeof StudentOnlineTestRoute
   '/student/profile': typeof StudentProfileRoute
   '/student/results': typeof StudentResultsRoute
+  '/admin/downloads': typeof AuthenticatedAdminDownloadsRouteWithChildren
   '/dashboard/admissions': typeof AuthenticatedDashboardAdmissionsRouteWithChildren
   '/dashboard/attendance': typeof AuthenticatedDashboardAttendanceRouteWithChildren
   '/dashboard/certificates': typeof AuthenticatedDashboardCertificatesRouteWithChildren
+  '/dashboard/downloads': typeof AuthenticatedDashboardDownloadsRoute
   '/dashboard/fees': typeof AuthenticatedDashboardFeesRouteWithChildren
   '/dashboard/results': typeof AuthenticatedDashboardResultsRouteWithChildren
   '/dashboard/students': typeof AuthenticatedDashboardStudentsRoute
+  '/faculty/downloads': typeof AuthenticatedFacultyDownloadsRouteWithChildren
+  '/student-dashboard/downloads/$id': typeof StudentDashboardDownloadsIdRoute
   '/student-dashboard/fees/history': typeof StudentDashboardFeesHistoryRoute
   '/student-dashboard/profile/edit': typeof StudentDashboardProfileEditRoute
+  '/admin/downloads/categories': typeof AuthenticatedAdminDownloadsCategoriesRoute
+  '/admin/downloads/history': typeof AuthenticatedAdminDownloadsHistoryRoute
+  '/admin/downloads/upload': typeof AuthenticatedAdminDownloadsUploadRoute
   '/dashboard/admissions/$id': typeof AuthenticatedDashboardAdmissionsIdRoute
   '/dashboard/attendance/history': typeof AuthenticatedDashboardAttendanceHistoryRoute
   '/dashboard/attendance/mark': typeof AuthenticatedDashboardAttendanceMarkRoute
@@ -525,6 +596,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/results/history': typeof AuthenticatedDashboardResultsHistoryRoute
   '/dashboard/results/marks-entry': typeof AuthenticatedDashboardResultsMarksEntryRoute
   '/dashboard/results/publish': typeof AuthenticatedDashboardResultsPublishRoute
+  '/faculty/downloads/upload': typeof AuthenticatedFacultyDownloadsUploadRoute
   '/api/public/hooks/fee-reminders': typeof ApiPublicHooksFeeRemindersRoute
   '/student-dashboard/certificates/view/$id': typeof StudentDashboardCertificatesViewIdRoute
   '/student-dashboard/fees/receipt/$id': typeof StudentDashboardFeesReceiptIdRoute
@@ -562,6 +634,7 @@ export interface FileRoutesByTo {
   '/search/student': typeof SearchStudentRoute
   '/student-dashboard/attendance': typeof StudentDashboardAttendanceRoute
   '/student-dashboard/certificates': typeof StudentDashboardCertificatesRouteWithChildren
+  '/student-dashboard/downloads': typeof StudentDashboardDownloadsRouteWithChildren
   '/student-dashboard/fees': typeof StudentDashboardFeesRouteWithChildren
   '/student-dashboard/profile': typeof StudentDashboardProfileRouteWithChildren
   '/student-dashboard/results': typeof StudentDashboardResultsRouteWithChildren
@@ -575,14 +648,21 @@ export interface FileRoutesByTo {
   '/student/online-test': typeof StudentOnlineTestRoute
   '/student/profile': typeof StudentProfileRoute
   '/student/results': typeof StudentResultsRoute
+  '/admin/downloads': typeof AuthenticatedAdminDownloadsRouteWithChildren
   '/dashboard/admissions': typeof AuthenticatedDashboardAdmissionsRouteWithChildren
   '/dashboard/attendance': typeof AuthenticatedDashboardAttendanceRouteWithChildren
   '/dashboard/certificates': typeof AuthenticatedDashboardCertificatesRouteWithChildren
+  '/dashboard/downloads': typeof AuthenticatedDashboardDownloadsRoute
   '/dashboard/fees': typeof AuthenticatedDashboardFeesRouteWithChildren
   '/dashboard/results': typeof AuthenticatedDashboardResultsRouteWithChildren
   '/dashboard/students': typeof AuthenticatedDashboardStudentsRoute
+  '/faculty/downloads': typeof AuthenticatedFacultyDownloadsRouteWithChildren
+  '/student-dashboard/downloads/$id': typeof StudentDashboardDownloadsIdRoute
   '/student-dashboard/fees/history': typeof StudentDashboardFeesHistoryRoute
   '/student-dashboard/profile/edit': typeof StudentDashboardProfileEditRoute
+  '/admin/downloads/categories': typeof AuthenticatedAdminDownloadsCategoriesRoute
+  '/admin/downloads/history': typeof AuthenticatedAdminDownloadsHistoryRoute
+  '/admin/downloads/upload': typeof AuthenticatedAdminDownloadsUploadRoute
   '/dashboard/admissions/$id': typeof AuthenticatedDashboardAdmissionsIdRoute
   '/dashboard/attendance/history': typeof AuthenticatedDashboardAttendanceHistoryRoute
   '/dashboard/attendance/mark': typeof AuthenticatedDashboardAttendanceMarkRoute
@@ -596,6 +676,7 @@ export interface FileRoutesByTo {
   '/dashboard/results/history': typeof AuthenticatedDashboardResultsHistoryRoute
   '/dashboard/results/marks-entry': typeof AuthenticatedDashboardResultsMarksEntryRoute
   '/dashboard/results/publish': typeof AuthenticatedDashboardResultsPublishRoute
+  '/faculty/downloads/upload': typeof AuthenticatedFacultyDownloadsUploadRoute
   '/api/public/hooks/fee-reminders': typeof ApiPublicHooksFeeRemindersRoute
   '/student-dashboard/certificates/view/$id': typeof StudentDashboardCertificatesViewIdRoute
   '/student-dashboard/fees/receipt/$id': typeof StudentDashboardFeesReceiptIdRoute
@@ -635,6 +716,7 @@ export interface FileRoutesById {
   '/search/student': typeof SearchStudentRoute
   '/student-dashboard_/attendance': typeof StudentDashboardAttendanceRoute
   '/student-dashboard_/certificates': typeof StudentDashboardCertificatesRouteWithChildren
+  '/student-dashboard_/downloads': typeof StudentDashboardDownloadsRouteWithChildren
   '/student-dashboard_/fees': typeof StudentDashboardFeesRouteWithChildren
   '/student-dashboard_/profile': typeof StudentDashboardProfileRouteWithChildren
   '/student-dashboard_/results': typeof StudentDashboardResultsRouteWithChildren
@@ -648,14 +730,21 @@ export interface FileRoutesById {
   '/student/online-test': typeof StudentOnlineTestRoute
   '/student/profile': typeof StudentProfileRoute
   '/student/results': typeof StudentResultsRoute
+  '/_authenticated/admin/downloads': typeof AuthenticatedAdminDownloadsRouteWithChildren
   '/_authenticated/dashboard/admissions': typeof AuthenticatedDashboardAdmissionsRouteWithChildren
   '/_authenticated/dashboard/attendance': typeof AuthenticatedDashboardAttendanceRouteWithChildren
   '/_authenticated/dashboard/certificates': typeof AuthenticatedDashboardCertificatesRouteWithChildren
+  '/_authenticated/dashboard/downloads': typeof AuthenticatedDashboardDownloadsRoute
   '/_authenticated/dashboard/fees': typeof AuthenticatedDashboardFeesRouteWithChildren
   '/_authenticated/dashboard/results': typeof AuthenticatedDashboardResultsRouteWithChildren
   '/_authenticated/dashboard/students': typeof AuthenticatedDashboardStudentsRoute
+  '/_authenticated/faculty/downloads': typeof AuthenticatedFacultyDownloadsRouteWithChildren
+  '/student-dashboard_/downloads/$id': typeof StudentDashboardDownloadsIdRoute
   '/student-dashboard_/fees/history': typeof StudentDashboardFeesHistoryRoute
   '/student-dashboard_/profile/edit': typeof StudentDashboardProfileEditRoute
+  '/_authenticated/admin/downloads/categories': typeof AuthenticatedAdminDownloadsCategoriesRoute
+  '/_authenticated/admin/downloads/history': typeof AuthenticatedAdminDownloadsHistoryRoute
+  '/_authenticated/admin/downloads/upload': typeof AuthenticatedAdminDownloadsUploadRoute
   '/_authenticated/dashboard/admissions/$id': typeof AuthenticatedDashboardAdmissionsIdRoute
   '/_authenticated/dashboard/attendance/history': typeof AuthenticatedDashboardAttendanceHistoryRoute
   '/_authenticated/dashboard/attendance/mark': typeof AuthenticatedDashboardAttendanceMarkRoute
@@ -669,6 +758,7 @@ export interface FileRoutesById {
   '/_authenticated/dashboard/results/history': typeof AuthenticatedDashboardResultsHistoryRoute
   '/_authenticated/dashboard/results/marks-entry': typeof AuthenticatedDashboardResultsMarksEntryRoute
   '/_authenticated/dashboard/results/publish': typeof AuthenticatedDashboardResultsPublishRoute
+  '/_authenticated/faculty/downloads/upload': typeof AuthenticatedFacultyDownloadsUploadRoute
   '/api/public/hooks/fee-reminders': typeof ApiPublicHooksFeeRemindersRoute
   '/student-dashboard_/certificates/view/$id': typeof StudentDashboardCertificatesViewIdRoute
   '/student-dashboard_/fees/receipt/$id': typeof StudentDashboardFeesReceiptIdRoute
@@ -708,6 +798,7 @@ export interface FileRouteTypes {
     | '/search/student'
     | '/student-dashboard/attendance'
     | '/student-dashboard/certificates'
+    | '/student-dashboard/downloads'
     | '/student-dashboard/fees'
     | '/student-dashboard/profile'
     | '/student-dashboard/results'
@@ -721,14 +812,21 @@ export interface FileRouteTypes {
     | '/student/online-test'
     | '/student/profile'
     | '/student/results'
+    | '/admin/downloads'
     | '/dashboard/admissions'
     | '/dashboard/attendance'
     | '/dashboard/certificates'
+    | '/dashboard/downloads'
     | '/dashboard/fees'
     | '/dashboard/results'
     | '/dashboard/students'
+    | '/faculty/downloads'
+    | '/student-dashboard/downloads/$id'
     | '/student-dashboard/fees/history'
     | '/student-dashboard/profile/edit'
+    | '/admin/downloads/categories'
+    | '/admin/downloads/history'
+    | '/admin/downloads/upload'
     | '/dashboard/admissions/$id'
     | '/dashboard/attendance/history'
     | '/dashboard/attendance/mark'
@@ -742,6 +840,7 @@ export interface FileRouteTypes {
     | '/dashboard/results/history'
     | '/dashboard/results/marks-entry'
     | '/dashboard/results/publish'
+    | '/faculty/downloads/upload'
     | '/api/public/hooks/fee-reminders'
     | '/student-dashboard/certificates/view/$id'
     | '/student-dashboard/fees/receipt/$id'
@@ -779,6 +878,7 @@ export interface FileRouteTypes {
     | '/search/student'
     | '/student-dashboard/attendance'
     | '/student-dashboard/certificates'
+    | '/student-dashboard/downloads'
     | '/student-dashboard/fees'
     | '/student-dashboard/profile'
     | '/student-dashboard/results'
@@ -792,14 +892,21 @@ export interface FileRouteTypes {
     | '/student/online-test'
     | '/student/profile'
     | '/student/results'
+    | '/admin/downloads'
     | '/dashboard/admissions'
     | '/dashboard/attendance'
     | '/dashboard/certificates'
+    | '/dashboard/downloads'
     | '/dashboard/fees'
     | '/dashboard/results'
     | '/dashboard/students'
+    | '/faculty/downloads'
+    | '/student-dashboard/downloads/$id'
     | '/student-dashboard/fees/history'
     | '/student-dashboard/profile/edit'
+    | '/admin/downloads/categories'
+    | '/admin/downloads/history'
+    | '/admin/downloads/upload'
     | '/dashboard/admissions/$id'
     | '/dashboard/attendance/history'
     | '/dashboard/attendance/mark'
@@ -813,6 +920,7 @@ export interface FileRouteTypes {
     | '/dashboard/results/history'
     | '/dashboard/results/marks-entry'
     | '/dashboard/results/publish'
+    | '/faculty/downloads/upload'
     | '/api/public/hooks/fee-reminders'
     | '/student-dashboard/certificates/view/$id'
     | '/student-dashboard/fees/receipt/$id'
@@ -851,6 +959,7 @@ export interface FileRouteTypes {
     | '/search/student'
     | '/student-dashboard_/attendance'
     | '/student-dashboard_/certificates'
+    | '/student-dashboard_/downloads'
     | '/student-dashboard_/fees'
     | '/student-dashboard_/profile'
     | '/student-dashboard_/results'
@@ -864,14 +973,21 @@ export interface FileRouteTypes {
     | '/student/online-test'
     | '/student/profile'
     | '/student/results'
+    | '/_authenticated/admin/downloads'
     | '/_authenticated/dashboard/admissions'
     | '/_authenticated/dashboard/attendance'
     | '/_authenticated/dashboard/certificates'
+    | '/_authenticated/dashboard/downloads'
     | '/_authenticated/dashboard/fees'
     | '/_authenticated/dashboard/results'
     | '/_authenticated/dashboard/students'
+    | '/_authenticated/faculty/downloads'
+    | '/student-dashboard_/downloads/$id'
     | '/student-dashboard_/fees/history'
     | '/student-dashboard_/profile/edit'
+    | '/_authenticated/admin/downloads/categories'
+    | '/_authenticated/admin/downloads/history'
+    | '/_authenticated/admin/downloads/upload'
     | '/_authenticated/dashboard/admissions/$id'
     | '/_authenticated/dashboard/attendance/history'
     | '/_authenticated/dashboard/attendance/mark'
@@ -885,6 +1001,7 @@ export interface FileRouteTypes {
     | '/_authenticated/dashboard/results/history'
     | '/_authenticated/dashboard/results/marks-entry'
     | '/_authenticated/dashboard/results/publish'
+    | '/_authenticated/faculty/downloads/upload'
     | '/api/public/hooks/fee-reminders'
     | '/student-dashboard_/certificates/view/$id'
     | '/student-dashboard_/fees/receipt/$id'
@@ -921,6 +1038,7 @@ export interface RootRouteChildren {
   SearchStudentRoute: typeof SearchStudentRoute
   StudentDashboardAttendanceRoute: typeof StudentDashboardAttendanceRoute
   StudentDashboardCertificatesRoute: typeof StudentDashboardCertificatesRouteWithChildren
+  StudentDashboardDownloadsRoute: typeof StudentDashboardDownloadsRouteWithChildren
   StudentDashboardFeesRoute: typeof StudentDashboardFeesRouteWithChildren
   StudentDashboardProfileRoute: typeof StudentDashboardProfileRouteWithChildren
   StudentDashboardResultsRoute: typeof StudentDashboardResultsRouteWithChildren
@@ -1191,6 +1309,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof StudentDashboardFeesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/student-dashboard_/downloads': {
+      id: '/student-dashboard_/downloads'
+      path: '/student-dashboard/downloads'
+      fullPath: '/student-dashboard/downloads'
+      preLoaderRoute: typeof StudentDashboardDownloadsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/student-dashboard_/certificates': {
       id: '/student-dashboard_/certificates'
       path: '/student-dashboard/certificates'
@@ -1261,6 +1386,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof StudentDashboardFeesHistoryRouteImport
       parentRoute: typeof StudentDashboardFeesRoute
     }
+    '/student-dashboard_/downloads/$id': {
+      id: '/student-dashboard_/downloads/$id'
+      path: '/$id'
+      fullPath: '/student-dashboard/downloads/$id'
+      preLoaderRoute: typeof StudentDashboardDownloadsIdRouteImport
+      parentRoute: typeof StudentDashboardDownloadsRoute
+    }
+    '/_authenticated/faculty/downloads': {
+      id: '/_authenticated/faculty/downloads'
+      path: '/faculty/downloads'
+      fullPath: '/faculty/downloads'
+      preLoaderRoute: typeof AuthenticatedFacultyDownloadsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/dashboard/students': {
       id: '/_authenticated/dashboard/students'
       path: '/students'
@@ -1280,6 +1419,13 @@ declare module '@tanstack/react-router' {
       path: '/fees'
       fullPath: '/dashboard/fees'
       preLoaderRoute: typeof AuthenticatedDashboardFeesRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/downloads': {
+      id: '/_authenticated/dashboard/downloads'
+      path: '/downloads'
+      fullPath: '/dashboard/downloads'
+      preLoaderRoute: typeof AuthenticatedDashboardDownloadsRouteImport
       parentRoute: typeof AuthenticatedDashboardRoute
     }
     '/_authenticated/dashboard/certificates': {
@@ -1302,6 +1448,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/dashboard/admissions'
       preLoaderRoute: typeof AuthenticatedDashboardAdmissionsRouteImport
       parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/admin/downloads': {
+      id: '/_authenticated/admin/downloads'
+      path: '/admin/downloads'
+      fullPath: '/admin/downloads'
+      preLoaderRoute: typeof AuthenticatedAdminDownloadsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/student-dashboard_/results/view/$id': {
       id: '/student-dashboard_/results/view/$id'
@@ -1330,6 +1483,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/api/public/hooks/fee-reminders'
       preLoaderRoute: typeof ApiPublicHooksFeeRemindersRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/faculty/downloads/upload': {
+      id: '/_authenticated/faculty/downloads/upload'
+      path: '/upload'
+      fullPath: '/faculty/downloads/upload'
+      preLoaderRoute: typeof AuthenticatedFacultyDownloadsUploadRouteImport
+      parentRoute: typeof AuthenticatedFacultyDownloadsRoute
     }
     '/_authenticated/dashboard/results/publish': {
       id: '/_authenticated/dashboard/results/publish'
@@ -1421,6 +1581,27 @@ declare module '@tanstack/react-router' {
       fullPath: '/dashboard/admissions/$id'
       preLoaderRoute: typeof AuthenticatedDashboardAdmissionsIdRouteImport
       parentRoute: typeof AuthenticatedDashboardAdmissionsRoute
+    }
+    '/_authenticated/admin/downloads/upload': {
+      id: '/_authenticated/admin/downloads/upload'
+      path: '/upload'
+      fullPath: '/admin/downloads/upload'
+      preLoaderRoute: typeof AuthenticatedAdminDownloadsUploadRouteImport
+      parentRoute: typeof AuthenticatedAdminDownloadsRoute
+    }
+    '/_authenticated/admin/downloads/history': {
+      id: '/_authenticated/admin/downloads/history'
+      path: '/history'
+      fullPath: '/admin/downloads/history'
+      preLoaderRoute: typeof AuthenticatedAdminDownloadsHistoryRouteImport
+      parentRoute: typeof AuthenticatedAdminDownloadsRoute
+    }
+    '/_authenticated/admin/downloads/categories': {
+      id: '/_authenticated/admin/downloads/categories'
+      path: '/categories'
+      fullPath: '/admin/downloads/categories'
+      preLoaderRoute: typeof AuthenticatedAdminDownloadsCategoriesRouteImport
+      parentRoute: typeof AuthenticatedAdminDownloadsRoute
     }
     '/_authenticated/dashboard/fees/receipt/$id': {
       id: '/_authenticated/dashboard/fees/receipt/$id'
@@ -1538,6 +1719,7 @@ interface AuthenticatedDashboardRouteChildren {
   AuthenticatedDashboardAdmissionsRoute: typeof AuthenticatedDashboardAdmissionsRouteWithChildren
   AuthenticatedDashboardAttendanceRoute: typeof AuthenticatedDashboardAttendanceRouteWithChildren
   AuthenticatedDashboardCertificatesRoute: typeof AuthenticatedDashboardCertificatesRouteWithChildren
+  AuthenticatedDashboardDownloadsRoute: typeof AuthenticatedDashboardDownloadsRoute
   AuthenticatedDashboardFeesRoute: typeof AuthenticatedDashboardFeesRouteWithChildren
   AuthenticatedDashboardResultsRoute: typeof AuthenticatedDashboardResultsRouteWithChildren
   AuthenticatedDashboardStudentsRoute: typeof AuthenticatedDashboardStudentsRoute
@@ -1551,6 +1733,7 @@ const AuthenticatedDashboardRouteChildren: AuthenticatedDashboardRouteChildren =
       AuthenticatedDashboardAttendanceRouteWithChildren,
     AuthenticatedDashboardCertificatesRoute:
       AuthenticatedDashboardCertificatesRouteWithChildren,
+    AuthenticatedDashboardDownloadsRoute: AuthenticatedDashboardDownloadsRoute,
     AuthenticatedDashboardFeesRoute:
       AuthenticatedDashboardFeesRouteWithChildren,
     AuthenticatedDashboardResultsRoute:
@@ -1563,12 +1746,54 @@ const AuthenticatedDashboardRouteWithChildren =
     AuthenticatedDashboardRouteChildren,
   )
 
+interface AuthenticatedAdminDownloadsRouteChildren {
+  AuthenticatedAdminDownloadsCategoriesRoute: typeof AuthenticatedAdminDownloadsCategoriesRoute
+  AuthenticatedAdminDownloadsHistoryRoute: typeof AuthenticatedAdminDownloadsHistoryRoute
+  AuthenticatedAdminDownloadsUploadRoute: typeof AuthenticatedAdminDownloadsUploadRoute
+}
+
+const AuthenticatedAdminDownloadsRouteChildren: AuthenticatedAdminDownloadsRouteChildren =
+  {
+    AuthenticatedAdminDownloadsCategoriesRoute:
+      AuthenticatedAdminDownloadsCategoriesRoute,
+    AuthenticatedAdminDownloadsHistoryRoute:
+      AuthenticatedAdminDownloadsHistoryRoute,
+    AuthenticatedAdminDownloadsUploadRoute:
+      AuthenticatedAdminDownloadsUploadRoute,
+  }
+
+const AuthenticatedAdminDownloadsRouteWithChildren =
+  AuthenticatedAdminDownloadsRoute._addFileChildren(
+    AuthenticatedAdminDownloadsRouteChildren,
+  )
+
+interface AuthenticatedFacultyDownloadsRouteChildren {
+  AuthenticatedFacultyDownloadsUploadRoute: typeof AuthenticatedFacultyDownloadsUploadRoute
+}
+
+const AuthenticatedFacultyDownloadsRouteChildren: AuthenticatedFacultyDownloadsRouteChildren =
+  {
+    AuthenticatedFacultyDownloadsUploadRoute:
+      AuthenticatedFacultyDownloadsUploadRoute,
+  }
+
+const AuthenticatedFacultyDownloadsRouteWithChildren =
+  AuthenticatedFacultyDownloadsRoute._addFileChildren(
+    AuthenticatedFacultyDownloadsRouteChildren,
+  )
+
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRouteWithChildren
+  AuthenticatedAdminDownloadsRoute: typeof AuthenticatedAdminDownloadsRouteWithChildren
+  AuthenticatedFacultyDownloadsRoute: typeof AuthenticatedFacultyDownloadsRouteWithChildren
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedDashboardRoute: AuthenticatedDashboardRouteWithChildren,
+  AuthenticatedAdminDownloadsRoute:
+    AuthenticatedAdminDownloadsRouteWithChildren,
+  AuthenticatedFacultyDownloadsRoute:
+    AuthenticatedFacultyDownloadsRouteWithChildren,
 }
 
 const AuthenticatedRouteRouteWithChildren =
@@ -1614,6 +1839,20 @@ const StudentDashboardCertificatesRouteChildren: StudentDashboardCertificatesRou
 const StudentDashboardCertificatesRouteWithChildren =
   StudentDashboardCertificatesRoute._addFileChildren(
     StudentDashboardCertificatesRouteChildren,
+  )
+
+interface StudentDashboardDownloadsRouteChildren {
+  StudentDashboardDownloadsIdRoute: typeof StudentDashboardDownloadsIdRoute
+}
+
+const StudentDashboardDownloadsRouteChildren: StudentDashboardDownloadsRouteChildren =
+  {
+    StudentDashboardDownloadsIdRoute: StudentDashboardDownloadsIdRoute,
+  }
+
+const StudentDashboardDownloadsRouteWithChildren =
+  StudentDashboardDownloadsRoute._addFileChildren(
+    StudentDashboardDownloadsRouteChildren,
   )
 
 interface StudentDashboardFeesRouteChildren {
@@ -1687,6 +1926,7 @@ const rootRouteChildren: RootRouteChildren = {
   StudentDashboardAttendanceRoute: StudentDashboardAttendanceRoute,
   StudentDashboardCertificatesRoute:
     StudentDashboardCertificatesRouteWithChildren,
+  StudentDashboardDownloadsRoute: StudentDashboardDownloadsRouteWithChildren,
   StudentDashboardFeesRoute: StudentDashboardFeesRouteWithChildren,
   StudentDashboardProfileRoute: StudentDashboardProfileRouteWithChildren,
   StudentDashboardResultsRoute: StudentDashboardResultsRouteWithChildren,

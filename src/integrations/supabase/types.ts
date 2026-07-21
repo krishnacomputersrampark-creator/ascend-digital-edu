@@ -603,6 +603,84 @@ export type Database = {
         }
         Relationships: []
       }
+      download_categories: {
+        Row: {
+          category_name: string
+          created_at: string
+          description: string | null
+          display_order: number
+          icon: string | null
+          id: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          category_name: string
+          created_at?: string
+          description?: string | null
+          display_order?: number
+          icon?: string | null
+          id?: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          category_name?: string
+          created_at?: string
+          description?: string | null
+          display_order?: number
+          icon?: string | null
+          id?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      download_history: {
+        Row: {
+          device: string | null
+          downloaded_at: string
+          id: string
+          ip_address: string | null
+          student_id: string | null
+          study_material_id: string
+          user_id: string | null
+        }
+        Insert: {
+          device?: string | null
+          downloaded_at?: string
+          id?: string
+          ip_address?: string | null
+          student_id?: string | null
+          study_material_id: string
+          user_id?: string | null
+        }
+        Update: {
+          device?: string | null
+          downloaded_at?: string
+          id?: string
+          ip_address?: string | null
+          student_id?: string | null
+          study_material_id?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "download_history_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "students"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "download_history_study_material_id_fkey"
+            columns: ["study_material_id"]
+            isOneToOne: false
+            referencedRelation: "study_materials"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       exams: {
         Row: {
           batch_id: string | null
@@ -803,6 +881,35 @@ export type Database = {
             columns: ["course_id"]
             isOneToOne: false
             referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      material_favorites: {
+        Row: {
+          created_at: string
+          id: string
+          study_material_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          study_material_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          study_material_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "material_favorites_study_material_id_fkey"
+            columns: ["study_material_id"]
+            isOneToOne: false
+            referencedRelation: "study_materials"
             referencedColumns: ["id"]
           },
         ]
@@ -1337,6 +1444,110 @@ export type Database = {
           },
         ]
       }
+      study_materials: {
+        Row: {
+          batch_id: string | null
+          branch_id: string | null
+          bucket: string | null
+          category_id: string | null
+          course_id: string | null
+          created_at: string
+          description: string | null
+          download_count: number
+          external_link: string | null
+          file_name: string | null
+          file_size: number | null
+          file_type: string | null
+          file_url: string | null
+          id: string
+          is_featured: boolean
+          status: Database["public"]["Enums"]["material_status"]
+          thumbnail_url: string | null
+          title: string
+          updated_at: string
+          uploaded_by: string | null
+          visibility: Database["public"]["Enums"]["material_visibility"]
+          youtube_url: string | null
+        }
+        Insert: {
+          batch_id?: string | null
+          branch_id?: string | null
+          bucket?: string | null
+          category_id?: string | null
+          course_id?: string | null
+          created_at?: string
+          description?: string | null
+          download_count?: number
+          external_link?: string | null
+          file_name?: string | null
+          file_size?: number | null
+          file_type?: string | null
+          file_url?: string | null
+          id?: string
+          is_featured?: boolean
+          status?: Database["public"]["Enums"]["material_status"]
+          thumbnail_url?: string | null
+          title: string
+          updated_at?: string
+          uploaded_by?: string | null
+          visibility?: Database["public"]["Enums"]["material_visibility"]
+          youtube_url?: string | null
+        }
+        Update: {
+          batch_id?: string | null
+          branch_id?: string | null
+          bucket?: string | null
+          category_id?: string | null
+          course_id?: string | null
+          created_at?: string
+          description?: string | null
+          download_count?: number
+          external_link?: string | null
+          file_name?: string | null
+          file_size?: number | null
+          file_type?: string | null
+          file_url?: string | null
+          id?: string
+          is_featured?: boolean
+          status?: Database["public"]["Enums"]["material_status"]
+          thumbnail_url?: string | null
+          title?: string
+          updated_at?: string
+          uploaded_by?: string | null
+          visibility?: Database["public"]["Enums"]["material_visibility"]
+          youtube_url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "study_materials_batch_id_fkey"
+            columns: ["batch_id"]
+            isOneToOne: false
+            referencedRelation: "batches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "study_materials_branch_id_fkey"
+            columns: ["branch_id"]
+            isOneToOne: false
+            referencedRelation: "branches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "study_materials_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "download_categories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "study_materials_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       subjects: {
         Row: {
           course_id: string | null
@@ -1437,6 +1648,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      is_material_admin: { Args: { _uid: string }; Returns: boolean }
       next_admission_no: { Args: never; Returns: string }
       next_application_no: { Args: never; Returns: string }
       next_certificate_no: { Args: never; Returns: string }
@@ -1446,6 +1658,10 @@ export type Database = {
       recalc_student_fee: { Args: { _sf: string }; Returns: undefined }
       show_limit: { Args: never; Returns: number }
       show_trgm: { Args: { "": string }; Returns: string[] }
+      student_can_see_material: {
+        Args: { _mid: string; _uid: string }
+        Returns: boolean
+      }
       update_my_student_profile: {
         Args: {
           _address: string
@@ -1556,6 +1772,8 @@ export type Database = {
         | "paid"
         | "overdue"
         | "cancelled"
+      material_status: "draft" | "published" | "unpublished" | "archived"
+      material_visibility: "public" | "course" | "branch" | "batch" | "private"
       result_status:
         | "draft"
         | "published"
@@ -1741,6 +1959,8 @@ export const Constants = {
         "overdue",
         "cancelled",
       ],
+      material_status: ["draft", "published", "unpublished", "archived"],
+      material_visibility: ["public", "course", "branch", "batch", "private"],
       result_status: [
         "draft",
         "published",
