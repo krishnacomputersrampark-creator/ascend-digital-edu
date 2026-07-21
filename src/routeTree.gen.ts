@@ -26,6 +26,7 @@ import { Route as EventsRouteImport } from './routes/events'
 import { Route as DownloadsRouteImport } from './routes/downloads'
 import { Route as CoursesRouteImport } from './routes/courses'
 import { Route as ContactRouteImport } from './routes/contact'
+import { Route as CertificateVerificationRouteImport } from './routes/certificate-verification'
 import { Route as BlogRouteImport } from './routes/blog'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AdmissionRouteImport } from './routes/admission'
@@ -44,10 +45,12 @@ import { Route as StudentDashboardSecurityRouteImport } from './routes/student-d
 import { Route as StudentDashboardResultsRouteImport } from './routes/student-dashboard_.results'
 import { Route as StudentDashboardProfileRouteImport } from './routes/student-dashboard_.profile'
 import { Route as StudentDashboardFeesRouteImport } from './routes/student-dashboard_.fees'
+import { Route as StudentDashboardCertificatesRouteImport } from './routes/student-dashboard_.certificates'
 import { Route as StudentDashboardAttendanceRouteImport } from './routes/student-dashboard_.attendance'
 import { Route as SearchStudentRouteImport } from './routes/search.student'
 import { Route as SearchResultRouteImport } from './routes/search.result'
 import { Route as SearchCertificateRouteImport } from './routes/search.certificate'
+import { Route as CertificateVerificationCertificateNumberRouteImport } from './routes/certificate-verification.$certificateNumber'
 import { Route as AdmissionSuccessRouteImport } from './routes/admission.success'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as StudentDashboardProfileEditRouteImport } from './routes/student-dashboard_.profile.edit'
@@ -55,10 +58,12 @@ import { Route as StudentDashboardFeesHistoryRouteImport } from './routes/studen
 import { Route as AuthenticatedDashboardStudentsRouteImport } from './routes/_authenticated/dashboard.students'
 import { Route as AuthenticatedDashboardResultsRouteImport } from './routes/_authenticated/dashboard.results'
 import { Route as AuthenticatedDashboardFeesRouteImport } from './routes/_authenticated/dashboard.fees'
+import { Route as AuthenticatedDashboardCertificatesRouteImport } from './routes/_authenticated/dashboard.certificates'
 import { Route as AuthenticatedDashboardAttendanceRouteImport } from './routes/_authenticated/dashboard.attendance'
 import { Route as AuthenticatedDashboardAdmissionsRouteImport } from './routes/_authenticated/dashboard.admissions'
 import { Route as StudentDashboardResultsViewIdRouteImport } from './routes/student-dashboard_.results.view.$id'
 import { Route as StudentDashboardFeesReceiptIdRouteImport } from './routes/student-dashboard_.fees.receipt.$id'
+import { Route as StudentDashboardCertificatesViewIdRouteImport } from './routes/student-dashboard_.certificates.view.$id'
 import { Route as ApiPublicHooksFeeRemindersRouteImport } from './routes/api/public/hooks/fee-reminders'
 import { Route as AuthenticatedDashboardResultsPublishRouteImport } from './routes/_authenticated/dashboard.results.publish'
 import { Route as AuthenticatedDashboardResultsMarksEntryRouteImport } from './routes/_authenticated/dashboard.results.marks-entry'
@@ -67,6 +72,9 @@ import { Route as AuthenticatedDashboardResultsCreateRouteImport } from './route
 import { Route as AuthenticatedDashboardFeesReportsRouteImport } from './routes/_authenticated/dashboard.fees.reports'
 import { Route as AuthenticatedDashboardFeesHistoryRouteImport } from './routes/_authenticated/dashboard.fees.history'
 import { Route as AuthenticatedDashboardFeesCollectRouteImport } from './routes/_authenticated/dashboard.fees.collect'
+import { Route as AuthenticatedDashboardCertificatesTemplatesRouteImport } from './routes/_authenticated/dashboard.certificates.templates'
+import { Route as AuthenticatedDashboardCertificatesHistoryRouteImport } from './routes/_authenticated/dashboard.certificates.history'
+import { Route as AuthenticatedDashboardCertificatesCreateRouteImport } from './routes/_authenticated/dashboard.certificates.create'
 import { Route as AuthenticatedDashboardAttendanceMarkRouteImport } from './routes/_authenticated/dashboard.attendance.mark'
 import { Route as AuthenticatedDashboardAttendanceHistoryRouteImport } from './routes/_authenticated/dashboard.attendance.history'
 import { Route as AuthenticatedDashboardAdmissionsIdRouteImport } from './routes/_authenticated/dashboard.admissions.$id'
@@ -155,6 +163,11 @@ const CoursesRoute = CoursesRouteImport.update({
 const ContactRoute = ContactRouteImport.update({
   id: '/contact',
   path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CertificateVerificationRoute = CertificateVerificationRouteImport.update({
+  id: '/certificate-verification',
+  path: '/certificate-verification',
   getParentRoute: () => rootRouteImport,
 } as any)
 const BlogRoute = BlogRouteImport.update({
@@ -247,6 +260,12 @@ const StudentDashboardFeesRoute = StudentDashboardFeesRouteImport.update({
   path: '/student-dashboard/fees',
   getParentRoute: () => rootRouteImport,
 } as any)
+const StudentDashboardCertificatesRoute =
+  StudentDashboardCertificatesRouteImport.update({
+    id: '/student-dashboard_/certificates',
+    path: '/student-dashboard/certificates',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const StudentDashboardAttendanceRoute =
   StudentDashboardAttendanceRouteImport.update({
     id: '/student-dashboard_/attendance',
@@ -268,6 +287,12 @@ const SearchCertificateRoute = SearchCertificateRouteImport.update({
   path: '/search/certificate',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CertificateVerificationCertificateNumberRoute =
+  CertificateVerificationCertificateNumberRouteImport.update({
+    id: '/$certificateNumber',
+    path: '/$certificateNumber',
+    getParentRoute: () => CertificateVerificationRoute,
+  } as any)
 const AdmissionSuccessRoute = AdmissionSuccessRouteImport.update({
   id: '/success',
   path: '/success',
@@ -308,6 +333,12 @@ const AuthenticatedDashboardFeesRoute =
     path: '/fees',
     getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
+const AuthenticatedDashboardCertificatesRoute =
+  AuthenticatedDashboardCertificatesRouteImport.update({
+    id: '/certificates',
+    path: '/certificates',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
 const AuthenticatedDashboardAttendanceRoute =
   AuthenticatedDashboardAttendanceRouteImport.update({
     id: '/attendance',
@@ -331,6 +362,12 @@ const StudentDashboardFeesReceiptIdRoute =
     id: '/receipt/$id',
     path: '/receipt/$id',
     getParentRoute: () => StudentDashboardFeesRoute,
+  } as any)
+const StudentDashboardCertificatesViewIdRoute =
+  StudentDashboardCertificatesViewIdRouteImport.update({
+    id: '/view/$id',
+    path: '/view/$id',
+    getParentRoute: () => StudentDashboardCertificatesRoute,
   } as any)
 const ApiPublicHooksFeeRemindersRoute =
   ApiPublicHooksFeeRemindersRouteImport.update({
@@ -380,6 +417,24 @@ const AuthenticatedDashboardFeesCollectRoute =
     path: '/collect',
     getParentRoute: () => AuthenticatedDashboardFeesRoute,
   } as any)
+const AuthenticatedDashboardCertificatesTemplatesRoute =
+  AuthenticatedDashboardCertificatesTemplatesRouteImport.update({
+    id: '/templates',
+    path: '/templates',
+    getParentRoute: () => AuthenticatedDashboardCertificatesRoute,
+  } as any)
+const AuthenticatedDashboardCertificatesHistoryRoute =
+  AuthenticatedDashboardCertificatesHistoryRouteImport.update({
+    id: '/history',
+    path: '/history',
+    getParentRoute: () => AuthenticatedDashboardCertificatesRoute,
+  } as any)
+const AuthenticatedDashboardCertificatesCreateRoute =
+  AuthenticatedDashboardCertificatesCreateRouteImport.update({
+    id: '/create',
+    path: '/create',
+    getParentRoute: () => AuthenticatedDashboardCertificatesRoute,
+  } as any)
 const AuthenticatedDashboardAttendanceMarkRoute =
   AuthenticatedDashboardAttendanceMarkRouteImport.update({
     id: '/mark',
@@ -410,6 +465,7 @@ export interface FileRoutesByFullPath {
   '/admission': typeof AdmissionRouteWithChildren
   '/auth': typeof AuthRoute
   '/blog': typeof BlogRoute
+  '/certificate-verification': typeof CertificateVerificationRouteWithChildren
   '/contact': typeof ContactRoute
   '/courses': typeof CoursesRoute
   '/downloads': typeof DownloadsRoute
@@ -429,10 +485,12 @@ export interface FileRoutesByFullPath {
   '/videos': typeof VideosRoute
   '/dashboard': typeof AuthenticatedDashboardRouteWithChildren
   '/admission/success': typeof AdmissionSuccessRoute
+  '/certificate-verification/$certificateNumber': typeof CertificateVerificationCertificateNumberRoute
   '/search/certificate': typeof SearchCertificateRoute
   '/search/result': typeof SearchResultRoute
   '/search/student': typeof SearchStudentRoute
   '/student-dashboard/attendance': typeof StudentDashboardAttendanceRoute
+  '/student-dashboard/certificates': typeof StudentDashboardCertificatesRouteWithChildren
   '/student-dashboard/fees': typeof StudentDashboardFeesRouteWithChildren
   '/student-dashboard/profile': typeof StudentDashboardProfileRouteWithChildren
   '/student-dashboard/results': typeof StudentDashboardResultsRouteWithChildren
@@ -448,6 +506,7 @@ export interface FileRoutesByFullPath {
   '/student/results': typeof StudentResultsRoute
   '/dashboard/admissions': typeof AuthenticatedDashboardAdmissionsRouteWithChildren
   '/dashboard/attendance': typeof AuthenticatedDashboardAttendanceRouteWithChildren
+  '/dashboard/certificates': typeof AuthenticatedDashboardCertificatesRouteWithChildren
   '/dashboard/fees': typeof AuthenticatedDashboardFeesRouteWithChildren
   '/dashboard/results': typeof AuthenticatedDashboardResultsRouteWithChildren
   '/dashboard/students': typeof AuthenticatedDashboardStudentsRoute
@@ -456,6 +515,9 @@ export interface FileRoutesByFullPath {
   '/dashboard/admissions/$id': typeof AuthenticatedDashboardAdmissionsIdRoute
   '/dashboard/attendance/history': typeof AuthenticatedDashboardAttendanceHistoryRoute
   '/dashboard/attendance/mark': typeof AuthenticatedDashboardAttendanceMarkRoute
+  '/dashboard/certificates/create': typeof AuthenticatedDashboardCertificatesCreateRoute
+  '/dashboard/certificates/history': typeof AuthenticatedDashboardCertificatesHistoryRoute
+  '/dashboard/certificates/templates': typeof AuthenticatedDashboardCertificatesTemplatesRoute
   '/dashboard/fees/collect': typeof AuthenticatedDashboardFeesCollectRoute
   '/dashboard/fees/history': typeof AuthenticatedDashboardFeesHistoryRoute
   '/dashboard/fees/reports': typeof AuthenticatedDashboardFeesReportsRoute
@@ -464,6 +526,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/results/marks-entry': typeof AuthenticatedDashboardResultsMarksEntryRoute
   '/dashboard/results/publish': typeof AuthenticatedDashboardResultsPublishRoute
   '/api/public/hooks/fee-reminders': typeof ApiPublicHooksFeeRemindersRoute
+  '/student-dashboard/certificates/view/$id': typeof StudentDashboardCertificatesViewIdRoute
   '/student-dashboard/fees/receipt/$id': typeof StudentDashboardFeesReceiptIdRoute
   '/student-dashboard/results/view/$id': typeof StudentDashboardResultsViewIdRoute
   '/dashboard/fees/receipt/$id': typeof AuthenticatedDashboardFeesReceiptIdRoute
@@ -473,6 +536,7 @@ export interface FileRoutesByTo {
   '/admission': typeof AdmissionRouteWithChildren
   '/auth': typeof AuthRoute
   '/blog': typeof BlogRoute
+  '/certificate-verification': typeof CertificateVerificationRouteWithChildren
   '/contact': typeof ContactRoute
   '/courses': typeof CoursesRoute
   '/downloads': typeof DownloadsRoute
@@ -492,10 +556,12 @@ export interface FileRoutesByTo {
   '/videos': typeof VideosRoute
   '/dashboard': typeof AuthenticatedDashboardRouteWithChildren
   '/admission/success': typeof AdmissionSuccessRoute
+  '/certificate-verification/$certificateNumber': typeof CertificateVerificationCertificateNumberRoute
   '/search/certificate': typeof SearchCertificateRoute
   '/search/result': typeof SearchResultRoute
   '/search/student': typeof SearchStudentRoute
   '/student-dashboard/attendance': typeof StudentDashboardAttendanceRoute
+  '/student-dashboard/certificates': typeof StudentDashboardCertificatesRouteWithChildren
   '/student-dashboard/fees': typeof StudentDashboardFeesRouteWithChildren
   '/student-dashboard/profile': typeof StudentDashboardProfileRouteWithChildren
   '/student-dashboard/results': typeof StudentDashboardResultsRouteWithChildren
@@ -511,6 +577,7 @@ export interface FileRoutesByTo {
   '/student/results': typeof StudentResultsRoute
   '/dashboard/admissions': typeof AuthenticatedDashboardAdmissionsRouteWithChildren
   '/dashboard/attendance': typeof AuthenticatedDashboardAttendanceRouteWithChildren
+  '/dashboard/certificates': typeof AuthenticatedDashboardCertificatesRouteWithChildren
   '/dashboard/fees': typeof AuthenticatedDashboardFeesRouteWithChildren
   '/dashboard/results': typeof AuthenticatedDashboardResultsRouteWithChildren
   '/dashboard/students': typeof AuthenticatedDashboardStudentsRoute
@@ -519,6 +586,9 @@ export interface FileRoutesByTo {
   '/dashboard/admissions/$id': typeof AuthenticatedDashboardAdmissionsIdRoute
   '/dashboard/attendance/history': typeof AuthenticatedDashboardAttendanceHistoryRoute
   '/dashboard/attendance/mark': typeof AuthenticatedDashboardAttendanceMarkRoute
+  '/dashboard/certificates/create': typeof AuthenticatedDashboardCertificatesCreateRoute
+  '/dashboard/certificates/history': typeof AuthenticatedDashboardCertificatesHistoryRoute
+  '/dashboard/certificates/templates': typeof AuthenticatedDashboardCertificatesTemplatesRoute
   '/dashboard/fees/collect': typeof AuthenticatedDashboardFeesCollectRoute
   '/dashboard/fees/history': typeof AuthenticatedDashboardFeesHistoryRoute
   '/dashboard/fees/reports': typeof AuthenticatedDashboardFeesReportsRoute
@@ -527,6 +597,7 @@ export interface FileRoutesByTo {
   '/dashboard/results/marks-entry': typeof AuthenticatedDashboardResultsMarksEntryRoute
   '/dashboard/results/publish': typeof AuthenticatedDashboardResultsPublishRoute
   '/api/public/hooks/fee-reminders': typeof ApiPublicHooksFeeRemindersRoute
+  '/student-dashboard/certificates/view/$id': typeof StudentDashboardCertificatesViewIdRoute
   '/student-dashboard/fees/receipt/$id': typeof StudentDashboardFeesReceiptIdRoute
   '/student-dashboard/results/view/$id': typeof StudentDashboardResultsViewIdRoute
   '/dashboard/fees/receipt/$id': typeof AuthenticatedDashboardFeesReceiptIdRoute
@@ -538,6 +609,7 @@ export interface FileRoutesById {
   '/admission': typeof AdmissionRouteWithChildren
   '/auth': typeof AuthRoute
   '/blog': typeof BlogRoute
+  '/certificate-verification': typeof CertificateVerificationRouteWithChildren
   '/contact': typeof ContactRoute
   '/courses': typeof CoursesRoute
   '/downloads': typeof DownloadsRoute
@@ -557,10 +629,12 @@ export interface FileRoutesById {
   '/videos': typeof VideosRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRouteWithChildren
   '/admission/success': typeof AdmissionSuccessRoute
+  '/certificate-verification/$certificateNumber': typeof CertificateVerificationCertificateNumberRoute
   '/search/certificate': typeof SearchCertificateRoute
   '/search/result': typeof SearchResultRoute
   '/search/student': typeof SearchStudentRoute
   '/student-dashboard_/attendance': typeof StudentDashboardAttendanceRoute
+  '/student-dashboard_/certificates': typeof StudentDashboardCertificatesRouteWithChildren
   '/student-dashboard_/fees': typeof StudentDashboardFeesRouteWithChildren
   '/student-dashboard_/profile': typeof StudentDashboardProfileRouteWithChildren
   '/student-dashboard_/results': typeof StudentDashboardResultsRouteWithChildren
@@ -576,6 +650,7 @@ export interface FileRoutesById {
   '/student/results': typeof StudentResultsRoute
   '/_authenticated/dashboard/admissions': typeof AuthenticatedDashboardAdmissionsRouteWithChildren
   '/_authenticated/dashboard/attendance': typeof AuthenticatedDashboardAttendanceRouteWithChildren
+  '/_authenticated/dashboard/certificates': typeof AuthenticatedDashboardCertificatesRouteWithChildren
   '/_authenticated/dashboard/fees': typeof AuthenticatedDashboardFeesRouteWithChildren
   '/_authenticated/dashboard/results': typeof AuthenticatedDashboardResultsRouteWithChildren
   '/_authenticated/dashboard/students': typeof AuthenticatedDashboardStudentsRoute
@@ -584,6 +659,9 @@ export interface FileRoutesById {
   '/_authenticated/dashboard/admissions/$id': typeof AuthenticatedDashboardAdmissionsIdRoute
   '/_authenticated/dashboard/attendance/history': typeof AuthenticatedDashboardAttendanceHistoryRoute
   '/_authenticated/dashboard/attendance/mark': typeof AuthenticatedDashboardAttendanceMarkRoute
+  '/_authenticated/dashboard/certificates/create': typeof AuthenticatedDashboardCertificatesCreateRoute
+  '/_authenticated/dashboard/certificates/history': typeof AuthenticatedDashboardCertificatesHistoryRoute
+  '/_authenticated/dashboard/certificates/templates': typeof AuthenticatedDashboardCertificatesTemplatesRoute
   '/_authenticated/dashboard/fees/collect': typeof AuthenticatedDashboardFeesCollectRoute
   '/_authenticated/dashboard/fees/history': typeof AuthenticatedDashboardFeesHistoryRoute
   '/_authenticated/dashboard/fees/reports': typeof AuthenticatedDashboardFeesReportsRoute
@@ -592,6 +670,7 @@ export interface FileRoutesById {
   '/_authenticated/dashboard/results/marks-entry': typeof AuthenticatedDashboardResultsMarksEntryRoute
   '/_authenticated/dashboard/results/publish': typeof AuthenticatedDashboardResultsPublishRoute
   '/api/public/hooks/fee-reminders': typeof ApiPublicHooksFeeRemindersRoute
+  '/student-dashboard_/certificates/view/$id': typeof StudentDashboardCertificatesViewIdRoute
   '/student-dashboard_/fees/receipt/$id': typeof StudentDashboardFeesReceiptIdRoute
   '/student-dashboard_/results/view/$id': typeof StudentDashboardResultsViewIdRoute
   '/_authenticated/dashboard/fees/receipt/$id': typeof AuthenticatedDashboardFeesReceiptIdRoute
@@ -603,6 +682,7 @@ export interface FileRouteTypes {
     | '/admission'
     | '/auth'
     | '/blog'
+    | '/certificate-verification'
     | '/contact'
     | '/courses'
     | '/downloads'
@@ -622,10 +702,12 @@ export interface FileRouteTypes {
     | '/videos'
     | '/dashboard'
     | '/admission/success'
+    | '/certificate-verification/$certificateNumber'
     | '/search/certificate'
     | '/search/result'
     | '/search/student'
     | '/student-dashboard/attendance'
+    | '/student-dashboard/certificates'
     | '/student-dashboard/fees'
     | '/student-dashboard/profile'
     | '/student-dashboard/results'
@@ -641,6 +723,7 @@ export interface FileRouteTypes {
     | '/student/results'
     | '/dashboard/admissions'
     | '/dashboard/attendance'
+    | '/dashboard/certificates'
     | '/dashboard/fees'
     | '/dashboard/results'
     | '/dashboard/students'
@@ -649,6 +732,9 @@ export interface FileRouteTypes {
     | '/dashboard/admissions/$id'
     | '/dashboard/attendance/history'
     | '/dashboard/attendance/mark'
+    | '/dashboard/certificates/create'
+    | '/dashboard/certificates/history'
+    | '/dashboard/certificates/templates'
     | '/dashboard/fees/collect'
     | '/dashboard/fees/history'
     | '/dashboard/fees/reports'
@@ -657,6 +743,7 @@ export interface FileRouteTypes {
     | '/dashboard/results/marks-entry'
     | '/dashboard/results/publish'
     | '/api/public/hooks/fee-reminders'
+    | '/student-dashboard/certificates/view/$id'
     | '/student-dashboard/fees/receipt/$id'
     | '/student-dashboard/results/view/$id'
     | '/dashboard/fees/receipt/$id'
@@ -666,6 +753,7 @@ export interface FileRouteTypes {
     | '/admission'
     | '/auth'
     | '/blog'
+    | '/certificate-verification'
     | '/contact'
     | '/courses'
     | '/downloads'
@@ -685,10 +773,12 @@ export interface FileRouteTypes {
     | '/videos'
     | '/dashboard'
     | '/admission/success'
+    | '/certificate-verification/$certificateNumber'
     | '/search/certificate'
     | '/search/result'
     | '/search/student'
     | '/student-dashboard/attendance'
+    | '/student-dashboard/certificates'
     | '/student-dashboard/fees'
     | '/student-dashboard/profile'
     | '/student-dashboard/results'
@@ -704,6 +794,7 @@ export interface FileRouteTypes {
     | '/student/results'
     | '/dashboard/admissions'
     | '/dashboard/attendance'
+    | '/dashboard/certificates'
     | '/dashboard/fees'
     | '/dashboard/results'
     | '/dashboard/students'
@@ -712,6 +803,9 @@ export interface FileRouteTypes {
     | '/dashboard/admissions/$id'
     | '/dashboard/attendance/history'
     | '/dashboard/attendance/mark'
+    | '/dashboard/certificates/create'
+    | '/dashboard/certificates/history'
+    | '/dashboard/certificates/templates'
     | '/dashboard/fees/collect'
     | '/dashboard/fees/history'
     | '/dashboard/fees/reports'
@@ -720,6 +814,7 @@ export interface FileRouteTypes {
     | '/dashboard/results/marks-entry'
     | '/dashboard/results/publish'
     | '/api/public/hooks/fee-reminders'
+    | '/student-dashboard/certificates/view/$id'
     | '/student-dashboard/fees/receipt/$id'
     | '/student-dashboard/results/view/$id'
     | '/dashboard/fees/receipt/$id'
@@ -730,6 +825,7 @@ export interface FileRouteTypes {
     | '/admission'
     | '/auth'
     | '/blog'
+    | '/certificate-verification'
     | '/contact'
     | '/courses'
     | '/downloads'
@@ -749,10 +845,12 @@ export interface FileRouteTypes {
     | '/videos'
     | '/_authenticated/dashboard'
     | '/admission/success'
+    | '/certificate-verification/$certificateNumber'
     | '/search/certificate'
     | '/search/result'
     | '/search/student'
     | '/student-dashboard_/attendance'
+    | '/student-dashboard_/certificates'
     | '/student-dashboard_/fees'
     | '/student-dashboard_/profile'
     | '/student-dashboard_/results'
@@ -768,6 +866,7 @@ export interface FileRouteTypes {
     | '/student/results'
     | '/_authenticated/dashboard/admissions'
     | '/_authenticated/dashboard/attendance'
+    | '/_authenticated/dashboard/certificates'
     | '/_authenticated/dashboard/fees'
     | '/_authenticated/dashboard/results'
     | '/_authenticated/dashboard/students'
@@ -776,6 +875,9 @@ export interface FileRouteTypes {
     | '/_authenticated/dashboard/admissions/$id'
     | '/_authenticated/dashboard/attendance/history'
     | '/_authenticated/dashboard/attendance/mark'
+    | '/_authenticated/dashboard/certificates/create'
+    | '/_authenticated/dashboard/certificates/history'
+    | '/_authenticated/dashboard/certificates/templates'
     | '/_authenticated/dashboard/fees/collect'
     | '/_authenticated/dashboard/fees/history'
     | '/_authenticated/dashboard/fees/reports'
@@ -784,6 +886,7 @@ export interface FileRouteTypes {
     | '/_authenticated/dashboard/results/marks-entry'
     | '/_authenticated/dashboard/results/publish'
     | '/api/public/hooks/fee-reminders'
+    | '/student-dashboard_/certificates/view/$id'
     | '/student-dashboard_/fees/receipt/$id'
     | '/student-dashboard_/results/view/$id'
     | '/_authenticated/dashboard/fees/receipt/$id'
@@ -795,6 +898,7 @@ export interface RootRouteChildren {
   AdmissionRoute: typeof AdmissionRouteWithChildren
   AuthRoute: typeof AuthRoute
   BlogRoute: typeof BlogRoute
+  CertificateVerificationRoute: typeof CertificateVerificationRouteWithChildren
   ContactRoute: typeof ContactRoute
   CoursesRoute: typeof CoursesRoute
   DownloadsRoute: typeof DownloadsRoute
@@ -816,6 +920,7 @@ export interface RootRouteChildren {
   SearchResultRoute: typeof SearchResultRoute
   SearchStudentRoute: typeof SearchStudentRoute
   StudentDashboardAttendanceRoute: typeof StudentDashboardAttendanceRoute
+  StudentDashboardCertificatesRoute: typeof StudentDashboardCertificatesRouteWithChildren
   StudentDashboardFeesRoute: typeof StudentDashboardFeesRouteWithChildren
   StudentDashboardProfileRoute: typeof StudentDashboardProfileRouteWithChildren
   StudentDashboardResultsRoute: typeof StudentDashboardResultsRouteWithChildren
@@ -953,6 +1058,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ContactRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/certificate-verification': {
+      id: '/certificate-verification'
+      path: '/certificate-verification'
+      fullPath: '/certificate-verification'
+      preLoaderRoute: typeof CertificateVerificationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/blog': {
       id: '/blog'
       path: '/blog'
@@ -1079,6 +1191,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof StudentDashboardFeesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/student-dashboard_/certificates': {
+      id: '/student-dashboard_/certificates'
+      path: '/student-dashboard/certificates'
+      fullPath: '/student-dashboard/certificates'
+      preLoaderRoute: typeof StudentDashboardCertificatesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/student-dashboard_/attendance': {
       id: '/student-dashboard_/attendance'
       path: '/student-dashboard/attendance'
@@ -1106,6 +1225,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/search/certificate'
       preLoaderRoute: typeof SearchCertificateRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/certificate-verification/$certificateNumber': {
+      id: '/certificate-verification/$certificateNumber'
+      path: '/$certificateNumber'
+      fullPath: '/certificate-verification/$certificateNumber'
+      preLoaderRoute: typeof CertificateVerificationCertificateNumberRouteImport
+      parentRoute: typeof CertificateVerificationRoute
     }
     '/admission/success': {
       id: '/admission/success'
@@ -1156,6 +1282,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardFeesRouteImport
       parentRoute: typeof AuthenticatedDashboardRoute
     }
+    '/_authenticated/dashboard/certificates': {
+      id: '/_authenticated/dashboard/certificates'
+      path: '/certificates'
+      fullPath: '/dashboard/certificates'
+      preLoaderRoute: typeof AuthenticatedDashboardCertificatesRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
     '/_authenticated/dashboard/attendance': {
       id: '/_authenticated/dashboard/attendance'
       path: '/attendance'
@@ -1183,6 +1316,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/student-dashboard/fees/receipt/$id'
       preLoaderRoute: typeof StudentDashboardFeesReceiptIdRouteImport
       parentRoute: typeof StudentDashboardFeesRoute
+    }
+    '/student-dashboard_/certificates/view/$id': {
+      id: '/student-dashboard_/certificates/view/$id'
+      path: '/view/$id'
+      fullPath: '/student-dashboard/certificates/view/$id'
+      preLoaderRoute: typeof StudentDashboardCertificatesViewIdRouteImport
+      parentRoute: typeof StudentDashboardCertificatesRoute
     }
     '/api/public/hooks/fee-reminders': {
       id: '/api/public/hooks/fee-reminders'
@@ -1239,6 +1379,27 @@ declare module '@tanstack/react-router' {
       fullPath: '/dashboard/fees/collect'
       preLoaderRoute: typeof AuthenticatedDashboardFeesCollectRouteImport
       parentRoute: typeof AuthenticatedDashboardFeesRoute
+    }
+    '/_authenticated/dashboard/certificates/templates': {
+      id: '/_authenticated/dashboard/certificates/templates'
+      path: '/templates'
+      fullPath: '/dashboard/certificates/templates'
+      preLoaderRoute: typeof AuthenticatedDashboardCertificatesTemplatesRouteImport
+      parentRoute: typeof AuthenticatedDashboardCertificatesRoute
+    }
+    '/_authenticated/dashboard/certificates/history': {
+      id: '/_authenticated/dashboard/certificates/history'
+      path: '/history'
+      fullPath: '/dashboard/certificates/history'
+      preLoaderRoute: typeof AuthenticatedDashboardCertificatesHistoryRouteImport
+      parentRoute: typeof AuthenticatedDashboardCertificatesRoute
+    }
+    '/_authenticated/dashboard/certificates/create': {
+      id: '/_authenticated/dashboard/certificates/create'
+      path: '/create'
+      fullPath: '/dashboard/certificates/create'
+      preLoaderRoute: typeof AuthenticatedDashboardCertificatesCreateRouteImport
+      parentRoute: typeof AuthenticatedDashboardCertificatesRoute
     }
     '/_authenticated/dashboard/attendance/mark': {
       id: '/_authenticated/dashboard/attendance/mark'
@@ -1304,6 +1465,27 @@ const AuthenticatedDashboardAttendanceRouteWithChildren =
     AuthenticatedDashboardAttendanceRouteChildren,
   )
 
+interface AuthenticatedDashboardCertificatesRouteChildren {
+  AuthenticatedDashboardCertificatesCreateRoute: typeof AuthenticatedDashboardCertificatesCreateRoute
+  AuthenticatedDashboardCertificatesHistoryRoute: typeof AuthenticatedDashboardCertificatesHistoryRoute
+  AuthenticatedDashboardCertificatesTemplatesRoute: typeof AuthenticatedDashboardCertificatesTemplatesRoute
+}
+
+const AuthenticatedDashboardCertificatesRouteChildren: AuthenticatedDashboardCertificatesRouteChildren =
+  {
+    AuthenticatedDashboardCertificatesCreateRoute:
+      AuthenticatedDashboardCertificatesCreateRoute,
+    AuthenticatedDashboardCertificatesHistoryRoute:
+      AuthenticatedDashboardCertificatesHistoryRoute,
+    AuthenticatedDashboardCertificatesTemplatesRoute:
+      AuthenticatedDashboardCertificatesTemplatesRoute,
+  }
+
+const AuthenticatedDashboardCertificatesRouteWithChildren =
+  AuthenticatedDashboardCertificatesRoute._addFileChildren(
+    AuthenticatedDashboardCertificatesRouteChildren,
+  )
+
 interface AuthenticatedDashboardFeesRouteChildren {
   AuthenticatedDashboardFeesCollectRoute: typeof AuthenticatedDashboardFeesCollectRoute
   AuthenticatedDashboardFeesHistoryRoute: typeof AuthenticatedDashboardFeesHistoryRoute
@@ -1355,6 +1537,7 @@ const AuthenticatedDashboardResultsRouteWithChildren =
 interface AuthenticatedDashboardRouteChildren {
   AuthenticatedDashboardAdmissionsRoute: typeof AuthenticatedDashboardAdmissionsRouteWithChildren
   AuthenticatedDashboardAttendanceRoute: typeof AuthenticatedDashboardAttendanceRouteWithChildren
+  AuthenticatedDashboardCertificatesRoute: typeof AuthenticatedDashboardCertificatesRouteWithChildren
   AuthenticatedDashboardFeesRoute: typeof AuthenticatedDashboardFeesRouteWithChildren
   AuthenticatedDashboardResultsRoute: typeof AuthenticatedDashboardResultsRouteWithChildren
   AuthenticatedDashboardStudentsRoute: typeof AuthenticatedDashboardStudentsRoute
@@ -1366,6 +1549,8 @@ const AuthenticatedDashboardRouteChildren: AuthenticatedDashboardRouteChildren =
       AuthenticatedDashboardAdmissionsRouteWithChildren,
     AuthenticatedDashboardAttendanceRoute:
       AuthenticatedDashboardAttendanceRouteWithChildren,
+    AuthenticatedDashboardCertificatesRoute:
+      AuthenticatedDashboardCertificatesRouteWithChildren,
     AuthenticatedDashboardFeesRoute:
       AuthenticatedDashboardFeesRouteWithChildren,
     AuthenticatedDashboardResultsRoute:
@@ -1400,6 +1585,36 @@ const AdmissionRouteChildren: AdmissionRouteChildren = {
 const AdmissionRouteWithChildren = AdmissionRoute._addFileChildren(
   AdmissionRouteChildren,
 )
+
+interface CertificateVerificationRouteChildren {
+  CertificateVerificationCertificateNumberRoute: typeof CertificateVerificationCertificateNumberRoute
+}
+
+const CertificateVerificationRouteChildren: CertificateVerificationRouteChildren =
+  {
+    CertificateVerificationCertificateNumberRoute:
+      CertificateVerificationCertificateNumberRoute,
+  }
+
+const CertificateVerificationRouteWithChildren =
+  CertificateVerificationRoute._addFileChildren(
+    CertificateVerificationRouteChildren,
+  )
+
+interface StudentDashboardCertificatesRouteChildren {
+  StudentDashboardCertificatesViewIdRoute: typeof StudentDashboardCertificatesViewIdRoute
+}
+
+const StudentDashboardCertificatesRouteChildren: StudentDashboardCertificatesRouteChildren =
+  {
+    StudentDashboardCertificatesViewIdRoute:
+      StudentDashboardCertificatesViewIdRoute,
+  }
+
+const StudentDashboardCertificatesRouteWithChildren =
+  StudentDashboardCertificatesRoute._addFileChildren(
+    StudentDashboardCertificatesRouteChildren,
+  )
 
 interface StudentDashboardFeesRouteChildren {
   StudentDashboardFeesHistoryRoute: typeof StudentDashboardFeesHistoryRoute
@@ -1448,6 +1663,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdmissionRoute: AdmissionRouteWithChildren,
   AuthRoute: AuthRoute,
   BlogRoute: BlogRoute,
+  CertificateVerificationRoute: CertificateVerificationRouteWithChildren,
   ContactRoute: ContactRoute,
   CoursesRoute: CoursesRoute,
   DownloadsRoute: DownloadsRoute,
@@ -1469,6 +1685,8 @@ const rootRouteChildren: RootRouteChildren = {
   SearchResultRoute: SearchResultRoute,
   SearchStudentRoute: SearchStudentRoute,
   StudentDashboardAttendanceRoute: StudentDashboardAttendanceRoute,
+  StudentDashboardCertificatesRoute:
+    StudentDashboardCertificatesRouteWithChildren,
   StudentDashboardFeesRoute: StudentDashboardFeesRouteWithChildren,
   StudentDashboardProfileRoute: StudentDashboardProfileRouteWithChildren,
   StudentDashboardResultsRoute: StudentDashboardResultsRouteWithChildren,
