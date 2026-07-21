@@ -391,6 +391,161 @@ export type Database = {
         }
         Relationships: []
       }
+      certificate_templates: {
+        Row: {
+          background_image: string | null
+          course_id: string | null
+          created_at: string
+          created_by: string | null
+          id: string
+          seal_image: string | null
+          signature_image: string | null
+          status: Database["public"]["Enums"]["template_status"]
+          template_file: string | null
+          template_name: string
+          updated_at: string
+        }
+        Insert: {
+          background_image?: string | null
+          course_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          seal_image?: string | null
+          signature_image?: string | null
+          status?: Database["public"]["Enums"]["template_status"]
+          template_file?: string | null
+          template_name: string
+          updated_at?: string
+        }
+        Update: {
+          background_image?: string | null
+          course_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          seal_image?: string | null
+          signature_image?: string | null
+          status?: Database["public"]["Enums"]["template_status"]
+          template_file?: string | null
+          template_name?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "certificate_templates_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      certificates: {
+        Row: {
+          branch_id: string | null
+          certificate_number: string
+          certificate_type: Database["public"]["Enums"]["certificate_type"]
+          completion_date: string | null
+          course_id: string | null
+          created_at: string
+          grade: string | null
+          id: string
+          issue_date: string
+          issued_by: string | null
+          pdf_url: string | null
+          percentage: number | null
+          qr_code_url: string | null
+          reissued_from: string | null
+          revoked_reason: string | null
+          status: Database["public"]["Enums"]["certificate_status"]
+          student_id: string
+          template_id: string | null
+          updated_at: string
+          verification_token: string
+        }
+        Insert: {
+          branch_id?: string | null
+          certificate_number?: string
+          certificate_type?: Database["public"]["Enums"]["certificate_type"]
+          completion_date?: string | null
+          course_id?: string | null
+          created_at?: string
+          grade?: string | null
+          id?: string
+          issue_date?: string
+          issued_by?: string | null
+          pdf_url?: string | null
+          percentage?: number | null
+          qr_code_url?: string | null
+          reissued_from?: string | null
+          revoked_reason?: string | null
+          status?: Database["public"]["Enums"]["certificate_status"]
+          student_id: string
+          template_id?: string | null
+          updated_at?: string
+          verification_token?: string
+        }
+        Update: {
+          branch_id?: string | null
+          certificate_number?: string
+          certificate_type?: Database["public"]["Enums"]["certificate_type"]
+          completion_date?: string | null
+          course_id?: string | null
+          created_at?: string
+          grade?: string | null
+          id?: string
+          issue_date?: string
+          issued_by?: string | null
+          pdf_url?: string | null
+          percentage?: number | null
+          qr_code_url?: string | null
+          reissued_from?: string | null
+          revoked_reason?: string | null
+          status?: Database["public"]["Enums"]["certificate_status"]
+          student_id?: string
+          template_id?: string | null
+          updated_at?: string
+          verification_token?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "certificates_branch_id_fkey"
+            columns: ["branch_id"]
+            isOneToOne: false
+            referencedRelation: "branches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "certificates_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "certificates_reissued_from_fkey"
+            columns: ["reissued_from"]
+            isOneToOne: false
+            referencedRelation: "certificates"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "certificates_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "students"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "certificates_template_id_fkey"
+            columns: ["template_id"]
+            isOneToOne: false
+            referencedRelation: "certificate_templates"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       courses: {
         Row: {
           category: string | null
@@ -1284,6 +1439,7 @@ export type Database = {
       }
       next_admission_no: { Args: never; Returns: string }
       next_application_no: { Args: never; Returns: string }
+      next_certificate_no: { Args: never; Returns: string }
       next_enrollment_no: { Args: never; Returns: string }
       next_receipt_no: { Args: never; Returns: string }
       next_student_code: { Args: never; Returns: string }
@@ -1364,6 +1520,20 @@ export type Database = {
         | "half_day"
         | "leave"
         | "holiday"
+      certificate_status:
+        | "draft"
+        | "issued"
+        | "revoked"
+        | "expired"
+        | "reissued"
+      certificate_type:
+        | "course_completion"
+        | "diploma"
+        | "advanced_diploma"
+        | "training"
+        | "internship"
+        | "excellence"
+        | "participation"
       exam_status: "scheduled" | "ongoing" | "completed" | "cancelled"
       exam_type:
         | "monthly_test"
@@ -1392,6 +1562,7 @@ export type Database = {
         | "withheld"
         | "re_evaluation"
         | "cancelled"
+      template_status: "active" | "inactive"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -1535,6 +1706,16 @@ export const Constants = {
         "leave",
         "holiday",
       ],
+      certificate_status: ["draft", "issued", "revoked", "expired", "reissued"],
+      certificate_type: [
+        "course_completion",
+        "diploma",
+        "advanced_diploma",
+        "training",
+        "internship",
+        "excellence",
+        "participation",
+      ],
       exam_status: ["scheduled", "ongoing", "completed", "cancelled"],
       exam_type: [
         "monthly_test",
@@ -1567,6 +1748,7 @@ export const Constants = {
         "re_evaluation",
         "cancelled",
       ],
+      template_status: ["active", "inactive"],
     },
   },
 } as const
