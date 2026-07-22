@@ -54,6 +54,7 @@ import { Route as SearchCertificateRouteImport } from './routes/search.certifica
 import { Route as CertificateVerificationCertificateNumberRouteImport } from './routes/certificate-verification.$certificateNumber'
 import { Route as AdmissionSuccessRouteImport } from './routes/admission.success'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin.index'
 import { Route as StudentDashboardProfileEditRouteImport } from './routes/student-dashboard_.profile.edit'
 import { Route as StudentDashboardFeesHistoryRouteImport } from './routes/student-dashboard_.fees.history'
 import { Route as StudentDashboardDownloadsIdRouteImport } from './routes/student-dashboard_.downloads.$id'
@@ -318,6 +319,11 @@ const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
+  id: '/admin/',
+  path: '/admin/',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const StudentDashboardProfileEditRoute =
   StudentDashboardProfileEditRouteImport.update({
     id: '/edit',
@@ -580,6 +586,7 @@ export interface FileRoutesByFullPath {
   '/student-dashboard/downloads/$id': typeof StudentDashboardDownloadsIdRoute
   '/student-dashboard/fees/history': typeof StudentDashboardFeesHistoryRoute
   '/student-dashboard/profile/edit': typeof StudentDashboardProfileEditRoute
+  '/admin/': typeof AuthenticatedAdminIndexRoute
   '/admin/downloads/categories': typeof AuthenticatedAdminDownloadsCategoriesRoute
   '/admin/downloads/history': typeof AuthenticatedAdminDownloadsHistoryRoute
   '/admin/downloads/upload': typeof AuthenticatedAdminDownloadsUploadRoute
@@ -660,6 +667,7 @@ export interface FileRoutesByTo {
   '/student-dashboard/downloads/$id': typeof StudentDashboardDownloadsIdRoute
   '/student-dashboard/fees/history': typeof StudentDashboardFeesHistoryRoute
   '/student-dashboard/profile/edit': typeof StudentDashboardProfileEditRoute
+  '/admin': typeof AuthenticatedAdminIndexRoute
   '/admin/downloads/categories': typeof AuthenticatedAdminDownloadsCategoriesRoute
   '/admin/downloads/history': typeof AuthenticatedAdminDownloadsHistoryRoute
   '/admin/downloads/upload': typeof AuthenticatedAdminDownloadsUploadRoute
@@ -742,6 +750,7 @@ export interface FileRoutesById {
   '/student-dashboard_/downloads/$id': typeof StudentDashboardDownloadsIdRoute
   '/student-dashboard_/fees/history': typeof StudentDashboardFeesHistoryRoute
   '/student-dashboard_/profile/edit': typeof StudentDashboardProfileEditRoute
+  '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
   '/_authenticated/admin/downloads/categories': typeof AuthenticatedAdminDownloadsCategoriesRoute
   '/_authenticated/admin/downloads/history': typeof AuthenticatedAdminDownloadsHistoryRoute
   '/_authenticated/admin/downloads/upload': typeof AuthenticatedAdminDownloadsUploadRoute
@@ -824,6 +833,7 @@ export interface FileRouteTypes {
     | '/student-dashboard/downloads/$id'
     | '/student-dashboard/fees/history'
     | '/student-dashboard/profile/edit'
+    | '/admin/'
     | '/admin/downloads/categories'
     | '/admin/downloads/history'
     | '/admin/downloads/upload'
@@ -904,6 +914,7 @@ export interface FileRouteTypes {
     | '/student-dashboard/downloads/$id'
     | '/student-dashboard/fees/history'
     | '/student-dashboard/profile/edit'
+    | '/admin'
     | '/admin/downloads/categories'
     | '/admin/downloads/history'
     | '/admin/downloads/upload'
@@ -985,6 +996,7 @@ export interface FileRouteTypes {
     | '/student-dashboard_/downloads/$id'
     | '/student-dashboard_/fees/history'
     | '/student-dashboard_/profile/edit'
+    | '/_authenticated/admin/'
     | '/_authenticated/admin/downloads/categories'
     | '/_authenticated/admin/downloads/history'
     | '/_authenticated/admin/downloads/upload'
@@ -1370,6 +1382,13 @@ declare module '@tanstack/react-router' {
       path: '/dashboard'
       fullPath: '/dashboard'
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/admin/': {
+      id: '/_authenticated/admin/'
+      path: '/admin'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AuthenticatedAdminIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/student-dashboard_/profile/edit': {
@@ -1786,6 +1805,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRouteWithChildren
   AuthenticatedAdminDownloadsRoute: typeof AuthenticatedAdminDownloadsRouteWithChildren
   AuthenticatedFacultyDownloadsRoute: typeof AuthenticatedFacultyDownloadsRouteWithChildren
+  AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
@@ -1794,6 +1814,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
     AuthenticatedAdminDownloadsRouteWithChildren,
   AuthenticatedFacultyDownloadsRoute:
     AuthenticatedFacultyDownloadsRouteWithChildren,
+  AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
