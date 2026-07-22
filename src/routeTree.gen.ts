@@ -66,6 +66,7 @@ import { Route as AuthenticatedDashboardDownloadsRouteImport } from './routes/_a
 import { Route as AuthenticatedDashboardCertificatesRouteImport } from './routes/_authenticated/dashboard.certificates'
 import { Route as AuthenticatedDashboardAttendanceRouteImport } from './routes/_authenticated/dashboard.attendance'
 import { Route as AuthenticatedDashboardAdmissionsRouteImport } from './routes/_authenticated/dashboard.admissions'
+import { Route as AuthenticatedAdminStudentsRouteImport } from './routes/_authenticated/admin.students'
 import { Route as AuthenticatedAdminDownloadsRouteImport } from './routes/_authenticated/admin.downloads'
 import { Route as StudentDashboardResultsViewIdRouteImport } from './routes/student-dashboard_.results.view.$id'
 import { Route as StudentDashboardFeesReceiptIdRouteImport } from './routes/student-dashboard_.fees.receipt.$id'
@@ -390,6 +391,12 @@ const AuthenticatedDashboardAdmissionsRoute =
     path: '/admissions',
     getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
+const AuthenticatedAdminStudentsRoute =
+  AuthenticatedAdminStudentsRouteImport.update({
+    id: '/admin/students',
+    path: '/admin/students',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedAdminDownloadsRoute =
   AuthenticatedAdminDownloadsRouteImport.update({
     id: '/admin/downloads',
@@ -575,6 +582,7 @@ export interface FileRoutesByFullPath {
   '/student/profile': typeof StudentProfileRoute
   '/student/results': typeof StudentResultsRoute
   '/admin/downloads': typeof AuthenticatedAdminDownloadsRouteWithChildren
+  '/admin/students': typeof AuthenticatedAdminStudentsRoute
   '/dashboard/admissions': typeof AuthenticatedDashboardAdmissionsRouteWithChildren
   '/dashboard/attendance': typeof AuthenticatedDashboardAttendanceRouteWithChildren
   '/dashboard/certificates': typeof AuthenticatedDashboardCertificatesRouteWithChildren
@@ -656,6 +664,7 @@ export interface FileRoutesByTo {
   '/student/profile': typeof StudentProfileRoute
   '/student/results': typeof StudentResultsRoute
   '/admin/downloads': typeof AuthenticatedAdminDownloadsRouteWithChildren
+  '/admin/students': typeof AuthenticatedAdminStudentsRoute
   '/dashboard/admissions': typeof AuthenticatedDashboardAdmissionsRouteWithChildren
   '/dashboard/attendance': typeof AuthenticatedDashboardAttendanceRouteWithChildren
   '/dashboard/certificates': typeof AuthenticatedDashboardCertificatesRouteWithChildren
@@ -739,6 +748,7 @@ export interface FileRoutesById {
   '/student/profile': typeof StudentProfileRoute
   '/student/results': typeof StudentResultsRoute
   '/_authenticated/admin/downloads': typeof AuthenticatedAdminDownloadsRouteWithChildren
+  '/_authenticated/admin/students': typeof AuthenticatedAdminStudentsRoute
   '/_authenticated/dashboard/admissions': typeof AuthenticatedDashboardAdmissionsRouteWithChildren
   '/_authenticated/dashboard/attendance': typeof AuthenticatedDashboardAttendanceRouteWithChildren
   '/_authenticated/dashboard/certificates': typeof AuthenticatedDashboardCertificatesRouteWithChildren
@@ -822,6 +832,7 @@ export interface FileRouteTypes {
     | '/student/profile'
     | '/student/results'
     | '/admin/downloads'
+    | '/admin/students'
     | '/dashboard/admissions'
     | '/dashboard/attendance'
     | '/dashboard/certificates'
@@ -903,6 +914,7 @@ export interface FileRouteTypes {
     | '/student/profile'
     | '/student/results'
     | '/admin/downloads'
+    | '/admin/students'
     | '/dashboard/admissions'
     | '/dashboard/attendance'
     | '/dashboard/certificates'
@@ -985,6 +997,7 @@ export interface FileRouteTypes {
     | '/student/profile'
     | '/student/results'
     | '/_authenticated/admin/downloads'
+    | '/_authenticated/admin/students'
     | '/_authenticated/dashboard/admissions'
     | '/_authenticated/dashboard/attendance'
     | '/_authenticated/dashboard/certificates'
@@ -1468,6 +1481,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardAdmissionsRouteImport
       parentRoute: typeof AuthenticatedDashboardRoute
     }
+    '/_authenticated/admin/students': {
+      id: '/_authenticated/admin/students'
+      path: '/admin/students'
+      fullPath: '/admin/students'
+      preLoaderRoute: typeof AuthenticatedAdminStudentsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/admin/downloads': {
       id: '/_authenticated/admin/downloads'
       path: '/admin/downloads'
@@ -1804,6 +1824,7 @@ const AuthenticatedFacultyDownloadsRouteWithChildren =
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRouteWithChildren
   AuthenticatedAdminDownloadsRoute: typeof AuthenticatedAdminDownloadsRouteWithChildren
+  AuthenticatedAdminStudentsRoute: typeof AuthenticatedAdminStudentsRoute
   AuthenticatedFacultyDownloadsRoute: typeof AuthenticatedFacultyDownloadsRouteWithChildren
   AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
 }
@@ -1812,6 +1833,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedDashboardRoute: AuthenticatedDashboardRouteWithChildren,
   AuthenticatedAdminDownloadsRoute:
     AuthenticatedAdminDownloadsRouteWithChildren,
+  AuthenticatedAdminStudentsRoute: AuthenticatedAdminStudentsRoute,
   AuthenticatedFacultyDownloadsRoute:
     AuthenticatedFacultyDownloadsRouteWithChildren,
   AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
