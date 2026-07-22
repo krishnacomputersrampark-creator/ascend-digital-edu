@@ -8,8 +8,9 @@ function daysAgoISO(n: number): string {
 }
 function monthKey(iso: string): string { return iso.slice(0, 7); }
 
-async function count(table: string, filters: (q: any) => any = (q) => q): Promise<number> {
-  const { count: c } = await filters(supabase.from(table).select("*", { count: "exact", head: true }));
+async function count(table: any, filters: (q: any) => any = (q) => q): Promise<number> {
+  const q: any = (supabase as any).from(table).select("*", { count: "exact", head: true });
+  const { count: c } = await filters(q);
   return c ?? 0;
 }
 
