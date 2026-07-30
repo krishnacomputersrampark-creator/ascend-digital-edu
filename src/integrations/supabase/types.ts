@@ -344,6 +344,20 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "batches_faculty_id_fkey"
+            columns: ["faculty_id"]
+            isOneToOne: false
+            referencedRelation: "user_profiles"
+            referencedColumns: ["auth_user_id"]
+          },
+          {
+            foreignKeyName: "batches_faculty_id_fkey"
+            columns: ["faculty_id"]
+            isOneToOne: false
+            referencedRelation: "user_profiles"
+            referencedColumns: ["id"]
+          },
         ]
       }
       branches: {
@@ -953,6 +967,7 @@ export type Database = {
           title: string
           type: string
           updated_at: string
+          user_id: string | null
         }
         Insert: {
           branch_id?: string | null
@@ -966,6 +981,7 @@ export type Database = {
           title: string
           type?: string
           updated_at?: string
+          user_id?: string | null
         }
         Update: {
           branch_id?: string | null
@@ -979,6 +995,7 @@ export type Database = {
           title?: string
           type?: string
           updated_at?: string
+          user_id?: string | null
         }
         Relationships: [
           {
@@ -1000,8 +1017,11 @@ export type Database = {
       profiles: {
         Row: {
           address: string | null
+          approved_at: string | null
+          approved_by: string | null
           branch_id: string | null
           created_at: string
+          created_by: string | null
           date_of_birth: string | null
           deleted_at: string | null
           email: string | null
@@ -1012,16 +1032,22 @@ export type Database = {
           guardian_name: string | null
           guardian_phone: string | null
           id: string
+          last_login: string | null
           phone: string | null
           photo_url: string | null
+          rejection_reason: string | null
+          requested_role: Database["public"]["Enums"]["app_role"]
           status: string
           student_id: string | null
           updated_at: string
         }
         Insert: {
           address?: string | null
+          approved_at?: string | null
+          approved_by?: string | null
           branch_id?: string | null
           created_at?: string
+          created_by?: string | null
           date_of_birth?: string | null
           deleted_at?: string | null
           email?: string | null
@@ -1032,16 +1058,22 @@ export type Database = {
           guardian_name?: string | null
           guardian_phone?: string | null
           id: string
+          last_login?: string | null
           phone?: string | null
           photo_url?: string | null
+          rejection_reason?: string | null
+          requested_role?: Database["public"]["Enums"]["app_role"]
           status?: string
           student_id?: string | null
           updated_at?: string
         }
         Update: {
           address?: string | null
+          approved_at?: string | null
+          approved_by?: string | null
           branch_id?: string | null
           created_at?: string
+          created_by?: string | null
           date_of_birth?: string | null
           deleted_at?: string | null
           email?: string | null
@@ -1052,8 +1084,11 @@ export type Database = {
           guardian_name?: string | null
           guardian_phone?: string | null
           id?: string
+          last_login?: string | null
           phone?: string | null
           photo_url?: string | null
+          rejection_reason?: string | null
+          requested_role?: Database["public"]["Enums"]["app_role"]
           status?: string
           student_id?: string | null
           updated_at?: string
@@ -1632,9 +1667,97 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      user_profiles: {
+        Row: {
+          approved_at: string | null
+          approved_by: string | null
+          auth_user_id: string | null
+          branch_id: string | null
+          created_at: string | null
+          created_by: string | null
+          email: string | null
+          full_name: string | null
+          id: string | null
+          last_login: string | null
+          mobile: string | null
+          photo_url: string | null
+          rejection_reason: string | null
+          requested_role: Database["public"]["Enums"]["app_role"] | null
+          role: Database["public"]["Enums"]["app_role"] | null
+          status: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          approved_at?: string | null
+          approved_by?: string | null
+          auth_user_id?: string | null
+          branch_id?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          email?: string | null
+          full_name?: string | null
+          id?: string | null
+          last_login?: string | null
+          mobile?: string | null
+          photo_url?: string | null
+          rejection_reason?: string | null
+          requested_role?: Database["public"]["Enums"]["app_role"] | null
+          role?: never
+          status?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          approved_at?: string | null
+          approved_by?: string | null
+          auth_user_id?: string | null
+          branch_id?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          email?: string | null
+          full_name?: string | null
+          id?: string | null
+          last_login?: string | null
+          mobile?: string | null
+          photo_url?: string | null
+          rejection_reason?: string | null
+          requested_role?: Database["public"]["Enums"]["app_role"] | null
+          role?: never
+          status?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "profiles_branch_id_fkey"
+            columns: ["branch_id"]
+            isOneToOne: false
+            referencedRelation: "branches"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Functions: {
+      admin_approve_user: {
+        Args: {
+          _branch?: string
+          _role?: Database["public"]["Enums"]["app_role"]
+          _uid: string
+        }
+        Returns: undefined
+      }
+      admin_assign_role: {
+        Args: {
+          _branch?: string
+          _role: Database["public"]["Enums"]["app_role"]
+          _uid: string
+        }
+        Returns: undefined
+      }
+      admin_delete_user: { Args: { _uid: string }; Returns: undefined }
+      admin_set_user_status: {
+        Args: { _reason?: string; _status: string; _uid: string }
+        Returns: undefined
+      }
       calc_division: { Args: { _pct: number }; Returns: string }
       calc_grade: { Args: { _pct: number }; Returns: string }
       get_current_user_role: {
@@ -1649,6 +1772,8 @@ export type Database = {
         Returns: boolean
       }
       is_material_admin: { Args: { _uid: string }; Returns: boolean }
+      is_user_admin: { Args: { _uid: string }; Returns: boolean }
+      log_logout: { Args: never; Returns: undefined }
       next_admission_no: { Args: never; Returns: string }
       next_application_no: { Args: never; Returns: string }
       next_certificate_no: { Args: never; Returns: string }
@@ -1656,12 +1781,18 @@ export type Database = {
       next_receipt_no: { Args: never; Returns: string }
       next_student_code: { Args: never; Returns: string }
       recalc_student_fee: { Args: { _sf: string }; Returns: undefined }
+      record_login: { Args: never; Returns: string }
+      role_of: {
+        Args: { _uid: string }
+        Returns: Database["public"]["Enums"]["app_role"]
+      }
       show_limit: { Args: never; Returns: number }
       show_trgm: { Args: { "": string }; Returns: string[] }
       student_can_see_material: {
         Args: { _mid: string; _uid: string }
         Returns: boolean
       }
+      super_admin_exists: { Args: never; Returns: boolean }
       update_my_student_profile: {
         Args: {
           _address: string
