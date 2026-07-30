@@ -55,7 +55,8 @@ const ALL_GROUPS: NavGroup[] = [
     title: "Administration",
     items: [
       { label: "Reports", to: "/dashboard/reports", icon: BarChart3, roles: ["super_admin", "admin", "branch_manager"] },
-      { label: "Roles & Users", to: "/dashboard/roles", icon: ShieldCheck, roles: ["super_admin"] },
+      { label: "Users & Roles", to: "/admin/users", icon: ShieldCheck, roles: ["super_admin", "admin"] },
+      { label: "Pending Approvals", to: "/admin/users/pending", icon: UserRound, roles: ["super_admin", "admin"] },
       { label: "Settings", to: "/dashboard/settings", icon: Settings, roles: ["super_admin", "admin"] },
     ],
   },

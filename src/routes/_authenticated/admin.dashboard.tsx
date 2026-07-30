@@ -6,6 +6,7 @@ import {
   Download, TrendingUp, Bell, UserPlus, Loader2, ArrowRight, PlusCircle, ReceiptText, BarChart3, Send,
 } from "lucide-react";
 import { DashboardShell } from "@/components/erp/DashboardShell";
+import { PendingApprovalWidget } from "@/components/erp/PendingApprovalWidget";
 import {
   fetchAdminStats, fetchTrends, fetchRecentActivity,
   type AdminStats, type Activity, type TrendPoint,
@@ -90,6 +91,7 @@ function AdminDashboard() {
           </div>
 
           <div className="mt-6 grid gap-4 lg:grid-cols-3">
+            <PendingApprovalWidget />
             <div className="rounded-2xl border border-border bg-white p-5 shadow-soft">
               <div className="mb-3 text-sm font-bold text-ink">Quick Actions</div>
               <div className="grid grid-cols-2 gap-2">

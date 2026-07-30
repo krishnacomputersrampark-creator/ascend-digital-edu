@@ -7,6 +7,7 @@ import { Eye, EyeOff, Lock, User as UserIcon, ShieldCheck, ArrowRight, Loader2, 
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { SiteLayout } from "@/components/site/SiteLayout";
+import { enforceApprovalAfterLogin } from "@/lib/approval";
 
 export const Route = createFileRoute("/login")({
   head: () => ({
@@ -55,6 +56,8 @@ function LoginPage() {
     }
     const { error } = await supabase.auth.signInWithPassword({ email, password: v.password });
     if (error) { toast.error(error.message); return; }
+    const gate = await enforceApprovalAfterLogin();
+    if (!gate.ok) { toast.error(gate.message); return; }
     toast.success("Signed in successfully");
     navigate({ to: redirect ?? "/student-dashboard" });
   };

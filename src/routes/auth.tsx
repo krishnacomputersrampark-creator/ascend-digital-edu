@@ -7,6 +7,7 @@ import { Eye, EyeOff, Lock, Mail, User as UserIcon, ShieldCheck, ArrowRight, Loa
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { SiteLayout } from "@/components/site/SiteLayout";
+import { enforceApprovalAfterLogin } from "@/lib/approval";
 
 export const Route = createFileRoute("/auth")({
   validateSearch: (s: Record<string, unknown>): { next?: string } => {
@@ -41,6 +42,7 @@ type SignUpForm = z.infer<typeof signUpSchema>;
 function AuthPage() {
   const [mode, setMode] = useState<"signin" | "signup">("signin");
   const [showPw, setShowPw] = useState(false);
+  const [notice, setNotice] = useState<string | null>(null);
   const navigate = useNavigate();
   const { next } = Route.useSearch();
 
@@ -48,14 +50,18 @@ function AuthPage() {
   const signUp = useForm<SignUpForm>({ resolver: zodResolver(signUpSchema), defaultValues: { full_name: "", email: "", phone: "", password: "" } });
 
   const onSignIn = async (v: SignInForm) => {
+    setNotice(null);
     const { error } = await supabase.auth.signInWithPassword({ email: v.email, password: v.password });
     if (error) { toast.error(error.message); return; }
+    const gate = await enforceApprovalAfterLogin();
+    if (!gate.ok) { setNotice(gate.message); toast.error(gate.message); return; }
     toast.success("Welcome back!");
     if (next) { window.location.href = next; return; }
     navigate({ to: "/dashboard" });
   };
 
   const onSignUp = async (v: SignUpForm) => {
+    setNotice(null);
     const { error } = await supabase.auth.signUp({
       email: v.email,
       password: v.password,
@@ -65,7 +71,10 @@ function AuthPage() {
       },
     });
     if (error) { toast.error(error.message); return; }
-    toast.success("Account created. You can sign in now.");
+    await supabase.auth.signOut();
+    const msg = "Your account has been submitted successfully and is waiting for administrator approval.";
+    setNotice(msg);
+    toast.success(msg);
     setMode("signin");
     signIn.reset({ email: v.email, password: "" });
   };
@@ -110,6 +119,12 @@ function AuthPage() {
                 <button type="button" onClick={() => setMode("signin")} className={`flex-1 rounded-full px-3 py-1.5 transition ${isSignIn ? "gradient-brand text-white shadow-brand" : "text-ink/70"}`}>Sign In</button>
                 <button type="button" onClick={() => setMode("signup")} className={`flex-1 rounded-full px-3 py-1.5 transition ${!isSignIn ? "gradient-brand text-white shadow-brand" : "text-ink/70"}`}>Create Account</button>
               </div>
+
+              {notice && (
+                <div className="mb-4 rounded-xl border border-amber-200 bg-amber-50 p-3 text-xs font-semibold text-amber-800">
+                  {notice}
+                </div>
+              )}
 
               {isSignIn ? (
                 <form onSubmit={signIn.handleSubmit(onSignIn)} className="space-y-4">
