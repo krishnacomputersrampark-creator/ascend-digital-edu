@@ -1,29 +1,32 @@
 import { createServerFn } from "@tanstack/react-start";
+import { createClient } from "@supabase/supabase-js";
 import { z } from "zod";
+import type { Database } from "@/integrations/supabase/types";
 
+// Publishable-key server client — never needs the service role key.
+function publicServerClient() {
+  const key = process.env.SUPABASE_PUBLISHABLE_KEY!;
+  return createClient<Database>(process.env.SUPABASE_URL!, key, {
+    auth: { storage: undefined, persistSession: false, autoRefreshToken: false },
+    global: {
+      fetch: (input, init) => {
+        const h = new Headers(init?.headers);
+        if (key.startsWith("sb_") && h.get("Authorization") === `Bearer ${key}`) h.delete("Authorization");
+        h.set("apikey", key);
+        return fetch(input, { ...init, headers: h });
+      },
+    },
+  });
+}
+
+// Source of truth: the security-definer `super_admin_exists()` function, which
+// only reports true for an APPROVED user holding the super_admin role.
+// No service role key involved, and Guest/pending users can never lock setup.
 export const setupAvailable = createServerFn({ method: "GET" }).handler(async () => {
-  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-
-  // Source of truth: an APPROVED user that actually holds the super_admin role.
-  // Never rely on a cached flag / settings row — Guest or pending users must not lock setup.
-  const { data: roleRows, error: rErr } = await supabaseAdmin
-    .from("user_roles")
-    .select("user_id")
-    .eq("role", "super_admin");
-  if (rErr) throw new Error(rErr.message);
-
-  const ids = (roleRows ?? []).map((r: { user_id: string }) => r.user_id);
-  if (ids.length === 0) return { available: true, superAdmins: 0 };
-
-  const { data: approved, error: pErr } = await supabaseAdmin
-    .from("profiles")
-    .select("id")
-    .in("id", ids)
-    .eq("status", "approved");
-  if (pErr) throw new Error(pErr.message);
-
-  const count = approved?.length ?? 0;
-  return { available: count === 0, superAdmins: count };
+  const supabase = publicServerClient();
+  const { data, error } = await supabase.rpc("super_admin_exists");
+  if (error) throw new Error(error.message);
+  return { available: data !== true, superAdmins: data === true ? 1 : 0 };
 });
 
 const bootstrapSchema = z
@@ -44,19 +47,21 @@ const bootstrapSchema = z
 export const bootstrapSuperAdmin = createServerFn({ method: "POST" })
   .inputValidator((d: unknown) => bootstrapSchema.parse(d))
   .handler(async ({ data }) => {
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-
-    const { data: saRoles, error: exErr } = await supabaseAdmin
-      .from("user_roles").select("user_id").eq("role", "super_admin");
+    // Guard first with the publishable client (no privileged key needed).
+    const pub = publicServerClient();
+    const { data: exists, error: exErr } = await pub.rpc("super_admin_exists");
     if (exErr) throw new Error(exErr.message);
-    const saIds = (saRoles ?? []).map((r: { user_id: string }) => r.user_id);
-    if (saIds.length > 0) {
-      const { data: approvedSa } = await supabaseAdmin
-        .from("profiles").select("id").in("id", saIds).eq("status", "approved");
-      if ((approvedSa?.length ?? 0) > 0) {
-        throw new Error("Setup has already been completed. An approved Super Admin already exists.");
-      }
+    if (exists === true) {
+      throw new Error("Setup has already been completed. An approved Super Admin already exists.");
     }
+
+    // The service role key stays server-side only. If it is unavailable in this
+    // environment, tell the client to use the self-service fallback (sign up /
+    // sign in with the publishable key, then call the claim_super_admin RPC).
+    if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
+      throw new Error("NO_ADMIN_KEY");
+    }
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
     // Resolve or create the branch
     let branchId: string | null = null;
