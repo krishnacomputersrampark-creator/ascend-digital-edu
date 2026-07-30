@@ -33,6 +33,7 @@ function SetupPage() {
   const [available, setAvailable] = useState<boolean | null>(null);
   const [done, setDone] = useState(false);
   const [err, setErr] = useState<string | null>(null);
+  const [checkError, setCheckError] = useState<string | null>(null);
 
   const form = useForm<Form>({
     resolver: zodResolver(schema),
@@ -43,7 +44,15 @@ function SetupPage() {
   });
 
   useEffect(() => {
-    check({} as any).then((r: any) => setAvailable(!!r?.available)).catch(() => setAvailable(false));
+    let alive = true;
+    setCheckError(null);
+    check({} as any)
+      .then((r: any) => { if (alive) setAvailable(!!r?.available); })
+      .catch((e: any) => {
+        // A failed check must NEVER be reported as "setup already completed".
+        if (alive) { setCheckError(e?.message ?? "Could not check setup status"); setAvailable(null); }
+      });
+    return () => { alive = false; };
   }, [check]);
 
   const onSubmit = async (v: Form) => {
@@ -72,13 +81,20 @@ function SetupPage() {
           </div>
         </div>
 
-        {available === null && (
+        {available === null && !checkError && (
           <div className="flex items-center gap-2 py-10 text-sm text-muted-foreground">
             <Loader2 className="h-4 w-4 animate-spin" /> Checking setup status…
           </div>
         )}
 
-        {available === false && !done && (
+        {checkError && (
+          <div className="mt-4 flex items-start gap-2 rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-800">
+            <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
+            <span>Could not check setup status: {checkError}. Reload the page to try again.</span>
+          </div>
+        )}
+
+        {available === false && !done && !checkError && (
           <div className="mt-4 flex items-start gap-2 rounded-xl border border-border bg-cyan-soft/50 p-4 text-sm text-ink/80">
             <Lock className="mt-0.5 h-4 w-4 shrink-0 text-brand" />
             <span>
