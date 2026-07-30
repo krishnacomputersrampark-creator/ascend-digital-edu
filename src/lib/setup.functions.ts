@@ -45,14 +45,33 @@ export const bootstrapSuperAdmin = createServerFn({ method: "POST" })
       branchId = created?.id ?? null;
     }
 
+    // Create the auth account. If the email already belongs to an existing
+    // (e.g. Guest / pending) account, promote that account instead of failing.
+    let uid: string | null = null;
     const { data: created, error: cErr } = await supabaseAdmin.auth.admin.createUser({
       email: data.email,
       password: data.password,
       email_confirm: true,
       user_metadata: { full_name: data.full_name, phone: data.phone },
     });
-    if (cErr || !created?.user) throw new Error(cErr?.message ?? "Could not create the Super Admin account");
-    const uid = created.user.id;
+    if (created?.user) {
+      uid = created.user.id;
+    } else {
+      const alreadyRegistered = /already|exists|registered/i.test(cErr?.message ?? "");
+      if (!alreadyRegistered) throw new Error(cErr?.message ?? "Could not create the Super Admin account");
+
+      const { data: existing } = await supabaseAdmin
+        .from("profiles").select("id").ilike("email", data.email).maybeSingle();
+      uid = existing?.id ?? null;
+      if (!uid) throw new Error("An account with this email already exists. Please sign in or use a different email.");
+
+      const { error: uErr } = await supabaseAdmin.auth.admin.updateUserById(uid, {
+        password: data.password,
+        email_confirm: true,
+        user_metadata: { full_name: data.full_name, phone: data.phone },
+      });
+      if (uErr) throw new Error(uErr.message);
+    }
 
     const { error: pErr } = await supabaseAdmin.from("profiles").upsert({
       id: uid,
