@@ -107,7 +107,7 @@ export function UploadPage({ mode }: { mode: "admin" | "faculty" }) {
       visibility: form.visibility, status: form.status, is_featured: form.is_featured,
       youtube_url: form.youtube_url || null, external_link: form.external_link || null,
     });
-    if (!parsed.success) { toast.error(parsed.error.errors[0].message); return; }
+    if (!parsed.success) { toast.error(parsed.error.issues[0].message); return; }
 
     if (!isEdit && !file && !form.youtube_url && !form.external_link) {
       toast.error("Upload a file, provide a YouTube URL, or an external link"); return;
