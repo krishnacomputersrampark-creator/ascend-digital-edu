@@ -1760,6 +1760,15 @@ export type Database = {
       }
       calc_division: { Args: { _pct: number }; Returns: string }
       calc_grade: { Args: { _pct: number }; Returns: string }
+      claim_super_admin: {
+        Args: {
+          _branch_name: string
+          _full_name: string
+          _institute_name: string
+          _phone: string
+        }
+        Returns: Json
+      }
       get_current_user_role: {
         Args: never
         Returns: Database["public"]["Enums"]["app_role"]
