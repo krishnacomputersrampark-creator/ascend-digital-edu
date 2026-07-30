@@ -9,6 +9,10 @@ import { supabase } from "@/integrations/supabase/client";
 import { SiteLayout } from "@/components/site/SiteLayout";
 
 export const Route = createFileRoute("/auth")({
+  validateSearch: (s: Record<string, unknown>): { next?: string } => {
+    const next = typeof s.next === "string" && s.next.startsWith("/") && !s.next.startsWith("//") ? s.next : undefined;
+    return next ? { next } : {};
+  },
   head: () => ({
     meta: [
       { title: "Sign In · Krishna Computer Center ERP" },
@@ -38,6 +42,7 @@ function AuthPage() {
   const [mode, setMode] = useState<"signin" | "signup">("signin");
   const [showPw, setShowPw] = useState(false);
   const navigate = useNavigate();
+  const { next } = Route.useSearch();
 
   const signIn = useForm<SignInForm>({ resolver: zodResolver(signInSchema), defaultValues: { email: "", password: "" } });
   const signUp = useForm<SignUpForm>({ resolver: zodResolver(signUpSchema), defaultValues: { full_name: "", email: "", phone: "", password: "" } });
@@ -46,6 +51,7 @@ function AuthPage() {
     const { error } = await supabase.auth.signInWithPassword({ email: v.email, password: v.password });
     if (error) { toast.error(error.message); return; }
     toast.success("Welcome back!");
+    if (next) { window.location.href = next; return; }
     navigate({ to: "/dashboard" });
   };
 
@@ -54,7 +60,7 @@ function AuthPage() {
       email: v.email,
       password: v.password,
       options: {
-        emailRedirectTo: `${window.location.origin}/dashboard`,
+        emailRedirectTo: `${window.location.origin}${next ?? "/dashboard"}`,
         data: { full_name: v.full_name, phone: v.phone ?? "" },
       },
     });

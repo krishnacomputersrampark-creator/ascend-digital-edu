@@ -1,0 +1,142 @@
+{
+  "version": 1,
+  "sdk_version": "0.25.0",
+  "path": "/mcp",
+  "auth": {
+    "type": "oauth",
+    "issuer": "https://tjljtwdzextdnqefnbdh.supabase.co/auth/v1",
+    "accepted_audiences": [
+      "authenticated"
+    ]
+  },
+  "mcp": {
+    "server": {
+      "name": "krishna-digital-academy",
+      "version": "0.1.0",
+      "title": "Krishna Digital Academy"
+    },
+    "tools": [
+      {
+        "name": "whoami",
+        "title": "Who am I",
+        "description": "Return the signed-in user's profile, role, and linked student record (if any).",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {}
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "list_courses",
+        "title": "List courses",
+        "description": "List the institute's courses with code, duration, fees and category.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "search": {
+              "description": "Optional text to match against course name or code.",
+              "type": "string"
+            },
+            "limit": {
+              "description": "Maximum number of courses to return (default 25).",
+              "type": "integer",
+              "minimum": -9007199254740991,
+              "maximum": 9007199254740991
+            }
+          }
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "search_students",
+        "title": "Search students",
+        "description": "Search students visible to the signed-in user by name, enrollment number, or phone.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "query": {
+              "type": "string",
+              "description": "Name, enrollment number, student code, or phone to search for."
+            },
+            "limit": {
+              "description": "Maximum number of students to return (default 20).",
+              "type": "integer",
+              "minimum": -9007199254740991,
+              "maximum": 9007199254740991
+            }
+          },
+          "required": [
+            "query"
+          ]
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "student_overview",
+        "title": "Student overview",
+        "description": "Fee balance, attendance summary, published results and certificates for one student, by enrollment number.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "enrollment_no": {
+              "type": "string",
+              "description": "The student's enrollment number, e.g. KCC/2025/00123."
+            }
+          },
+          "required": [
+            "enrollment_no"
+          ]
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "verify_certificate",
+        "title": "Verify certificate",
+        "description": "Check whether a Krishna Computer Center certificate number is valid, issued, or revoked.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "certificate_number": {
+              "type": "string",
+              "description": "Certificate number, e.g. KCC-CERT-2025-000123."
+            }
+          },
+          "required": [
+            "certificate_number"
+          ]
+        },
+        "outputSchema": null
+      }
+    ]
+  }
+}
