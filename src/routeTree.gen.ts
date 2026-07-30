@@ -86,6 +86,7 @@ import { Route as AuthenticatedAdminBackupRouteImport } from './routes/_authenti
 import { Route as AuthenticatedAdminAuditLogsRouteImport } from './routes/_authenticated/admin.audit-logs'
 import { Route as AuthenticatedAdminAnalyticsRouteImport } from './routes/_authenticated/admin.analytics'
 import { Route as Char91DotmcpChar93InvokeToolToolRouteImport } from './routes/[.mcp]/invoke-tool/$tool'
+import { Route as DotlovableOauthConsentRouteImport } from './routes/[.]lovable.oauth.consent'
 import { Route as StudentDashboardResultsViewIdRouteImport } from './routes/student-dashboard_.results.view.$id'
 import { Route as StudentDashboardFeesReceiptIdRouteImport } from './routes/student-dashboard_.fees.receipt.$id'
 import { Route as StudentDashboardCertificatesViewIdRouteImport } from './routes/student-dashboard_.certificates.view.$id'
@@ -526,6 +527,11 @@ const Char91DotmcpChar93InvokeToolToolRoute =
     path: '/.mcp/invoke-tool/$tool',
     getParentRoute: () => rootRouteImport,
   } as any)
+const DotlovableOauthConsentRoute = DotlovableOauthConsentRouteImport.update({
+  id: '/.lovable/oauth/consent',
+  path: '/.lovable/oauth/consent',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const StudentDashboardResultsViewIdRoute =
   StudentDashboardResultsViewIdRouteImport.update({
     id: '/view/$id',
@@ -707,6 +713,7 @@ export interface FileRoutesByFullPath {
   '/student/online-test': typeof StudentOnlineTestRoute
   '/student/profile': typeof StudentProfileRoute
   '/student/results': typeof StudentResultsRoute
+  '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/admin/analytics': typeof AuthenticatedAdminAnalyticsRoute
   '/admin/audit-logs': typeof AuthenticatedAdminAuditLogsRoute
@@ -807,6 +814,7 @@ export interface FileRoutesByTo {
   '/student/online-test': typeof StudentOnlineTestRoute
   '/student/profile': typeof StudentProfileRoute
   '/student/results': typeof StudentResultsRoute
+  '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/admin/analytics': typeof AuthenticatedAdminAnalyticsRoute
   '/admin/audit-logs': typeof AuthenticatedAdminAuditLogsRoute
@@ -909,6 +917,7 @@ export interface FileRoutesById {
   '/student/online-test': typeof StudentOnlineTestRoute
   '/student/profile': typeof StudentProfileRoute
   '/student/results': typeof StudentResultsRoute
+  '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/_authenticated/admin/analytics': typeof AuthenticatedAdminAnalyticsRoute
   '/_authenticated/admin/audit-logs': typeof AuthenticatedAdminAuditLogsRoute
@@ -1011,6 +1020,7 @@ export interface FileRouteTypes {
     | '/student/online-test'
     | '/student/profile'
     | '/student/results'
+    | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
     | '/admin/analytics'
     | '/admin/audit-logs'
@@ -1111,6 +1121,7 @@ export interface FileRouteTypes {
     | '/student/online-test'
     | '/student/profile'
     | '/student/results'
+    | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
     | '/admin/analytics'
     | '/admin/audit-logs'
@@ -1212,6 +1223,7 @@ export interface FileRouteTypes {
     | '/student/online-test'
     | '/student/profile'
     | '/student/results'
+    | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
     | '/_authenticated/admin/analytics'
     | '/_authenticated/admin/audit-logs'
@@ -1311,6 +1323,7 @@ export interface RootRouteChildren {
   StudentOnlineTestRoute: typeof StudentOnlineTestRoute
   StudentProfileRoute: typeof StudentProfileRoute
   StudentResultsRoute: typeof StudentResultsRoute
+  DotlovableOauthConsentRoute: typeof DotlovableOauthConsentRoute
   Char91DotmcpChar93InvokeToolToolRoute: typeof Char91DotmcpChar93InvokeToolToolRoute
   ApiPublicHooksFeeRemindersRoute: typeof ApiPublicHooksFeeRemindersRoute
 }
@@ -1856,6 +1869,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof Char91DotmcpChar93InvokeToolToolRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/.lovable/oauth/consent': {
+      id: '/.lovable/oauth/consent'
+      path: '/.lovable/oauth/consent'
+      fullPath: '/.lovable/oauth/consent'
+      preLoaderRoute: typeof DotlovableOauthConsentRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/student-dashboard_/results/view/$id': {
       id: '/student-dashboard_/results/view/$id'
       path: '/view/$id'
@@ -2376,6 +2396,7 @@ const rootRouteChildren: RootRouteChildren = {
   StudentOnlineTestRoute: StudentOnlineTestRoute,
   StudentProfileRoute: StudentProfileRoute,
   StudentResultsRoute: StudentResultsRoute,
+  DotlovableOauthConsentRoute: DotlovableOauthConsentRoute,
   Char91DotmcpChar93InvokeToolToolRoute: Char91DotmcpChar93InvokeToolToolRoute,
   ApiPublicHooksFeeRemindersRoute: ApiPublicHooksFeeRemindersRoute,
 }
