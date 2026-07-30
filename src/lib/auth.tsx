@@ -33,6 +33,7 @@ type AuthState = {
   user: User | null;
   role: AppRole | null;
   profile: { full_name: string | null; photo_url: string | null; email: string | null } | null;
+  status: string | null;
   loading: boolean;
 };
 
@@ -41,6 +42,7 @@ const AuthCtx = createContext<AuthState>({
   user: null,
   role: null,
   profile: null,
+  status: null,
   loading: true,
 });
 
@@ -50,6 +52,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     user: null,
     role: null,
     profile: null,
+    status: null,
     loading: true,
   });
 
@@ -58,14 +61,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     const loadUserContext = async (session: Session | null) => {
       if (!session?.user) {
-        if (mounted) setState({ session: null, user: null, role: null, profile: null, loading: false });
+        if (mounted) setState({ session: null, user: null, role: null, profile: null, status: null, loading: false });
         return;
       }
       // Fetch role + profile in parallel via setTimeout to avoid deadlocks with onAuthStateChange
       setTimeout(async () => {
         const [{ data: roleRow }, { data: prof }] = await Promise.all([
           supabase.rpc("get_current_user_role"),
-          supabase.from("profiles").select("full_name, photo_url, email").eq("id", session.user.id).maybeSingle(),
+          supabase.from("profiles").select("full_name, photo_url, email, status").eq("id", session.user.id).maybeSingle(),
         ]);
         if (!mounted) return;
         setState({
@@ -73,6 +76,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           user: session.user,
           role: (roleRow as AppRole | null) ?? "guest",
           profile: prof ?? null,
+          status: (prof as any)?.status ?? null,
           loading: false,
         });
       }, 0);
@@ -99,6 +103,7 @@ export function useAuth() {
 }
 
 export async function signOutAndRedirect() {
+  try { await supabase.rpc("log_logout"); } catch { /* audit is best-effort */ }
   await supabase.auth.signOut();
   window.location.replace("/");
 }
