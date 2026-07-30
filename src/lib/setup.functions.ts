@@ -3,9 +3,27 @@ import { z } from "zod";
 
 export const setupAvailable = createServerFn({ method: "GET" }).handler(async () => {
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-  const { data, error } = await supabaseAdmin.rpc("super_admin_exists");
-  if (error) throw new Error(error.message);
-  return { available: data !== true };
+
+  // Source of truth: an APPROVED user that actually holds the super_admin role.
+  // Never rely on a cached flag / settings row — Guest or pending users must not lock setup.
+  const { data: roleRows, error: rErr } = await supabaseAdmin
+    .from("user_roles")
+    .select("user_id")
+    .eq("role", "super_admin");
+  if (rErr) throw new Error(rErr.message);
+
+  const ids = (roleRows ?? []).map((r: { user_id: string }) => r.user_id);
+  if (ids.length === 0) return { available: true, superAdmins: 0 };
+
+  const { data: approved, error: pErr } = await supabaseAdmin
+    .from("profiles")
+    .select("id")
+    .in("id", ids)
+    .eq("status", "approved");
+  if (pErr) throw new Error(pErr.message);
+
+  const count = approved?.length ?? 0;
+  return { available: count === 0, superAdmins: count };
 });
 
 const bootstrapSchema = z
@@ -28,9 +46,17 @@ export const bootstrapSuperAdmin = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
-    const { data: exists, error: exErr } = await supabaseAdmin.rpc("super_admin_exists");
+    const { data: saRoles, error: exErr } = await supabaseAdmin
+      .from("user_roles").select("user_id").eq("role", "super_admin");
     if (exErr) throw new Error(exErr.message);
-    if (exists === true) throw new Error("Setup has already been completed. A Super Admin already exists.");
+    const saIds = (saRoles ?? []).map((r: { user_id: string }) => r.user_id);
+    if (saIds.length > 0) {
+      const { data: approvedSa } = await supabaseAdmin
+        .from("profiles").select("id").in("id", saIds).eq("status", "approved");
+      if ((approvedSa?.length ?? 0) > 0) {
+        throw new Error("Setup has already been completed. An approved Super Admin already exists.");
+      }
+    }
 
     // Resolve or create the branch
     let branchId: string | null = null;
