@@ -7,6 +7,7 @@ import { z } from "zod";
 import { toast } from "sonner";
 import { ShieldCheck, ArrowRight, AlertCircle, CheckCircle2, Loader2, Lock } from "lucide-react";
 import { setupAvailable, bootstrapSuperAdmin } from "@/lib/setup.functions";
+import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/setup")({
   head: () => ({ meta: [{ title: "ERP Setup · Krishna Computer Center" }, { name: "robots", content: "noindex" }] }),
@@ -48,9 +49,16 @@ function SetupPage() {
     setCheckError(null);
     check({} as any)
       .then((r: any) => { if (alive) setAvailable(!!r?.available); })
-      .catch((e: any) => {
-        // A failed check must NEVER be reported as "setup already completed".
-        if (alive) { setCheckError(e?.message ?? "Could not check setup status"); setAvailable(null); }
+      .catch(async (e: any) => {
+        // A failed server check must NEVER be reported as "setup already completed".
+        // Fall back to the publishable-key RPC straight from the browser.
+        try {
+          const { data, error } = await supabase.rpc("super_admin_exists");
+          if (error) throw error;
+          if (alive) setAvailable(data !== true);
+        } catch {
+          if (alive) { setCheckError(e?.message ?? "Could not check setup status"); setAvailable(null); }
+        }
       });
     return () => { alive = false; };
   }, [check]);
@@ -62,9 +70,19 @@ function SetupPage() {
       setDone(true);
       toast.success("Super Admin created. You can sign in now.");
     } catch (e: any) {
-      const msg = e?.message ?? "Setup failed";
-      setErr(msg);
-      toast.error(msg);
+      const msg: string = e?.message ?? "Setup failed";
+      // Fallback path: no privileged key on the server. Create/sign in the
+      // account with the public key, then promote via the secure RPC.
+      try {
+        await claimViaRpc(v);
+        setDone(true);
+        toast.success("Super Admin created. You can sign in now.");
+        return;
+      } catch (e2: any) {
+        const m = e2?.message ?? msg;
+        setErr(m);
+        toast.error(m);
+      }
     }
   };
 
@@ -167,6 +185,38 @@ function SetupPage() {
 }
 
 const inp = "w-full rounded-xl border border-border bg-white px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand/30";
+
+// Browser-side bootstrap that never needs a privileged key:
+// 1. create (or sign in to) the account with the publishable key
+// 2. call the security-definer `claim_super_admin` RPC, which only succeeds
+//    while no approved Super Admin exists.
+async function claimViaRpc(v: Form) {
+  const signUp = await supabase.auth.signUp({
+    email: v.email,
+    password: v.password,
+    options: { data: { full_name: v.full_name, phone: v.phone } },
+  });
+  if (signUp.error && !/already|registered|exists/i.test(signUp.error.message)) {
+    throw new Error(signUp.error.message);
+  }
+  if (!signUp.data?.session) {
+    const signIn = await supabase.auth.signInWithPassword({ email: v.email, password: v.password });
+    if (signIn.error) {
+      throw new Error(
+        /confirm/i.test(signIn.error.message)
+          ? "Confirm your email address from the message we just sent, then reload this page to finish setup."
+          : signIn.error.message,
+      );
+    }
+  }
+  const { error } = await supabase.rpc("claim_super_admin", {
+    _full_name: v.full_name,
+    _phone: v.phone,
+    _institute_name: v.institute_name,
+    _branch_name: v.branch,
+  });
+  if (error) throw new Error(error.message);
+}
 
 function F({ label, error, children, className = "" }: { label: string; error?: string; children: React.ReactNode; className?: string }) {
   return (
