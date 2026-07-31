@@ -66,13 +66,19 @@ function SetupPage() {
   const onSubmit = async (v: Form) => {
     setErr(null);
     try {
-      await bootstrap({ data: v } as any);
+      const r: any = await bootstrap({ data: v } as any);
+      if (r?.uid) console.info("[setup] Super Admin auth uid:", r.uid);
       setDone(true);
       toast.success("Super Admin created. You can sign in now.");
     } catch (e: any) {
       const msg: string = e?.message ?? "Setup failed";
-      // Fallback path: no privileged key on the server. Create/sign in the
-      // account with the public key, then promote via the secure RPC.
+      // Only fall back when the server genuinely has no privileged key.
+      // Any other failure must surface, never be masked by a signup attempt.
+      if (!/NO_ADMIN_KEY/.test(msg)) {
+        setErr(msg);
+        toast.error(msg);
+        return;
+      }
       try {
         await claimViaRpc(v);
         setDone(true);
