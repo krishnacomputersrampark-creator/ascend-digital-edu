@@ -130,5 +130,29 @@ export const bootstrapSuperAdmin = createServerFn({ method: "POST" })
       meta: { institute_name: data.institute_name, branch: data.branch },
     });
 
-    return { ok: true, email: data.email };
+    // Verify the Auth account can actually sign in with the chosen password.
+    // If not (stale/legacy password hash, unconfirmed email), repair it once.
+    const verify = async () => {
+      const { data: s, error } = await pub.auth.signInWithPassword({
+        email: data.email,
+        password: data.password,
+      });
+      if (!error && s?.user) await pub.auth.signOut();
+      return !error;
+    };
+    let signInOk = await verify();
+    if (!signInOk) {
+      await supabaseAdmin.auth.admin.updateUserById(uid!, {
+        password: data.password,
+        email_confirm: true,
+      });
+      signInOk = await verify();
+    }
+    if (!signInOk) {
+      throw new Error(
+        "The Super Admin account was created but the password could not be verified. Use 'Forgot password' to set a new one.",
+      );
+    }
+
+    return { ok: true, email: data.email, uid, signInOk };
   });
