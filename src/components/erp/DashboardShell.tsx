@@ -7,6 +7,7 @@ import {
   Menu, X, ChevronDown, Search, Bell, UserRound,
 } from "lucide-react";
 import logoAsset from "@/assets/logo.jpg.asset.json";
+import { SecurityNotice } from "@/components/erp/SecurityNotice";
 import { useAuth, signOutAndRedirect, ROLE_LABEL, type AppRole } from "@/lib/auth";
 
 type NavItem = { label: string; to: string; icon: React.ComponentType<{ className?: string }>; roles?: AppRole[] };
