@@ -264,20 +264,71 @@ export const importStudents = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const errors: Array<{ row: number; message: string }> = [];
     const valid: any[] = [];
+
+    const [branchRes, courseRes] = await Promise.all([
+      context.supabase.from("branches").select("id, code, name"),
+      context.supabase.from("courses").select("id, code, name"),
+    ]);
+    const key = (v: unknown) => String(v ?? "").trim().toLowerCase();
+    const branchMap = new Map<string, string>();
+    for (const b of (branchRes.data ?? []) as any[]) {
+      branchMap.set(key(b.code), b.id);
+      branchMap.set(key(b.name), b.id);
+      branchMap.set(key(b.id), b.id);
+    }
+    const courseMap = new Map<string, string>();
+    for (const c of (courseRes.data ?? []) as any[]) {
+      courseMap.set(key(c.code), c.id);
+      courseMap.set(key(c.name), c.id);
+      courseMap.set(key(c.id), c.id);
+    }
+    const defaultBranch = ((branchRes.data ?? []) as any[])[0]?.id as string | undefined;
+
     data.rows.forEach((raw, i) => {
-      const parsed = studentSchema.safeParse({ ...raw, status: raw.status || "active" });
+      const branchKey = key(raw.branch_id ?? raw.branch_code ?? raw.branch);
+      const courseKey = key(raw.course_id ?? raw.course_code ?? raw.course);
+      const branch_id = branchKey ? branchMap.get(branchKey) : defaultBranch;
+      if (!branch_id) {
+        errors.push({ row: i + 2, message: branchKey ? `Unknown branch "${branchKey}"` : "branch_code is required" });
+        return;
+      }
+      const course_id = courseKey ? courseMap.get(courseKey) : undefined;
+      if (courseKey && !course_id) {
+        errors.push({ row: i + 2, message: `Unknown course "${courseKey}"` });
+        return;
+      }
+      const parsed = studentSchema.safeParse({
+        ...raw,
+        branch_id,
+        course_id: course_id ?? "",
+        batch_id: "",
+        faculty_id: "",
+        status: raw.status || "active",
+      });
       if (!parsed.success) {
         errors.push({ row: i + 2, message: parsed.error.issues.map((e) => `${e.path.join(".")}: ${e.message}`).join("; ") });
         return;
       }
       const { record } = splitPayload(normalize(parsed.data));
-      valid.push({ ...record, created_by: context.userId, updated_by: context.userId });
+      valid.push({ row: i + 2, values: { ...record, created_by: context.userId, updated_by: context.userId } });
     });
+
     let inserted = 0;
     if (valid.length) {
-      const { data: rows, error } = await context.supabase.from("students").insert(valid as any).select("id");
-      if (error) throw new Error(error.message);
-      inserted = rows?.length ?? 0;
+      const { data: rows, error } = await context.supabase
+        .from("students")
+        .insert(valid.map((v) => v.values) as any)
+        .select("id");
+      if (!error) {
+        inserted = rows?.length ?? 0;
+      } else {
+        // One bad row fails the whole batch — retry individually so good rows still land.
+        for (const v of valid) {
+          const single = await context.supabase.from("students").insert(v.values as any).select("id").maybeSingle();
+          if (single.error) errors.push({ row: v.row, message: single.error.message });
+          else inserted += 1;
+        }
+      }
     }
     return { inserted, failed: errors.length, errors: errors.slice(0, 50) };
   });
