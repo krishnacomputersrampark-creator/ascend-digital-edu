@@ -1,5 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -8,6 +9,7 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { SiteLayout } from "@/components/site/SiteLayout";
 import { enforceApprovalAfterLogin } from "@/lib/approval";
+import { ensureDefaultSuperAdmin } from "@/lib/dev-admin.functions";
 
 export const Route = createFileRoute("/auth")({
   validateSearch: (s: Record<string, unknown>): { next?: string } => {
@@ -45,6 +47,12 @@ function AuthPage() {
   const [notice, setNotice] = useState<string | null>(null);
   const navigate = useNavigate();
   const { next } = Route.useSearch();
+  const ensureAdmin = useServerFn(ensureDefaultSuperAdmin);
+
+  // Development convenience: make sure a Super Admin account always exists.
+  useEffect(() => {
+    void ensureAdmin({} as any).catch(() => { /* non-blocking */ });
+  }, [ensureAdmin]);
 
   const signIn = useForm<SignInForm>({ resolver: zodResolver(signInSchema), defaultValues: { email: "", password: "" } });
   const signUp = useForm<SignUpForm>({ resolver: zodResolver(signUpSchema), defaultValues: { full_name: "", email: "", phone: "", password: "" } });
