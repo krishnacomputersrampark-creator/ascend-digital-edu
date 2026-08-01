@@ -1,0 +1,1 @@
+delete from auth.users where email = 'audit.super@kcc.test';
