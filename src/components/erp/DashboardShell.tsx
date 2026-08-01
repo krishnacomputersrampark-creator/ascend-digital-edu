@@ -85,15 +85,7 @@ function buildCrumbs(pathname: string): string[] {
   return pathname
     .split("/")
     .filter(Boolean)
-    .filter((s) => s !== "dashboard" || false)
     .map((s) => s.replace(/-/g, " "));
-}
-
-function _unusedFilter(role: AppRole): NavGroup[] {
-  return ALL_GROUPS.map((g) => ({
-    ...g,
-    items: g.items.filter((i) => !i.roles || i.roles.includes(role)),
-  })).filter((g) => g.items.length > 0);
 }
 
 export function DashboardShell({ children, title, subtitle, actions }: { children: ReactNode; title?: ReactNode; subtitle?: ReactNode; actions?: ReactNode }) {
