@@ -7,6 +7,7 @@ import {
   Menu, X, ChevronDown, Search, Bell, UserRound,
 } from "lucide-react";
 import logoAsset from "@/assets/logo.jpg.asset.json";
+import { SecurityNotice } from "@/components/erp/SecurityNotice";
 import { useAuth, signOutAndRedirect, ROLE_LABEL, type AppRole } from "@/lib/auth";
 
 type NavItem = { label: string; to: string; icon: React.ComponentType<{ className?: string }>; roles?: AppRole[] };
@@ -193,6 +194,7 @@ export function DashboardShell({ children, title, subtitle, actions }: { childre
           </header>
 
           <main className="min-w-0 flex-1 px-4 py-6 sm:px-6 lg:px-8">
+            <SecurityNotice />
             {(title || subtitle || actions) && (
               <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
                 <div>
