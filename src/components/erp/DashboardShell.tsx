@@ -193,6 +193,7 @@ export function DashboardShell({ children, title, subtitle, actions }: { childre
           </header>
 
           <main className="min-w-0 flex-1 px-4 py-6 sm:px-6 lg:px-8">
+            <SecurityNotice />
             {(title || subtitle || actions) && (
               <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
                 <div>
