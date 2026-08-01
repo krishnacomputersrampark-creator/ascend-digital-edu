@@ -66,6 +66,7 @@ import { Route as AuthenticatedDashboardStudentsRouteImport } from './routes/_au
 import { Route as AuthenticatedDashboardSettingsRouteImport } from './routes/_authenticated/dashboard.settings'
 import { Route as AuthenticatedDashboardRolesRouteImport } from './routes/_authenticated/dashboard.roles'
 import { Route as AuthenticatedDashboardResultsRouteImport } from './routes/_authenticated/dashboard.results'
+import { Route as AuthenticatedDashboardProfileRouteImport } from './routes/_authenticated/dashboard.profile'
 import { Route as AuthenticatedDashboardFeesRouteImport } from './routes/_authenticated/dashboard.fees'
 import { Route as AuthenticatedDashboardDownloadsRouteImport } from './routes/_authenticated/dashboard.downloads'
 import { Route as AuthenticatedDashboardCertificatesRouteImport } from './routes/_authenticated/dashboard.certificates'
@@ -417,6 +418,12 @@ const AuthenticatedDashboardResultsRoute =
   AuthenticatedDashboardResultsRouteImport.update({
     id: '/results',
     path: '/results',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
+const AuthenticatedDashboardProfileRoute =
+  AuthenticatedDashboardProfileRouteImport.update({
+    id: '/profile',
+    path: '/profile',
     getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
 const AuthenticatedDashboardFeesRoute =
@@ -810,6 +817,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/certificates': typeof AuthenticatedDashboardCertificatesRouteWithChildren
   '/dashboard/downloads': typeof AuthenticatedDashboardDownloadsRoute
   '/dashboard/fees': typeof AuthenticatedDashboardFeesRouteWithChildren
+  '/dashboard/profile': typeof AuthenticatedDashboardProfileRoute
   '/dashboard/results': typeof AuthenticatedDashboardResultsRouteWithChildren
   '/dashboard/roles': typeof AuthenticatedDashboardRolesRoute
   '/dashboard/settings': typeof AuthenticatedDashboardSettingsRouteWithChildren
@@ -921,6 +929,7 @@ export interface FileRoutesByTo {
   '/dashboard/certificates': typeof AuthenticatedDashboardCertificatesRouteWithChildren
   '/dashboard/downloads': typeof AuthenticatedDashboardDownloadsRoute
   '/dashboard/fees': typeof AuthenticatedDashboardFeesRouteWithChildren
+  '/dashboard/profile': typeof AuthenticatedDashboardProfileRoute
   '/dashboard/results': typeof AuthenticatedDashboardResultsRouteWithChildren
   '/dashboard/roles': typeof AuthenticatedDashboardRolesRoute
   '/dashboard/settings': typeof AuthenticatedDashboardSettingsRouteWithChildren
@@ -1034,6 +1043,7 @@ export interface FileRoutesById {
   '/_authenticated/dashboard/certificates': typeof AuthenticatedDashboardCertificatesRouteWithChildren
   '/_authenticated/dashboard/downloads': typeof AuthenticatedDashboardDownloadsRoute
   '/_authenticated/dashboard/fees': typeof AuthenticatedDashboardFeesRouteWithChildren
+  '/_authenticated/dashboard/profile': typeof AuthenticatedDashboardProfileRoute
   '/_authenticated/dashboard/results': typeof AuthenticatedDashboardResultsRouteWithChildren
   '/_authenticated/dashboard/roles': typeof AuthenticatedDashboardRolesRoute
   '/_authenticated/dashboard/settings': typeof AuthenticatedDashboardSettingsRouteWithChildren
@@ -1147,6 +1157,7 @@ export interface FileRouteTypes {
     | '/dashboard/certificates'
     | '/dashboard/downloads'
     | '/dashboard/fees'
+    | '/dashboard/profile'
     | '/dashboard/results'
     | '/dashboard/roles'
     | '/dashboard/settings'
@@ -1258,6 +1269,7 @@ export interface FileRouteTypes {
     | '/dashboard/certificates'
     | '/dashboard/downloads'
     | '/dashboard/fees'
+    | '/dashboard/profile'
     | '/dashboard/results'
     | '/dashboard/roles'
     | '/dashboard/settings'
@@ -1370,6 +1382,7 @@ export interface FileRouteTypes {
     | '/_authenticated/dashboard/certificates'
     | '/_authenticated/dashboard/downloads'
     | '/_authenticated/dashboard/fees'
+    | '/_authenticated/dashboard/profile'
     | '/_authenticated/dashboard/results'
     | '/_authenticated/dashboard/roles'
     | '/_authenticated/dashboard/settings'
@@ -1855,6 +1868,13 @@ declare module '@tanstack/react-router' {
       path: '/results'
       fullPath: '/dashboard/results'
       preLoaderRoute: typeof AuthenticatedDashboardResultsRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/profile': {
+      id: '/_authenticated/dashboard/profile'
+      path: '/profile'
+      fullPath: '/dashboard/profile'
+      preLoaderRoute: typeof AuthenticatedDashboardProfileRouteImport
       parentRoute: typeof AuthenticatedDashboardRoute
     }
     '/_authenticated/dashboard/fees': {
@@ -2354,6 +2374,7 @@ interface AuthenticatedDashboardRouteChildren {
   AuthenticatedDashboardCertificatesRoute: typeof AuthenticatedDashboardCertificatesRouteWithChildren
   AuthenticatedDashboardDownloadsRoute: typeof AuthenticatedDashboardDownloadsRoute
   AuthenticatedDashboardFeesRoute: typeof AuthenticatedDashboardFeesRouteWithChildren
+  AuthenticatedDashboardProfileRoute: typeof AuthenticatedDashboardProfileRoute
   AuthenticatedDashboardResultsRoute: typeof AuthenticatedDashboardResultsRouteWithChildren
   AuthenticatedDashboardRolesRoute: typeof AuthenticatedDashboardRolesRoute
   AuthenticatedDashboardSettingsRoute: typeof AuthenticatedDashboardSettingsRouteWithChildren
@@ -2371,6 +2392,7 @@ const AuthenticatedDashboardRouteChildren: AuthenticatedDashboardRouteChildren =
     AuthenticatedDashboardDownloadsRoute: AuthenticatedDashboardDownloadsRoute,
     AuthenticatedDashboardFeesRoute:
       AuthenticatedDashboardFeesRouteWithChildren,
+    AuthenticatedDashboardProfileRoute: AuthenticatedDashboardProfileRoute,
     AuthenticatedDashboardResultsRoute:
       AuthenticatedDashboardResultsRouteWithChildren,
     AuthenticatedDashboardRolesRoute: AuthenticatedDashboardRolesRoute,
