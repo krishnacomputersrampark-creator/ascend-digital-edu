@@ -81,6 +81,7 @@ import { Route as AuthenticatedAdminNotificationsRouteImport } from './routes/_a
 import { Route as AuthenticatedAdminNoticesRouteImport } from './routes/_authenticated/admin.notices'
 import { Route as AuthenticatedAdminGalleryRouteImport } from './routes/_authenticated/admin.gallery'
 import { Route as AuthenticatedAdminFacultyRouteImport } from './routes/_authenticated/admin.faculty'
+import { Route as AuthenticatedAdminEventsRouteImport } from './routes/_authenticated/admin.events'
 import { Route as AuthenticatedAdminDownloadsRouteImport } from './routes/_authenticated/admin.downloads'
 import { Route as AuthenticatedAdminDashboardRouteImport } from './routes/_authenticated/admin.dashboard'
 import { Route as AuthenticatedAdminCoursesRouteImport } from './routes/_authenticated/admin.courses'
@@ -503,6 +504,12 @@ const AuthenticatedAdminFacultyRoute =
     path: '/admin/faculty',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedAdminEventsRoute =
+  AuthenticatedAdminEventsRouteImport.update({
+    id: '/admin/events',
+    path: '/admin/events',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedAdminDownloadsRoute =
   AuthenticatedAdminDownloadsRouteImport.update({
     id: '/admin/downloads',
@@ -765,6 +772,7 @@ export interface FileRoutesByFullPath {
   '/admin/courses': typeof AuthenticatedAdminCoursesRoute
   '/admin/dashboard': typeof AuthenticatedAdminDashboardRoute
   '/admin/downloads': typeof AuthenticatedAdminDownloadsRouteWithChildren
+  '/admin/events': typeof AuthenticatedAdminEventsRoute
   '/admin/faculty': typeof AuthenticatedAdminFacultyRoute
   '/admin/gallery': typeof AuthenticatedAdminGalleryRoute
   '/admin/notices': typeof AuthenticatedAdminNoticesRoute
@@ -872,6 +880,7 @@ export interface FileRoutesByTo {
   '/admin/courses': typeof AuthenticatedAdminCoursesRoute
   '/admin/dashboard': typeof AuthenticatedAdminDashboardRoute
   '/admin/downloads': typeof AuthenticatedAdminDownloadsRouteWithChildren
+  '/admin/events': typeof AuthenticatedAdminEventsRoute
   '/admin/faculty': typeof AuthenticatedAdminFacultyRoute
   '/admin/gallery': typeof AuthenticatedAdminGalleryRoute
   '/admin/notices': typeof AuthenticatedAdminNoticesRoute
@@ -981,6 +990,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/courses': typeof AuthenticatedAdminCoursesRoute
   '/_authenticated/admin/dashboard': typeof AuthenticatedAdminDashboardRoute
   '/_authenticated/admin/downloads': typeof AuthenticatedAdminDownloadsRouteWithChildren
+  '/_authenticated/admin/events': typeof AuthenticatedAdminEventsRoute
   '/_authenticated/admin/faculty': typeof AuthenticatedAdminFacultyRoute
   '/_authenticated/admin/gallery': typeof AuthenticatedAdminGalleryRoute
   '/_authenticated/admin/notices': typeof AuthenticatedAdminNoticesRoute
@@ -1090,6 +1100,7 @@ export interface FileRouteTypes {
     | '/admin/courses'
     | '/admin/dashboard'
     | '/admin/downloads'
+    | '/admin/events'
     | '/admin/faculty'
     | '/admin/gallery'
     | '/admin/notices'
@@ -1197,6 +1208,7 @@ export interface FileRouteTypes {
     | '/admin/courses'
     | '/admin/dashboard'
     | '/admin/downloads'
+    | '/admin/events'
     | '/admin/faculty'
     | '/admin/gallery'
     | '/admin/notices'
@@ -1305,6 +1317,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/courses'
     | '/_authenticated/admin/dashboard'
     | '/_authenticated/admin/downloads'
+    | '/_authenticated/admin/events'
     | '/_authenticated/admin/faculty'
     | '/_authenticated/admin/gallery'
     | '/_authenticated/admin/notices'
@@ -1912,6 +1925,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminFacultyRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/admin/events': {
+      id: '/_authenticated/admin/events'
+      path: '/admin/events'
+      fullPath: '/admin/events'
+      preLoaderRoute: typeof AuthenticatedAdminEventsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/admin/downloads': {
       id: '/_authenticated/admin/downloads'
       path: '/admin/downloads'
@@ -2366,6 +2386,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedAdminCoursesRoute: typeof AuthenticatedAdminCoursesRoute
   AuthenticatedAdminDashboardRoute: typeof AuthenticatedAdminDashboardRoute
   AuthenticatedAdminDownloadsRoute: typeof AuthenticatedAdminDownloadsRouteWithChildren
+  AuthenticatedAdminEventsRoute: typeof AuthenticatedAdminEventsRoute
   AuthenticatedAdminFacultyRoute: typeof AuthenticatedAdminFacultyRoute
   AuthenticatedAdminGalleryRoute: typeof AuthenticatedAdminGalleryRoute
   AuthenticatedAdminNoticesRoute: typeof AuthenticatedAdminNoticesRoute
@@ -2391,6 +2412,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAdminDashboardRoute: AuthenticatedAdminDashboardRoute,
   AuthenticatedAdminDownloadsRoute:
     AuthenticatedAdminDownloadsRouteWithChildren,
+  AuthenticatedAdminEventsRoute: AuthenticatedAdminEventsRoute,
   AuthenticatedAdminFacultyRoute: AuthenticatedAdminFacultyRoute,
   AuthenticatedAdminGalleryRoute: AuthenticatedAdminGalleryRoute,
   AuthenticatedAdminNoticesRoute: AuthenticatedAdminNoticesRoute,
