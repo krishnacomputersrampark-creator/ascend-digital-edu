@@ -3,8 +3,9 @@ import { useState, type ReactNode } from "react";
 import {
   LayoutDashboard, Users, GraduationCap, Building2, ClipboardList, BookOpen,
   CalendarCheck, Wallet, FileBadge, ShieldCheck, Download, Image as ImageIcon,
-  CalendarDays, Megaphone, Globe, Quote, Handshake, BarChart3, Settings, LogOut,
-  Menu, X, ChevronDown, Search, Bell, UserRound,
+  CalendarDays, Megaphone, Handshake, BarChart3, Settings, LogOut,
+  Menu, X, ChevronDown, Search, Bell, UserRound, MessageSquare, Mail,
+  ScrollText, PanelLeftClose, PanelLeftOpen, ChevronRight,
 } from "lucide-react";
 import logoAsset from "@/assets/logo.jpg.asset.json";
 import { SecurityNotice } from "@/components/erp/SecurityNotice";
@@ -24,10 +25,10 @@ const ALL_GROUPS: NavGroup[] = [
     title: "Academics",
     items: [
       { label: "Students", to: "/dashboard/students", icon: Users, roles: ["super_admin", "admin", "branch_manager", "faculty"] },
-      { label: "Faculty", to: "/dashboard/faculty", icon: GraduationCap, roles: ["super_admin", "admin", "branch_manager"] },
-      { label: "Courses", to: "/dashboard/courses", icon: BookOpen, roles: ["super_admin", "admin", "branch_manager", "faculty"] },
-      { label: "Batches", to: "/dashboard/batches", icon: ClipboardList, roles: ["super_admin", "admin", "branch_manager", "faculty"] },
       { label: "Admissions", to: "/dashboard/admissions", icon: ClipboardList, roles: ["super_admin", "admin", "branch_manager"] },
+      { label: "Teachers", to: "/admin/faculty", icon: GraduationCap, roles: ["super_admin", "admin", "branch_manager"] },
+      { label: "Courses", to: "/admin/courses", icon: BookOpen, roles: ["super_admin", "admin", "branch_manager", "faculty"] },
+      { label: "Batches", to: "/admin/batches", icon: ClipboardList, roles: ["super_admin", "admin", "branch_manager", "faculty"] },
     ],
   },
   {
@@ -37,28 +38,38 @@ const ALL_GROUPS: NavGroup[] = [
       { label: "Fees", to: "/dashboard/fees", icon: Wallet },
       { label: "Results", to: "/dashboard/results", icon: BarChart3 },
       { label: "Certificates", to: "/dashboard/certificates", icon: FileBadge },
-      { label: "Branches", to: "/dashboard/branches", icon: Building2, roles: ["super_admin", "admin"] },
+      { label: "Downloads", to: "/dashboard/downloads", icon: Download },
+      { label: "Branches", to: "/admin/branches", icon: Building2, roles: ["super_admin", "admin"] },
     ],
   },
   {
     title: "Content",
     items: [
-      { label: "Notices", to: "/dashboard/notices", icon: Megaphone, roles: ["super_admin", "admin", "branch_manager"] },
-      { label: "Events", to: "/dashboard/events", icon: CalendarDays, roles: ["super_admin", "admin", "branch_manager"] },
-      { label: "Gallery", to: "/dashboard/gallery", icon: ImageIcon, roles: ["super_admin", "admin", "branch_manager"] },
-      { label: "Downloads", to: "/dashboard/downloads", icon: Download },
-      { label: "Testimonials", to: "/dashboard/testimonials", icon: Quote, roles: ["super_admin", "admin"] },
-      { label: "Website CMS", to: "/dashboard/cms", icon: Globe, roles: ["super_admin", "admin"] },
-      { label: "Franchise", to: "/dashboard/franchise", icon: Handshake, roles: ["super_admin", "admin"] },
+      { label: "Notice Board", to: "/admin/notices", icon: Megaphone, roles: ["super_admin", "admin", "branch_manager"] },
+      { label: "Events", to: "/admin/events", icon: CalendarDays, roles: ["super_admin", "admin", "branch_manager"] },
+      { label: "Gallery", to: "/admin/gallery", icon: ImageIcon, roles: ["super_admin", "admin", "branch_manager"] },
+      { label: "Franchise", to: "/admin/franchise", icon: Handshake, roles: ["super_admin", "admin"] },
+    ],
+  },
+  {
+    title: "Communication",
+    items: [
+      { label: "SMS", to: "/admin/sms", icon: MessageSquare, roles: ["super_admin", "admin", "branch_manager"] },
+      { label: "Email", to: "/admin/email", icon: Mail, roles: ["super_admin", "admin", "branch_manager"] },
+      { label: "Notifications", to: "/admin/notifications", icon: Bell, roles: ["super_admin", "admin", "branch_manager"] },
     ],
   },
   {
     title: "Administration",
     items: [
-      { label: "Reports", to: "/dashboard/reports", icon: BarChart3, roles: ["super_admin", "admin", "branch_manager"] },
+      { label: "Reports", to: "/admin/reports", icon: BarChart3, roles: ["super_admin", "admin", "branch_manager"] },
+      { label: "Analytics", to: "/admin/analytics", icon: BarChart3, roles: ["super_admin", "admin", "branch_manager"] },
       { label: "Users & Roles", to: "/admin/users", icon: ShieldCheck, roles: ["super_admin", "admin"] },
       { label: "Pending Approvals", to: "/admin/users/pending", icon: UserRound, roles: ["super_admin", "admin"] },
+      { label: "Roles & Permissions", to: "/admin/roles", icon: ShieldCheck, roles: ["super_admin", "admin"] },
+      { label: "System Logs", to: "/admin/audit-logs", icon: ScrollText, roles: ["super_admin", "admin"] },
       { label: "Settings", to: "/dashboard/settings", icon: Settings, roles: ["super_admin", "admin"] },
+      { label: "My Profile", to: "/dashboard/profile", icon: UserRound },
     ],
   },
 ];
@@ -75,10 +86,12 @@ export function DashboardShell({ children, title, subtitle, actions }: { childre
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const [mobileOpen, setMobileOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
+  const [collapsed, setCollapsed] = useState(false);
 
   const effectiveRole: AppRole = role ?? "guest";
   const groups = filterForRole(effectiveRole);
   const displayName = profile?.full_name || user?.email?.split("@")[0] || "User";
+  const crumbs = buildCrumbs(pathname);
 
   return (
     <div className="min-h-screen bg-[color:var(--bg)] text-foreground">
@@ -95,12 +108,12 @@ export function DashboardShell({ children, title, subtitle, actions }: { childre
 
       <div className="flex">
         {/* Sidebar */}
-        <aside className={`fixed inset-y-0 left-0 z-50 w-72 transform border-r border-border/60 bg-white transition-transform duration-300 lg:sticky lg:top-0 lg:h-screen lg:translate-x-0 ${mobileOpen ? "translate-x-0" : "-translate-x-full"}`}>
+        <aside className={`fixed inset-y-0 left-0 z-50 transform border-r border-border/60 bg-white transition-all duration-300 lg:sticky lg:top-0 lg:h-screen lg:translate-x-0 ${collapsed ? "w-72 lg:w-[76px]" : "w-72"} ${mobileOpen ? "translate-x-0" : "-translate-x-full"}`}>
           <div className="flex h-full flex-col">
             <div className="flex items-center justify-between border-b border-border/60 px-5 py-4">
               <Link to="/dashboard" className="flex items-center gap-2.5">
                 <img src={logoAsset.url} alt="KCC" className="h-10 w-10 rounded-xl object-contain ring-1 ring-border" />
-                <div className="leading-tight">
+                <div className={`leading-tight ${collapsed ? "lg:hidden" : ""}`}>
                   <div className="text-[13px] font-extrabold text-brand-dark">KCC · ERP</div>
                   <div className="text-[10px] text-muted-foreground">{ROLE_LABEL[effectiveRole]}</div>
                 </div>
@@ -113,7 +126,7 @@ export function DashboardShell({ children, title, subtitle, actions }: { childre
             <nav className="flex-1 overflow-y-auto px-3 py-4">
               {groups.map((g) => (
                 <div key={g.title} className="mb-5">
-                  <div className="mb-1.5 px-3 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">{g.title}</div>
+                  <div className={`mb-1.5 px-3 text-[10px] font-bold uppercase tracking-wider text-muted-foreground ${collapsed ? "lg:hidden" : ""}`}>{g.title}</div>
                   <ul className="space-y-0.5">
                     {g.items.map((item) => {
                       const active = pathname === item.to || (item.to !== "/dashboard" && pathname.startsWith(item.to));
@@ -121,11 +134,12 @@ export function DashboardShell({ children, title, subtitle, actions }: { childre
                         <li key={item.to}>
                           <Link
                             to={item.to}
+                            title={item.label}
                             onClick={() => setMobileOpen(false)}
                             className={`flex items-center gap-3 rounded-xl px-3 py-2 text-sm font-medium transition ${active ? "gradient-brand text-white shadow-brand" : "text-ink/80 hover:bg-cyan-soft hover:text-brand"}`}
                           >
-                            <item.icon className="h-4 w-4" />
-                            <span>{item.label}</span>
+                            <item.icon className="h-4 w-4 shrink-0" />
+                            <span className={collapsed ? "lg:hidden" : ""}>{item.label}</span>
                           </Link>
                         </li>
                       );
@@ -140,7 +154,7 @@ export function DashboardShell({ children, title, subtitle, actions }: { childre
                 onClick={() => void signOutAndRedirect()}
                 className="flex w-full items-center gap-2 rounded-xl px-3 py-2.5 text-sm font-semibold text-ink/80 transition hover:bg-red-50 hover:text-red-600"
               >
-                <LogOut className="h-4 w-4" /> Sign out
+                <LogOut className="h-4 w-4 shrink-0" /> <span className={collapsed ? "lg:hidden" : ""}>Sign out</span>
               </button>
             </div>
           </div>
@@ -151,8 +165,15 @@ export function DashboardShell({ children, title, subtitle, actions }: { childre
         {/* Main */}
         <div className="flex min-w-0 flex-1 flex-col">
           {/* Top bar (desktop) */}
-          <header className="hidden items-center justify-between gap-4 border-b border-border/60 bg-white/80 px-6 py-3 backdrop-blur-lg lg:flex">
+          <header className="sticky top-0 z-30 hidden items-center justify-between gap-4 border-b border-border/60 bg-white/80 px-6 py-3 backdrop-blur-lg lg:flex">
             <div className="flex items-center gap-3">
+              <button
+                onClick={() => setCollapsed((v) => !v)}
+                className="grid h-10 w-10 place-items-center rounded-xl bg-cyan-soft text-brand"
+                aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+              >
+                {collapsed ? <PanelLeftOpen className="h-4 w-4" /> : <PanelLeftClose className="h-4 w-4" />}
+              </button>
               <div className="relative w-80">
                 <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                 <input placeholder="Search students, certificates, courses…" className="w-full rounded-full border border-border bg-white pl-10 pr-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand/30" />
@@ -195,6 +216,17 @@ export function DashboardShell({ children, title, subtitle, actions }: { childre
 
           <main className="min-w-0 flex-1 px-4 py-6 sm:px-6 lg:px-8">
             <SecurityNotice />
+            {crumbs.length > 0 && (
+              <nav aria-label="Breadcrumb" className="mb-4 flex flex-wrap items-center gap-1 text-xs text-muted-foreground">
+                <Link to="/dashboard" className="font-semibold text-brand">Home</Link>
+                {crumbs.map((c) => (
+                  <span key={c} className="flex items-center gap-1">
+                    <ChevronRight className="h-3 w-3" />
+                    <span className="capitalize">{c}</span>
+                  </span>
+                ))}
+              </nav>
+            )}
             {(title || subtitle || actions) && (
               <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
                 <div>
