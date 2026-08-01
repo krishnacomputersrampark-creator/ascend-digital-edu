@@ -9,7 +9,7 @@ import { signedUrlFor } from "@/lib/students.client";
 import { printAdmissionForm, printIdCard } from "@/lib/students.export";
 import { STATUS_CLASS, STATUS_LABEL, fmtDate, inr, netPayable } from "@/lib/students.shared";
 
-export const Route = createFileRoute("/_authenticated/dashboard/students/$id")({
+export const Route = createFileRoute("/_authenticated/dashboard/students/$id/")({
   head: () => ({ meta: [{ title: "Student Profile · KCC ERP" }, { name: "robots", content: "noindex" }] }),
   component: StudentProfilePage,
 });
@@ -17,7 +17,7 @@ export const Route = createFileRoute("/_authenticated/dashboard/students/$id")({
 const TABS = ["Overview", "Academic", "Fees", "Attendance", "Results", "Certificates", "Documents", "History"] as const;
 
 function StudentProfilePage() {
-  const { id } = useParams({ from: "/_authenticated/dashboard/students/$id" });
+  const { id } = useParams({ from: "/_authenticated/dashboard/students/$id/" });
   const fetchStudent = useServerFn(getStudent);
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
