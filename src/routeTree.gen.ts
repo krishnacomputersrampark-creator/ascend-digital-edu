@@ -84,6 +84,7 @@ import { Route as AuthenticatedAdminGalleryRouteImport } from './routes/_authent
 import { Route as AuthenticatedAdminFranchiseRouteImport } from './routes/_authenticated/admin.franchise'
 import { Route as AuthenticatedAdminFacultyRouteImport } from './routes/_authenticated/admin.faculty'
 import { Route as AuthenticatedAdminEventsRouteImport } from './routes/_authenticated/admin.events'
+import { Route as AuthenticatedAdminEmailRouteImport } from './routes/_authenticated/admin.email'
 import { Route as AuthenticatedAdminDownloadsRouteImport } from './routes/_authenticated/admin.downloads'
 import { Route as AuthenticatedAdminDashboardRouteImport } from './routes/_authenticated/admin.dashboard'
 import { Route as AuthenticatedAdminCoursesRouteImport } from './routes/_authenticated/admin.courses'
@@ -523,6 +524,11 @@ const AuthenticatedAdminEventsRoute =
     path: '/admin/events',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedAdminEmailRoute = AuthenticatedAdminEmailRouteImport.update({
+  id: '/admin/email',
+  path: '/admin/email',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedAdminDownloadsRoute =
   AuthenticatedAdminDownloadsRouteImport.update({
     id: '/admin/downloads',
@@ -785,6 +791,7 @@ export interface FileRoutesByFullPath {
   '/admin/courses': typeof AuthenticatedAdminCoursesRoute
   '/admin/dashboard': typeof AuthenticatedAdminDashboardRoute
   '/admin/downloads': typeof AuthenticatedAdminDownloadsRouteWithChildren
+  '/admin/email': typeof AuthenticatedAdminEmailRoute
   '/admin/events': typeof AuthenticatedAdminEventsRoute
   '/admin/faculty': typeof AuthenticatedAdminFacultyRoute
   '/admin/franchise': typeof AuthenticatedAdminFranchiseRoute
@@ -895,6 +902,7 @@ export interface FileRoutesByTo {
   '/admin/courses': typeof AuthenticatedAdminCoursesRoute
   '/admin/dashboard': typeof AuthenticatedAdminDashboardRoute
   '/admin/downloads': typeof AuthenticatedAdminDownloadsRouteWithChildren
+  '/admin/email': typeof AuthenticatedAdminEmailRoute
   '/admin/events': typeof AuthenticatedAdminEventsRoute
   '/admin/faculty': typeof AuthenticatedAdminFacultyRoute
   '/admin/franchise': typeof AuthenticatedAdminFranchiseRoute
@@ -1007,6 +1015,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/courses': typeof AuthenticatedAdminCoursesRoute
   '/_authenticated/admin/dashboard': typeof AuthenticatedAdminDashboardRoute
   '/_authenticated/admin/downloads': typeof AuthenticatedAdminDownloadsRouteWithChildren
+  '/_authenticated/admin/email': typeof AuthenticatedAdminEmailRoute
   '/_authenticated/admin/events': typeof AuthenticatedAdminEventsRoute
   '/_authenticated/admin/faculty': typeof AuthenticatedAdminFacultyRoute
   '/_authenticated/admin/franchise': typeof AuthenticatedAdminFranchiseRoute
@@ -1119,6 +1128,7 @@ export interface FileRouteTypes {
     | '/admin/courses'
     | '/admin/dashboard'
     | '/admin/downloads'
+    | '/admin/email'
     | '/admin/events'
     | '/admin/faculty'
     | '/admin/franchise'
@@ -1229,6 +1239,7 @@ export interface FileRouteTypes {
     | '/admin/courses'
     | '/admin/dashboard'
     | '/admin/downloads'
+    | '/admin/email'
     | '/admin/events'
     | '/admin/faculty'
     | '/admin/franchise'
@@ -1340,6 +1351,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/courses'
     | '/_authenticated/admin/dashboard'
     | '/_authenticated/admin/downloads'
+    | '/_authenticated/admin/email'
     | '/_authenticated/admin/events'
     | '/_authenticated/admin/faculty'
     | '/_authenticated/admin/franchise'
@@ -1971,6 +1983,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminEventsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/admin/email': {
+      id: '/_authenticated/admin/email'
+      path: '/admin/email'
+      fullPath: '/admin/email'
+      preLoaderRoute: typeof AuthenticatedAdminEmailRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/admin/downloads': {
       id: '/_authenticated/admin/downloads'
       path: '/admin/downloads'
@@ -2425,6 +2444,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedAdminCoursesRoute: typeof AuthenticatedAdminCoursesRoute
   AuthenticatedAdminDashboardRoute: typeof AuthenticatedAdminDashboardRoute
   AuthenticatedAdminDownloadsRoute: typeof AuthenticatedAdminDownloadsRouteWithChildren
+  AuthenticatedAdminEmailRoute: typeof AuthenticatedAdminEmailRoute
   AuthenticatedAdminEventsRoute: typeof AuthenticatedAdminEventsRoute
   AuthenticatedAdminFacultyRoute: typeof AuthenticatedAdminFacultyRoute
   AuthenticatedAdminFranchiseRoute: typeof AuthenticatedAdminFranchiseRoute
@@ -2453,6 +2473,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAdminDashboardRoute: AuthenticatedAdminDashboardRoute,
   AuthenticatedAdminDownloadsRoute:
     AuthenticatedAdminDownloadsRouteWithChildren,
+  AuthenticatedAdminEmailRoute: AuthenticatedAdminEmailRoute,
   AuthenticatedAdminEventsRoute: AuthenticatedAdminEventsRoute,
   AuthenticatedAdminFacultyRoute: AuthenticatedAdminFacultyRoute,
   AuthenticatedAdminFranchiseRoute: AuthenticatedAdminFranchiseRoute,
