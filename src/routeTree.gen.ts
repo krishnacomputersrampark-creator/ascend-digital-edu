@@ -78,6 +78,7 @@ import { Route as AuthenticatedAdminSettingsRouteImport } from './routes/_authen
 import { Route as AuthenticatedAdminRolesRouteImport } from './routes/_authenticated/admin.roles'
 import { Route as AuthenticatedAdminReportsRouteImport } from './routes/_authenticated/admin.reports'
 import { Route as AuthenticatedAdminNotificationsRouteImport } from './routes/_authenticated/admin.notifications'
+import { Route as AuthenticatedAdminNoticesRouteImport } from './routes/_authenticated/admin.notices'
 import { Route as AuthenticatedAdminGalleryRouteImport } from './routes/_authenticated/admin.gallery'
 import { Route as AuthenticatedAdminFacultyRouteImport } from './routes/_authenticated/admin.faculty'
 import { Route as AuthenticatedAdminDownloadsRouteImport } from './routes/_authenticated/admin.downloads'
@@ -484,6 +485,12 @@ const AuthenticatedAdminNotificationsRoute =
     path: '/admin/notifications',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedAdminNoticesRoute =
+  AuthenticatedAdminNoticesRouteImport.update({
+    id: '/admin/notices',
+    path: '/admin/notices',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedAdminGalleryRoute =
   AuthenticatedAdminGalleryRouteImport.update({
     id: '/admin/gallery',
@@ -760,6 +767,7 @@ export interface FileRoutesByFullPath {
   '/admin/downloads': typeof AuthenticatedAdminDownloadsRouteWithChildren
   '/admin/faculty': typeof AuthenticatedAdminFacultyRoute
   '/admin/gallery': typeof AuthenticatedAdminGalleryRoute
+  '/admin/notices': typeof AuthenticatedAdminNoticesRoute
   '/admin/notifications': typeof AuthenticatedAdminNotificationsRoute
   '/admin/reports': typeof AuthenticatedAdminReportsRoute
   '/admin/roles': typeof AuthenticatedAdminRolesRoute
@@ -866,6 +874,7 @@ export interface FileRoutesByTo {
   '/admin/downloads': typeof AuthenticatedAdminDownloadsRouteWithChildren
   '/admin/faculty': typeof AuthenticatedAdminFacultyRoute
   '/admin/gallery': typeof AuthenticatedAdminGalleryRoute
+  '/admin/notices': typeof AuthenticatedAdminNoticesRoute
   '/admin/notifications': typeof AuthenticatedAdminNotificationsRoute
   '/admin/reports': typeof AuthenticatedAdminReportsRoute
   '/admin/roles': typeof AuthenticatedAdminRolesRoute
@@ -974,6 +983,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/downloads': typeof AuthenticatedAdminDownloadsRouteWithChildren
   '/_authenticated/admin/faculty': typeof AuthenticatedAdminFacultyRoute
   '/_authenticated/admin/gallery': typeof AuthenticatedAdminGalleryRoute
+  '/_authenticated/admin/notices': typeof AuthenticatedAdminNoticesRoute
   '/_authenticated/admin/notifications': typeof AuthenticatedAdminNotificationsRoute
   '/_authenticated/admin/reports': typeof AuthenticatedAdminReportsRoute
   '/_authenticated/admin/roles': typeof AuthenticatedAdminRolesRoute
@@ -1082,6 +1092,7 @@ export interface FileRouteTypes {
     | '/admin/downloads'
     | '/admin/faculty'
     | '/admin/gallery'
+    | '/admin/notices'
     | '/admin/notifications'
     | '/admin/reports'
     | '/admin/roles'
@@ -1188,6 +1199,7 @@ export interface FileRouteTypes {
     | '/admin/downloads'
     | '/admin/faculty'
     | '/admin/gallery'
+    | '/admin/notices'
     | '/admin/notifications'
     | '/admin/reports'
     | '/admin/roles'
@@ -1295,6 +1307,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/downloads'
     | '/_authenticated/admin/faculty'
     | '/_authenticated/admin/gallery'
+    | '/_authenticated/admin/notices'
     | '/_authenticated/admin/notifications'
     | '/_authenticated/admin/reports'
     | '/_authenticated/admin/roles'
@@ -1878,6 +1891,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminNotificationsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/admin/notices': {
+      id: '/_authenticated/admin/notices'
+      path: '/admin/notices'
+      fullPath: '/admin/notices'
+      preLoaderRoute: typeof AuthenticatedAdminNoticesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/admin/gallery': {
       id: '/_authenticated/admin/gallery'
       path: '/admin/gallery'
@@ -2348,6 +2368,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedAdminDownloadsRoute: typeof AuthenticatedAdminDownloadsRouteWithChildren
   AuthenticatedAdminFacultyRoute: typeof AuthenticatedAdminFacultyRoute
   AuthenticatedAdminGalleryRoute: typeof AuthenticatedAdminGalleryRoute
+  AuthenticatedAdminNoticesRoute: typeof AuthenticatedAdminNoticesRoute
   AuthenticatedAdminNotificationsRoute: typeof AuthenticatedAdminNotificationsRoute
   AuthenticatedAdminReportsRoute: typeof AuthenticatedAdminReportsRoute
   AuthenticatedAdminRolesRoute: typeof AuthenticatedAdminRolesRoute
@@ -2372,6 +2393,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
     AuthenticatedAdminDownloadsRouteWithChildren,
   AuthenticatedAdminFacultyRoute: AuthenticatedAdminFacultyRoute,
   AuthenticatedAdminGalleryRoute: AuthenticatedAdminGalleryRoute,
+  AuthenticatedAdminNoticesRoute: AuthenticatedAdminNoticesRoute,
   AuthenticatedAdminNotificationsRoute: AuthenticatedAdminNotificationsRoute,
   AuthenticatedAdminReportsRoute: AuthenticatedAdminReportsRoute,
   AuthenticatedAdminRolesRoute: AuthenticatedAdminRolesRoute,
