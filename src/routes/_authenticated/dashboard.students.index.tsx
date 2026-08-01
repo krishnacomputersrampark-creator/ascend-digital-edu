@@ -16,7 +16,7 @@ import {
 } from "@/lib/students.export";
 import { STATUS_CLASS, STATUS_LABEL, STUDENT_STATUSES, fmtDate } from "@/lib/students.shared";
 
-export const Route = createFileRoute("/_authenticated/dashboard/students")({
+export const Route = createFileRoute("/_authenticated/dashboard/students/")({
   head: () => ({ meta: [{ title: "Students · KCC ERP" }, { name: "robots", content: "noindex" }] }),
   component: StudentsPage,
 });
