@@ -1210,6 +1210,44 @@ export type Database = {
           },
         ]
       }
+      student_edit_history: {
+        Row: {
+          action: string
+          changed_by: string | null
+          changed_by_email: string | null
+          changes: Json
+          created_at: string
+          id: string
+          student_id: string
+        }
+        Insert: {
+          action?: string
+          changed_by?: string | null
+          changed_by_email?: string | null
+          changes?: Json
+          created_at?: string
+          id?: string
+          student_id: string
+        }
+        Update: {
+          action?: string
+          changed_by?: string | null
+          changed_by_email?: string | null
+          changes?: Json
+          created_at?: string
+          id?: string
+          student_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "student_edit_history_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "students"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       student_fees: {
         Row: {
           created_at: string
@@ -1346,106 +1384,142 @@ export type Database = {
         Row: {
           aadhaar_number: string | null
           address: string | null
+          admission_fee: number
           admission_id: string | null
+          admission_number: string | null
           alternate_mobile: string | null
           batch_id: string | null
           blood_group: string | null
           branch_id: string
+          category: string | null
           city: string | null
+          course_fee: number
           course_id: string | null
           created_at: string
+          created_by: string | null
           date_of_birth: string | null
           deleted_at: string | null
+          discount: number
+          district: string | null
           email: string | null
           emergency_contact: string | null
           enrollment_no: string
+          faculty_id: string | null
+          father_name: string | null
           full_name: string
           gender: string | null
           guardian_name: string | null
           guardian_phone: string | null
           id: string
           joined_at: string
+          mother_name: string | null
           notes: string | null
           occupation: string | null
           phone: string
           photo_url: string | null
           pincode: string | null
           qualification: string | null
+          registration_fee: number
           roll_no: string | null
           state: string | null
           status: string
           student_code: string
           updated_at: string
+          updated_by: string | null
           user_id: string | null
         }
         Insert: {
           aadhaar_number?: string | null
           address?: string | null
+          admission_fee?: number
           admission_id?: string | null
+          admission_number?: string | null
           alternate_mobile?: string | null
           batch_id?: string | null
           blood_group?: string | null
           branch_id: string
+          category?: string | null
           city?: string | null
+          course_fee?: number
           course_id?: string | null
           created_at?: string
+          created_by?: string | null
           date_of_birth?: string | null
           deleted_at?: string | null
+          discount?: number
+          district?: string | null
           email?: string | null
           emergency_contact?: string | null
           enrollment_no?: string
+          faculty_id?: string | null
+          father_name?: string | null
           full_name: string
           gender?: string | null
           guardian_name?: string | null
           guardian_phone?: string | null
           id?: string
           joined_at?: string
+          mother_name?: string | null
           notes?: string | null
           occupation?: string | null
           phone: string
           photo_url?: string | null
           pincode?: string | null
           qualification?: string | null
+          registration_fee?: number
           roll_no?: string | null
           state?: string | null
           status?: string
           student_code?: string
           updated_at?: string
+          updated_by?: string | null
           user_id?: string | null
         }
         Update: {
           aadhaar_number?: string | null
           address?: string | null
+          admission_fee?: number
           admission_id?: string | null
+          admission_number?: string | null
           alternate_mobile?: string | null
           batch_id?: string | null
           blood_group?: string | null
           branch_id?: string
+          category?: string | null
           city?: string | null
+          course_fee?: number
           course_id?: string | null
           created_at?: string
+          created_by?: string | null
           date_of_birth?: string | null
           deleted_at?: string | null
+          discount?: number
+          district?: string | null
           email?: string | null
           emergency_contact?: string | null
           enrollment_no?: string
+          faculty_id?: string | null
+          father_name?: string | null
           full_name?: string
           gender?: string | null
           guardian_name?: string | null
           guardian_phone?: string | null
           id?: string
           joined_at?: string
+          mother_name?: string | null
           notes?: string | null
           occupation?: string | null
           phone?: string
           photo_url?: string | null
           pincode?: string | null
           qualification?: string | null
+          registration_fee?: number
           roll_no?: string | null
           state?: string | null
           status?: string
           student_code?: string
           updated_at?: string
+          updated_by?: string | null
           user_id?: string | null
         }
         Relationships: [
@@ -1475,6 +1549,27 @@ export type Database = {
             columns: ["course_id"]
             isOneToOne: false
             referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "students_faculty_id_fkey"
+            columns: ["faculty_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "students_faculty_id_fkey"
+            columns: ["faculty_id"]
+            isOneToOne: false
+            referencedRelation: "user_profiles"
+            referencedColumns: ["auth_user_id"]
+          },
+          {
+            foreignKeyName: "students_faculty_id_fkey"
+            columns: ["faculty_id"]
+            isOneToOne: false
+            referencedRelation: "user_profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -1783,7 +1878,9 @@ export type Database = {
       is_material_admin: { Args: { _uid: string }; Returns: boolean }
       is_user_admin: { Args: { _uid: string }; Returns: boolean }
       log_logout: { Args: never; Returns: undefined }
+      my_branch_id: { Args: never; Returns: string }
       next_admission_no: { Args: never; Returns: string }
+      next_admission_number: { Args: never; Returns: string }
       next_application_no: { Args: never; Returns: string }
       next_certificate_no: { Args: never; Returns: string }
       next_enrollment_no: { Args: never; Returns: string }
@@ -1821,36 +1918,48 @@ export type Database = {
         Returns: {
           aadhaar_number: string | null
           address: string | null
+          admission_fee: number
           admission_id: string | null
+          admission_number: string | null
           alternate_mobile: string | null
           batch_id: string | null
           blood_group: string | null
           branch_id: string
+          category: string | null
           city: string | null
+          course_fee: number
           course_id: string | null
           created_at: string
+          created_by: string | null
           date_of_birth: string | null
           deleted_at: string | null
+          discount: number
+          district: string | null
           email: string | null
           emergency_contact: string | null
           enrollment_no: string
+          faculty_id: string | null
+          father_name: string | null
           full_name: string
           gender: string | null
           guardian_name: string | null
           guardian_phone: string | null
           id: string
           joined_at: string
+          mother_name: string | null
           notes: string | null
           occupation: string | null
           phone: string
           photo_url: string | null
           pincode: string | null
           qualification: string | null
+          registration_fee: number
           roll_no: string | null
           state: string | null
           status: string
           student_code: string
           updated_at: string
+          updated_by: string | null
           user_id: string | null
         }
         SetofOptions: {
