@@ -51,9 +51,12 @@ export function applyFilters<T>(query: T, f: StudentFilters): T {
 
 /** Converts empty strings to null so Postgres stores real NULLs. */
 export function normalize(values: StudentValues): Record<string, unknown> {
-  return Object.fromEntries(
+  const out = Object.fromEntries(
     Object.entries(values).map(([k, v]) => [k, typeof v === "string" && v.trim() === "" ? null : v]),
   );
+  // joined_at is NOT NULL in the database — fall back to today.
+  if (!out.joined_at) out.joined_at = new Date().toISOString().slice(0, 10);
+  return out;
 }
 
 /** Splits the flat form payload into a students row and document paths. */

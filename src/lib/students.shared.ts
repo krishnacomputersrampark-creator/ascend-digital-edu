@@ -67,7 +67,7 @@ export const studentSchema = z.object({
   guardian_phone: optStr(20),
   emergency_contact: optStr(20),
   // Step 3 — Academic
-  branch_id: z.string().uuid().optional().or(z.literal("")).nullable(),
+  branch_id: z.string().uuid("Branch is required"),
   course_id: z.string().uuid().optional().or(z.literal("")).nullable(),
   batch_id: z.string().uuid().optional().or(z.literal("")).nullable(),
   faculty_id: z.string().uuid().optional().or(z.literal("")).nullable(),

@@ -103,6 +103,8 @@ export function downloadImportTemplate() {
   const ws = XLSX.utils.json_to_sheet([
     {
       full_name: "Ramesh Kumar",
+      branch_code: "KCC-KN",
+      course_code: "DCA",
       father_name: "Suresh Kumar",
       mother_name: "Sita Devi",
       phone: "9876543210",

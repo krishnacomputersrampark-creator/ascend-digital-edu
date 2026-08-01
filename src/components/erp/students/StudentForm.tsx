@@ -234,7 +234,7 @@ export function StudentForm({
 
         {step === 2 && (
           <>
-            <Field label="Branch" error={errors.branch_id}>
+            <Field label="Branch" required error={errors.branch_id}>
               <select className={inputCls} value={values.branch_id ?? ""} onChange={(e) => set("branch_id", e.target.value)}>
                 <option value="">Select branch</option>
                 {branches.map((b) => <option key={b.id} value={b.id}>{b.name}</option>)}
