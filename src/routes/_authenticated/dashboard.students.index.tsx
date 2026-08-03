@@ -118,12 +118,13 @@ function StudentsPage() {
   const totalPages = Math.max(1, Math.ceil(total / pageSize));
   const allChecked = rows.length > 0 && selected.length === rows.length;
 
-  const doExport = async (kind: "xlsx" | "csv" | "pdf") => {
+  const doExport = async (kind: "xlsx" | "csv" | "pdf" | "print") => {
     const data: any[] = await fetchExport({ data: filters() });
     if (!data.length) { toast.error("Nothing to export for these filters."); return; }
     if (kind === "xlsx") exportStudentsXlsx(data);
     if (kind === "csv") exportStudentsCsv(data);
     if (kind === "pdf") exportStudentsPdf(data);
+    if (kind === "print") window.print();
   };
 
   const doDelete = async (ids: string[]) => {
@@ -337,6 +338,9 @@ function StudentsPage() {
                       <button title="View" onClick={() => navigate({ to: "/dashboard/students/$id", params: { id: r.id } })} className={iconBtn}><Eye className="h-4 w-4" /></button>
                       <button title="Edit" onClick={() => navigate({ to: "/dashboard/students/$id/edit", params: { id: r.id } })} className={iconBtn}><Pencil className="h-4 w-4" /></button>
                       <button title="ID card" onClick={() => printIdCard(r, window.location.origin)} className={iconBtn}><IdCard className="h-4 w-4" /></button>
+                      <button title="Admission form" onClick={() => printAdmissionForm(r)} className={iconBtn}><Printer className="h-4 w-4" /></button>
+                      <button title="QR code" onClick={() => downloadStudentQr(r, window.location.origin)} className={iconBtn}><QrCode className="h-4 w-4" /></button>
+                      <button title="Fees" onClick={() => navigate({ to: "/dashboard/fees/collect" })} className={iconBtn}><Receipt className="h-4 w-4" /></button>
                       <button title="Delete" onClick={() => doDelete([r.id])} className={`${iconBtn} text-rose-600`}><Trash2 className="h-4 w-4" /></button>
                     </div>
                   </td>
@@ -376,6 +380,34 @@ function StatCard({ label, value, icon: Icon }: { label: string; value: number; 
         <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">{label}</div>
       </div>
       <div className="mt-2 text-2xl font-extrabold text-ink">{value}</div>
+    </div>
+  );
+}
+
+function MiniReport({ title, rows, icon: Icon }: { title: string; rows: Array<{ name: string; value: number }>; icon: any }) {
+  const max = Math.max(1, ...rows.map((r) => r.value));
+  return (
+    <div className="rounded-2xl border border-border bg-white p-4 shadow-soft">
+      <div className="mb-3 flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+        <Icon className="h-4 w-4 text-brand" /> {title}
+      </div>
+      {rows.length === 0 ? (
+        <p className="text-sm text-muted-foreground">No data yet.</p>
+      ) : (
+        <ul className="space-y-2">
+          {rows.slice(0, 5).map((r) => (
+            <li key={r.name}>
+              <div className="flex items-center justify-between text-xs font-semibold text-ink">
+                <span className="truncate pr-2 capitalize">{r.name}</span>
+                <span>{r.value}</span>
+              </div>
+              <div className="mt-1 h-1.5 rounded-full bg-cyan-soft">
+                <div className="h-1.5 rounded-full gradient-brand" style={{ width: `${(r.value / max) * 100}%` }} />
+              </div>
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 }
