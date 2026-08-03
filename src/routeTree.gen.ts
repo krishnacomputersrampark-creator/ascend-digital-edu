@@ -110,6 +110,7 @@ import { Route as StudentDashboardFeesReceiptIdRouteImport } from './routes/stud
 import { Route as StudentDashboardCertificatesViewIdRouteImport } from './routes/student-dashboard_.certificates.view.$id'
 import { Route as ApiPublicHooksFeeRemindersRouteImport } from './routes/api/public/hooks/fee-reminders'
 import { Route as AuthenticatedFacultyDownloadsUploadRouteImport } from './routes/_authenticated/faculty.downloads.upload'
+import { Route as AuthenticatedDashboardTeachersNewRouteImport } from './routes/_authenticated/dashboard.teachers.new'
 import { Route as AuthenticatedDashboardStudentsNewRouteImport } from './routes/_authenticated/dashboard.students.new'
 import { Route as AuthenticatedDashboardSettingsSecurityRouteImport } from './routes/_authenticated/dashboard.settings.security'
 import { Route as AuthenticatedDashboardResultsPublishRouteImport } from './routes/_authenticated/dashboard.results.publish'
@@ -691,6 +692,12 @@ const AuthenticatedFacultyDownloadsUploadRoute =
     path: '/upload',
     getParentRoute: () => AuthenticatedFacultyDownloadsRoute,
   } as any)
+const AuthenticatedDashboardTeachersNewRoute =
+  AuthenticatedDashboardTeachersNewRouteImport.update({
+    id: '/teachers/new',
+    path: '/teachers/new',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
 const AuthenticatedDashboardStudentsNewRoute =
   AuthenticatedDashboardStudentsNewRouteImport.update({
     id: '/students/new',
@@ -930,6 +937,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/results/publish': typeof AuthenticatedDashboardResultsPublishRoute
   '/dashboard/settings/security': typeof AuthenticatedDashboardSettingsSecurityRoute
   '/dashboard/students/new': typeof AuthenticatedDashboardStudentsNewRoute
+  '/dashboard/teachers/new': typeof AuthenticatedDashboardTeachersNewRoute
   '/faculty/downloads/upload': typeof AuthenticatedFacultyDownloadsUploadRoute
   '/api/public/hooks/fee-reminders': typeof ApiPublicHooksFeeRemindersRoute
   '/student-dashboard/certificates/view/$id': typeof StudentDashboardCertificatesViewIdRoute
@@ -1045,6 +1053,7 @@ export interface FileRoutesByTo {
   '/dashboard/results/publish': typeof AuthenticatedDashboardResultsPublishRoute
   '/dashboard/settings/security': typeof AuthenticatedDashboardSettingsSecurityRoute
   '/dashboard/students/new': typeof AuthenticatedDashboardStudentsNewRoute
+  '/dashboard/teachers/new': typeof AuthenticatedDashboardTeachersNewRoute
   '/faculty/downloads/upload': typeof AuthenticatedFacultyDownloadsUploadRoute
   '/api/public/hooks/fee-reminders': typeof ApiPublicHooksFeeRemindersRoute
   '/student-dashboard/certificates/view/$id': typeof StudentDashboardCertificatesViewIdRoute
@@ -1171,6 +1180,7 @@ export interface FileRoutesById {
   '/_authenticated/dashboard/results/publish': typeof AuthenticatedDashboardResultsPublishRoute
   '/_authenticated/dashboard/settings/security': typeof AuthenticatedDashboardSettingsSecurityRoute
   '/_authenticated/dashboard/students/new': typeof AuthenticatedDashboardStudentsNewRoute
+  '/_authenticated/dashboard/teachers/new': typeof AuthenticatedDashboardTeachersNewRoute
   '/_authenticated/faculty/downloads/upload': typeof AuthenticatedFacultyDownloadsUploadRoute
   '/api/public/hooks/fee-reminders': typeof ApiPublicHooksFeeRemindersRoute
   '/student-dashboard_/certificates/view/$id': typeof StudentDashboardCertificatesViewIdRoute
@@ -1297,6 +1307,7 @@ export interface FileRouteTypes {
     | '/dashboard/results/publish'
     | '/dashboard/settings/security'
     | '/dashboard/students/new'
+    | '/dashboard/teachers/new'
     | '/faculty/downloads/upload'
     | '/api/public/hooks/fee-reminders'
     | '/student-dashboard/certificates/view/$id'
@@ -1412,6 +1423,7 @@ export interface FileRouteTypes {
     | '/dashboard/results/publish'
     | '/dashboard/settings/security'
     | '/dashboard/students/new'
+    | '/dashboard/teachers/new'
     | '/faculty/downloads/upload'
     | '/api/public/hooks/fee-reminders'
     | '/student-dashboard/certificates/view/$id'
@@ -1537,6 +1549,7 @@ export interface FileRouteTypes {
     | '/_authenticated/dashboard/results/publish'
     | '/_authenticated/dashboard/settings/security'
     | '/_authenticated/dashboard/students/new'
+    | '/_authenticated/dashboard/teachers/new'
     | '/_authenticated/faculty/downloads/upload'
     | '/api/public/hooks/fee-reminders'
     | '/student-dashboard_/certificates/view/$id'
@@ -2316,6 +2329,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedFacultyDownloadsUploadRouteImport
       parentRoute: typeof AuthenticatedFacultyDownloadsRoute
     }
+    '/_authenticated/dashboard/teachers/new': {
+      id: '/_authenticated/dashboard/teachers/new'
+      path: '/teachers/new'
+      fullPath: '/dashboard/teachers/new'
+      preLoaderRoute: typeof AuthenticatedDashboardTeachersNewRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
     '/_authenticated/dashboard/students/new': {
       id: '/_authenticated/dashboard/students/new'
       path: '/students/new'
@@ -2616,6 +2636,7 @@ interface AuthenticatedDashboardRouteChildren {
   AuthenticatedDashboardSettingsRoute: typeof AuthenticatedDashboardSettingsRouteWithChildren
   AuthenticatedDashboardIndexRoute: typeof AuthenticatedDashboardIndexRoute
   AuthenticatedDashboardStudentsNewRoute: typeof AuthenticatedDashboardStudentsNewRoute
+  AuthenticatedDashboardTeachersNewRoute: typeof AuthenticatedDashboardTeachersNewRoute
   AuthenticatedDashboardStudentsIndexRoute: typeof AuthenticatedDashboardStudentsIndexRoute
   AuthenticatedDashboardStudentsIdEditRoute: typeof AuthenticatedDashboardStudentsIdEditRoute
   AuthenticatedDashboardStudentsIdIndexRoute: typeof AuthenticatedDashboardStudentsIdIndexRoute
@@ -2641,6 +2662,8 @@ const AuthenticatedDashboardRouteChildren: AuthenticatedDashboardRouteChildren =
     AuthenticatedDashboardIndexRoute: AuthenticatedDashboardIndexRoute,
     AuthenticatedDashboardStudentsNewRoute:
       AuthenticatedDashboardStudentsNewRoute,
+    AuthenticatedDashboardTeachersNewRoute:
+      AuthenticatedDashboardTeachersNewRoute,
     AuthenticatedDashboardStudentsIndexRoute:
       AuthenticatedDashboardStudentsIndexRoute,
     AuthenticatedDashboardStudentsIdEditRoute:
