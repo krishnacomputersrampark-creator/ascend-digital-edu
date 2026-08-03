@@ -2,7 +2,7 @@ import { z } from "zod";
 import type { StudentValues } from "@/lib/students.shared";
 
 export const STUDENT_COLUMNS =
-  "id, student_code, enrollment_no, admission_number, roll_no, full_name, father_name, mother_name, email, phone, alternate_mobile, photo_url, status, joined_at, gender, date_of_birth, blood_group, category, occupation, aadhaar_number, address, city, district, state, pincode, emergency_contact, guardian_name, guardian_phone, course_fee, admission_fee, registration_fee, discount, branch_id, course_id, batch_id, faculty_id, created_at, updated_at";
+  "id, student_code, enrollment_no, admission_number, roll_no, full_name, father_name, mother_name, email, phone, alternate_mobile, photo_url, status, joined_at, gender, date_of_birth, blood_group, category, occupation, aadhaar_number, address, city, district, state, pincode, emergency_contact, guardian_name, guardian_phone, course_fee, admission_fee, registration_fee, discount, installments, payment_mode, receipt_number, session, duration, remarks, branch_id, course_id, batch_id, faculty_id, created_at, updated_at";
 
 export const DOC_FIELDS = ["signature", "aadhaar", "marksheet", "certificate"] as const;
 
