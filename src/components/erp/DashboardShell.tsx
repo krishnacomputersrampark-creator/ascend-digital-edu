@@ -26,7 +26,7 @@ const ALL_GROUPS: NavGroup[] = [
     items: [
       { label: "Students", to: "/dashboard/students", icon: Users, roles: ["super_admin", "admin", "branch_manager", "faculty"] },
       { label: "Admissions", to: "/dashboard/admissions", icon: ClipboardList, roles: ["super_admin", "admin", "branch_manager"] },
-      { label: "Teachers", to: "/admin/faculty", icon: GraduationCap, roles: ["super_admin", "admin", "branch_manager"] },
+      { label: "Teachers", to: "/dashboard/teachers", icon: GraduationCap, roles: ["super_admin", "admin", "branch_manager"] },
       { label: "Courses", to: "/admin/courses", icon: BookOpen, roles: ["super_admin", "admin", "branch_manager", "faculty"] },
       { label: "Batches", to: "/admin/batches", icon: ClipboardList, roles: ["super_admin", "admin", "branch_manager", "faculty"] },
     ],
