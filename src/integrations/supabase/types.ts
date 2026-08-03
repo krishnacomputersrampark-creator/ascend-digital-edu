@@ -1797,6 +1797,259 @@ export type Database = {
           },
         ]
       }
+      teacher_batches: {
+        Row: {
+          batch_id: string
+          created_at: string
+          id: string
+          teacher_id: string
+        }
+        Insert: {
+          batch_id: string
+          created_at?: string
+          id?: string
+          teacher_id: string
+        }
+        Update: {
+          batch_id?: string
+          created_at?: string
+          id?: string
+          teacher_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "teacher_batches_batch_id_fkey"
+            columns: ["batch_id"]
+            isOneToOne: false
+            referencedRelation: "batches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "teacher_batches_teacher_id_fkey"
+            columns: ["teacher_id"]
+            isOneToOne: false
+            referencedRelation: "teachers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      teacher_courses: {
+        Row: {
+          course_id: string
+          created_at: string
+          id: string
+          teacher_id: string
+        }
+        Insert: {
+          course_id: string
+          created_at?: string
+          id?: string
+          teacher_id: string
+        }
+        Update: {
+          course_id?: string
+          created_at?: string
+          id?: string
+          teacher_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "teacher_courses_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "teacher_courses_teacher_id_fkey"
+            columns: ["teacher_id"]
+            isOneToOne: false
+            referencedRelation: "teachers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      teacher_edit_history: {
+        Row: {
+          action: string
+          changed_by: string | null
+          changed_by_email: string | null
+          changes: Json
+          created_at: string
+          id: string
+          teacher_id: string
+        }
+        Insert: {
+          action: string
+          changed_by?: string | null
+          changed_by_email?: string | null
+          changes?: Json
+          created_at?: string
+          id?: string
+          teacher_id: string
+        }
+        Update: {
+          action?: string
+          changed_by?: string | null
+          changed_by_email?: string | null
+          changes?: Json
+          created_at?: string
+          id?: string
+          teacher_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "teacher_edit_history_teacher_id_fkey"
+            columns: ["teacher_id"]
+            isOneToOne: false
+            referencedRelation: "teachers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      teachers: {
+        Row: {
+          aadhaar_number: string | null
+          aadhaar_url: string | null
+          address: string | null
+          alternate_mobile: string | null
+          blood_group: string | null
+          branch_id: string | null
+          created_at: string
+          created_by: string | null
+          deleted_at: string | null
+          department: string | null
+          designation: string | null
+          district: string | null
+          dob: string | null
+          email: string | null
+          employee_code: string
+          experience: string | null
+          experience_url: string | null
+          father_name: string | null
+          full_name: string
+          gender: string | null
+          id: string
+          joining_date: string | null
+          mobile: string
+          mother_name: string | null
+          pan_number: string | null
+          pan_url: string | null
+          photo_url: string | null
+          pin_code: string | null
+          preferred_timings: string | null
+          qualification: string | null
+          qualification_url: string | null
+          remarks: string | null
+          salary: number
+          signature_url: string | null
+          state: string | null
+          status: string
+          subjects: string | null
+          teacher_id: string
+          updated_at: string
+          updated_by: string | null
+          user_id: string | null
+          working_days: string | null
+        }
+        Insert: {
+          aadhaar_number?: string | null
+          aadhaar_url?: string | null
+          address?: string | null
+          alternate_mobile?: string | null
+          blood_group?: string | null
+          branch_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          deleted_at?: string | null
+          department?: string | null
+          designation?: string | null
+          district?: string | null
+          dob?: string | null
+          email?: string | null
+          employee_code: string
+          experience?: string | null
+          experience_url?: string | null
+          father_name?: string | null
+          full_name: string
+          gender?: string | null
+          id?: string
+          joining_date?: string | null
+          mobile: string
+          mother_name?: string | null
+          pan_number?: string | null
+          pan_url?: string | null
+          photo_url?: string | null
+          pin_code?: string | null
+          preferred_timings?: string | null
+          qualification?: string | null
+          qualification_url?: string | null
+          remarks?: string | null
+          salary?: number
+          signature_url?: string | null
+          state?: string | null
+          status?: string
+          subjects?: string | null
+          teacher_id: string
+          updated_at?: string
+          updated_by?: string | null
+          user_id?: string | null
+          working_days?: string | null
+        }
+        Update: {
+          aadhaar_number?: string | null
+          aadhaar_url?: string | null
+          address?: string | null
+          alternate_mobile?: string | null
+          blood_group?: string | null
+          branch_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          deleted_at?: string | null
+          department?: string | null
+          designation?: string | null
+          district?: string | null
+          dob?: string | null
+          email?: string | null
+          employee_code?: string
+          experience?: string | null
+          experience_url?: string | null
+          father_name?: string | null
+          full_name?: string
+          gender?: string | null
+          id?: string
+          joining_date?: string | null
+          mobile?: string
+          mother_name?: string | null
+          pan_number?: string | null
+          pan_url?: string | null
+          photo_url?: string | null
+          pin_code?: string | null
+          preferred_timings?: string | null
+          qualification?: string | null
+          qualification_url?: string | null
+          remarks?: string | null
+          salary?: number
+          signature_url?: string | null
+          state?: string | null
+          status?: string
+          subjects?: string | null
+          teacher_id?: string
+          updated_at?: string
+          updated_by?: string | null
+          user_id?: string | null
+          working_days?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "teachers_branch_id_fkey"
+            columns: ["branch_id"]
+            isOneToOne: false
+            referencedRelation: "branches"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_roles: {
         Row: {
           branch_id: string | null
@@ -1952,9 +2205,11 @@ export type Database = {
       next_admission_number: { Args: never; Returns: string }
       next_application_no: { Args: never; Returns: string }
       next_certificate_no: { Args: never; Returns: string }
+      next_employee_code: { Args: never; Returns: string }
       next_enrollment_no: { Args: never; Returns: string }
       next_receipt_no: { Args: never; Returns: string }
       next_student_code: { Args: never; Returns: string }
+      next_teacher_id: { Args: never; Returns: string }
       recalc_student_fee: { Args: { _sf: string }; Returns: undefined }
       record_login: { Args: never; Returns: string }
       role_of: {
