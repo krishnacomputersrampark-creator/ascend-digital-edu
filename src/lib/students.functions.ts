@@ -5,6 +5,7 @@ import { studentSchema } from "@/lib/students.shared";
 import {
   STUDENT_COLUMNS,
   applyFilters,
+  assertNoDuplicates,
   buildDocRows,
   diffChanges,
   filterSchema,
@@ -51,13 +52,16 @@ export const studentStats = createServerFn({ method: "GET" })
   .handler(async ({ context }) => {
     const now = new Date();
     const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate()).toISOString().slice(0, 10);
     const base = () => context.supabase.from("students").select("id", { count: "exact", head: true }).is("deleted_at", null);
-    const [total, active, completed, dropped, thisMonth, rows] = await Promise.all([
+    const [total, active, completed, dropped, thisMonth, todayCount, pending, rows] = await Promise.all([
       base(),
       base().eq("status", "active"),
       base().in("status", ["completed", "passed_out"]),
       base().eq("status", "dropped"),
       base().gte("created_at", monthStart),
+      base().eq("joined_at", today),
+      context.supabase.from("admissions").select("id", { count: "exact", head: true }).eq("status", "pending"),
       context.supabase
         .from("students")
         .select("created_at, gender, course_id, branch_id, course:courses(name), branch:branches(name)")
@@ -92,6 +96,9 @@ export const studentStats = createServerFn({ method: "GET" })
       completed: completed.count ?? 0,
       dropped: dropped.count ?? 0,
       thisMonth: thisMonth.count ?? 0,
+      inactive: (total.count ?? 0) - (active.count ?? 0),
+      today: todayCount.count ?? 0,
+      pendingAdmissions: pending.count ?? 0,
       series,
       byCourse: tally((r) => r.course?.name).slice(0, 8),
       byBranch: tally((r) => r.branch?.name).slice(0, 8),
@@ -161,13 +168,7 @@ export const createStudent = createServerFn({ method: "POST" })
   .inputValidator((d: unknown) => studentSchema.parse(d))
   .handler(async ({ data, context }) => {
     const { record, docs } = splitPayload(normalize(data));
-    const dupe = await context.supabase
-      .from("students")
-      .select("id")
-      .is("deleted_at", null)
-      .eq("phone", record.phone as string)
-      .maybeSingle();
-    if (dupe.data) throw new Error("A student with this mobile number already exists.");
+    await assertNoDuplicates(context.supabase, record, null);
 
     const { data: created, error } = await context.supabase
       .from("students")
@@ -193,6 +194,7 @@ export const updateStudent = createServerFn({ method: "POST" })
   .inputValidator((d: unknown) => z.object({ id: z.string().uuid(), values: studentSchema }).parse(d))
   .handler(async ({ data, context }) => {
     const { record, docs } = splitPayload(normalize(data.values));
+    await assertNoDuplicates(context.supabase, record, data.id);
     const { data: before } = await context.supabase.from("students").select(STUDENT_COLUMNS).eq("id", data.id).maybeSingle();
     const { error } = await context.supabase
       .from("students")

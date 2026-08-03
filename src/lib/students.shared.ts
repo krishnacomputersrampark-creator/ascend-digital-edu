@@ -22,6 +22,7 @@ export const STATUS_CLASS: Record<string, string> = {
 export const CATEGORIES = ["General", "OBC", "SC", "ST", "EWS", "Other"] as const;
 export const GENDERS = ["male", "female", "other"] as const;
 export const BLOOD_GROUPS = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"] as const;
+export const PAYMENT_MODES = ["cash", "upi", "card", "netbanking", "cheque", "dd"] as const;
 
 const optStr = (max = 200) => z.string().trim().max(max).optional().or(z.literal("")).nullable();
 
@@ -74,11 +75,17 @@ export const studentSchema = z.object({
   roll_no: optStr(40),
   joined_at: optStr(20),
   status: z.string().trim().max(30).default("active"),
+  session: optStr(20),
+  duration: optStr(40),
+  remarks: optStr(1000),
   // Step 4 — Fees
   course_fee: z.coerce.number().min(0).default(0),
   admission_fee: z.coerce.number().min(0).default(0),
   registration_fee: z.coerce.number().min(0).default(0),
   discount: z.coerce.number().min(0).default(0),
+  installments: z.coerce.number().int().min(1).max(36).default(1),
+  payment_mode: optStr(20),
+  receipt_number: optStr(40),
   // Step 5 — Documents
   photo_url: optStr(500),
   signature_url: optStr(500),
@@ -118,10 +125,16 @@ export const EMPTY_STUDENT: StudentInput = {
   roll_no: "",
   joined_at: new Date().toISOString().slice(0, 10),
   status: "active",
+  session: `${new Date().getFullYear()}-${String((new Date().getFullYear() + 1) % 100).padStart(2, "0")}`,
+  duration: "",
+  remarks: "",
   course_fee: 0,
   admission_fee: 0,
   registration_fee: 0,
   discount: 0,
+  installments: 1,
+  payment_mode: "",
+  receipt_number: "",
   photo_url: "",
   signature_url: "",
   aadhaar_doc_url: "",

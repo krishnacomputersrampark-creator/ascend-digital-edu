@@ -2,7 +2,7 @@ import { z } from "zod";
 import type { StudentValues } from "@/lib/students.shared";
 
 export const STUDENT_COLUMNS =
-  "id, student_code, enrollment_no, admission_number, roll_no, full_name, father_name, mother_name, email, phone, alternate_mobile, photo_url, status, joined_at, gender, date_of_birth, blood_group, category, occupation, aadhaar_number, address, city, district, state, pincode, emergency_contact, guardian_name, guardian_phone, course_fee, admission_fee, registration_fee, discount, branch_id, course_id, batch_id, faculty_id, created_at, updated_at";
+  "id, student_code, enrollment_no, admission_number, roll_no, full_name, father_name, mother_name, email, phone, alternate_mobile, photo_url, status, joined_at, gender, date_of_birth, blood_group, category, occupation, aadhaar_number, address, city, district, state, pincode, emergency_contact, guardian_name, guardian_phone, course_fee, admission_fee, registration_fee, discount, installments, payment_mode, receipt_number, session, duration, remarks, branch_id, course_id, batch_id, faculty_id, created_at, updated_at";
 
 export const DOC_FIELDS = ["signature", "aadhaar", "marksheet", "certificate"] as const;
 
@@ -84,6 +84,22 @@ export function buildDocRows(studentId: string, docs: Record<string, string>, us
 }
 
 /** Field-level before/after diff for the edit history trail. */
+export async function assertNoDuplicates(supabase: any, record: Record<string, unknown>, excludeId: string | null) {
+  const checks: Array<[string, unknown, string]> = [
+    ["phone", record.phone, "A student with this mobile number already exists."],
+    ["email", record.email, "A student with this email address already exists."],
+    ["student_code", record.student_code, "This Student ID is already in use."],
+    ["admission_number", record.admission_number, "This admission number is already in use."],
+  ];
+  for (const [column, value, message] of checks) {
+    if (!value) continue;
+    let q = supabase.from("students").select("id").is("deleted_at", null).eq(column, value as string);
+    if (excludeId) q = q.neq("id", excludeId);
+    const { data } = await q.maybeSingle();
+    if (data) throw new Error(message);
+  }
+}
+
 export function diffChanges(before: Record<string, unknown> | null, after: Record<string, unknown>) {
   const out: Record<string, { from: unknown; to: unknown }> = {};
   if (!before) return out;

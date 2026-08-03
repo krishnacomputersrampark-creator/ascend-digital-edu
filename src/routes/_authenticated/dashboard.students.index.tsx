@@ -4,6 +4,7 @@ import { useServerFn } from "@tanstack/react-start";
 import {
   Search, Download, Loader2, Users, UserCheck, GraduationCap, UserMinus,
   Plus, Upload, Trash2, Pencil, Eye, IdCard, FileText, ChevronLeft, ChevronRight, X,
+  RefreshCw, Printer, QrCode, Receipt, CalendarPlus, Clock, Building2,
 } from "lucide-react";
 import { toast } from "sonner";
 import { DashboardShell } from "@/components/erp/DashboardShell";
@@ -12,9 +13,11 @@ import {
   deleteStudents, exportStudents, importStudents, listStudentsAdvanced, setStudentStatus, studentStats,
 } from "@/lib/students.functions";
 import {
-  downloadImportTemplate, exportStudentsCsv, exportStudentsPdf, exportStudentsXlsx, parseImportFile, printIdCard,
+  downloadImportTemplate, downloadStudentQr, exportStudentsCsv, exportStudentsPdf, exportStudentsXlsx,
+  parseImportFile, printAdmissionForm, printIdCard,
 } from "@/lib/students.export";
 import { STATUS_CLASS, STATUS_LABEL, STUDENT_STATUSES, fmtDate } from "@/lib/students.shared";
+import { signedUrlFor } from "@/lib/students.client";
 
 export const Route = createFileRoute("/_authenticated/dashboard/students/")({
   head: () => ({ meta: [{ title: "Students · KCC ERP" }, { name: "robots", content: "noindex" }] }),
@@ -116,12 +119,13 @@ function StudentsPage() {
   const totalPages = Math.max(1, Math.ceil(total / pageSize));
   const allChecked = rows.length > 0 && selected.length === rows.length;
 
-  const doExport = async (kind: "xlsx" | "csv" | "pdf") => {
+  const doExport = async (kind: "xlsx" | "csv" | "pdf" | "print") => {
     const data: any[] = await fetchExport({ data: filters() });
     if (!data.length) { toast.error("Nothing to export for these filters."); return; }
     if (kind === "xlsx") exportStudentsXlsx(data);
     if (kind === "csv") exportStudentsCsv(data);
     if (kind === "pdf") exportStudentsPdf(data);
+    if (kind === "print") window.print();
   };
 
   const doDelete = async (ids: string[]) => {
@@ -169,6 +173,8 @@ function StudentsPage() {
       subtitle="Master directory across all branches, courses and batches."
       actions={
         <div className="flex flex-wrap gap-2">
+          <button onClick={() => { load(); refreshStats(); toast.success("Refreshed."); }} className={ghostBtn}><RefreshCw className="h-4 w-4" /> Refresh</button>
+          <button onClick={() => doExport("print")} className={ghostBtn}><Printer className="h-4 w-4" /> Print</button>
           <button onClick={() => downloadImportTemplate()} className={ghostBtn}><FileText className="h-4 w-4" /> Template</button>
           <button onClick={() => importRef.current?.click()} disabled={importing} className={ghostBtn}>
             {importing ? <Loader2 className="h-4 w-4 animate-spin" /> : <Upload className="h-4 w-4" />} Import
@@ -183,13 +189,32 @@ function StudentsPage() {
         </div>
       }
     >
-      <div className="mb-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+      <div className="mb-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
         <StatCard label="Total students" value={stats?.total ?? 0} icon={Users} />
         <StatCard label="Active" value={stats?.active ?? 0} icon={UserCheck} />
-        <StatCard label="Completed" value={stats?.completed ?? 0} icon={GraduationCap} />
-        <StatCard label="Dropped" value={stats?.dropped ?? 0} icon={UserMinus} />
-        <StatCard label="New this month" value={stats?.thisMonth ?? 0} icon={Plus} />
+        <StatCard label="Inactive" value={stats?.inactive ?? 0} icon={UserMinus} />
+        <StatCard label="Today's admissions" value={stats?.today ?? 0} icon={CalendarPlus} />
+        <StatCard label="Pending admissions" value={stats?.pendingAdmissions ?? 0} icon={Clock} />
+        <StatCard label="Branches covered" value={stats?.byBranch?.length ?? 0} icon={Building2} />
       </div>
+
+      {stats && (
+        <div className="mb-5 grid gap-4 lg:grid-cols-4">
+          <MiniReport title="Students by branch" rows={stats.byBranch} icon={Building2} />
+          <MiniReport title="Students by course" rows={stats.byCourse} icon={GraduationCap} />
+          <MiniReport title="Students by gender" rows={stats.byGender} icon={Users} />
+          <MiniReport
+            title="Admissions"
+            rows={[
+              { name: "Today", value: stats.today ?? 0 },
+              { name: "This month", value: stats.thisMonth ?? 0 },
+              { name: "Completed", value: stats.completed ?? 0 },
+              { name: "Dropped", value: stats.dropped ?? 0 },
+            ]}
+            icon={CalendarPlus}
+          />
+        </div>
+      )}
 
       <div className="rounded-2xl border border-border bg-white shadow-soft">
         <div className="flex flex-wrap items-center gap-3 border-b border-border p-4">
@@ -250,20 +275,22 @@ function StudentsPage() {
                 <th className="px-4 py-3">Photo</th>
                 <th className="px-4 py-3">Admission / IDs</th>
                 <th className="px-4 py-3">Name</th>
+                <th className="px-4 py-3">Parents</th>
+                <th className="px-4 py-3">Contact</th>
                 <th className="px-4 py-3">Course</th>
                 <th className="px-4 py-3">Batch</th>
-                <th className="px-4 py-3">Mobile</th>
-                <th className="px-4 py-3">Joined</th>
+                <th className="px-4 py-3">Branch</th>
+                <th className="px-4 py-3">Admission date</th>
                 <th className="px-4 py-3">Status</th>
                 <th className="px-4 py-3 text-right">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-border">
               {loading ? (
-                <tr><td colSpan={10} className="py-14 text-center text-muted-foreground"><Loader2 className="mx-auto h-5 w-5 animate-spin" /></td></tr>
+                <tr><td colSpan={12} className="py-14 text-center text-muted-foreground"><Loader2 className="mx-auto h-5 w-5 animate-spin" /></td></tr>
               ) : rows.length === 0 ? (
                 <tr>
-                  <td colSpan={10} className="py-14 text-center">
+                  <td colSpan={12} className="py-14 text-center">
                     <div className="text-sm font-bold text-ink">No students found</div>
                     <p className="mt-1 text-sm text-muted-foreground">Adjust your filters, import a spreadsheet, or add a student.</p>
                     <Link to="/dashboard/students/new" className="mt-4 inline-flex items-center gap-1.5 rounded-full gradient-brand px-4 py-2 text-sm font-semibold text-white shadow-brand">
@@ -282,9 +309,7 @@ function StudentsPage() {
                     />
                   </td>
                   <td className="px-4 py-3">
-                    <span className="grid h-9 w-9 place-items-center rounded-full bg-cyan-soft text-[11px] font-bold text-brand-dark">
-                      {r.full_name?.slice(0, 2).toUpperCase()}
-                    </span>
+                    <StudentAvatar row={r} />
                   </td>
                   <td className="px-4 py-3">
                     <div className="font-mono text-xs font-bold text-brand-dark">{r.admission_number ?? "—"}</div>
@@ -292,11 +317,19 @@ function StudentsPage() {
                   </td>
                   <td className="px-4 py-3">
                     <Link to="/dashboard/students/$id" params={{ id: r.id }} className="font-semibold text-ink hover:text-brand">{r.full_name}</Link>
-                    <div className="text-xs text-muted-foreground">{r.father_name || r.email || "—"}</div>
+                    <div className="text-[11px] text-muted-foreground">{r.gender ?? "—"}</div>
+                  </td>
+                  <td className="px-4 py-3 text-xs">
+                    <div>{r.father_name || "—"}</div>
+                    <div className="text-muted-foreground">{r.mother_name || "—"}</div>
+                  </td>
+                  <td className="px-4 py-3 text-xs">
+                    <div className="font-semibold text-ink">{r.phone}</div>
+                    <div className="text-muted-foreground">{r.email || "—"}</div>
                   </td>
                   <td className="px-4 py-3 text-xs">{r.course?.name ?? "—"}</td>
                   <td className="px-4 py-3 text-xs">{r.batch?.name ?? "—"}</td>
-                  <td className="px-4 py-3">{r.phone}</td>
+                  <td className="px-4 py-3 text-xs">{r.branch?.name ?? "—"}</td>
                   <td className="px-4 py-3 text-xs text-muted-foreground">{fmtDate(r.joined_at)}</td>
                   <td className="px-4 py-3">
                     <select
@@ -314,6 +347,9 @@ function StudentsPage() {
                       <button title="View" onClick={() => navigate({ to: "/dashboard/students/$id", params: { id: r.id } })} className={iconBtn}><Eye className="h-4 w-4" /></button>
                       <button title="Edit" onClick={() => navigate({ to: "/dashboard/students/$id/edit", params: { id: r.id } })} className={iconBtn}><Pencil className="h-4 w-4" /></button>
                       <button title="ID card" onClick={() => printIdCard(r, window.location.origin)} className={iconBtn}><IdCard className="h-4 w-4" /></button>
+                      <button title="Admission form" onClick={() => printAdmissionForm(r)} className={iconBtn}><Printer className="h-4 w-4" /></button>
+                      <button title="QR code" onClick={() => downloadStudentQr(r, window.location.origin)} className={iconBtn}><QrCode className="h-4 w-4" /></button>
+                      <button title="Fees" onClick={() => navigate({ to: "/dashboard/fees/collect" })} className={iconBtn}><Receipt className="h-4 w-4" /></button>
                       <button title="Delete" onClick={() => doDelete([r.id])} className={`${iconBtn} text-rose-600`}><Trash2 className="h-4 w-4" /></button>
                     </div>
                   </td>
@@ -353,6 +389,50 @@ function StatCard({ label, value, icon: Icon }: { label: string; value: number; 
         <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">{label}</div>
       </div>
       <div className="mt-2 text-2xl font-extrabold text-ink">{value}</div>
+    </div>
+  );
+}
+
+function StudentAvatar({ row }: { row: any }) {
+  const [src, setSrc] = useState<string | null>(null);
+  useEffect(() => {
+    let alive = true;
+    signedUrlFor(row.photo_url).then((u) => { if (alive) setSrc(u); }).catch(() => {});
+    return () => { alive = false; };
+  }, [row.photo_url]);
+  return src ? (
+    <img src={src} alt={`${row.full_name} photo`} className="h-9 w-9 rounded-full object-cover" loading="lazy" />
+  ) : (
+    <span className="grid h-9 w-9 place-items-center rounded-full bg-cyan-soft text-[11px] font-bold text-brand-dark">
+      {row.full_name?.slice(0, 2).toUpperCase()}
+    </span>
+  );
+}
+
+function MiniReport({ title, rows, icon: Icon }: { title: string; rows: Array<{ name: string; value: number }>; icon: any }) {
+  const max = Math.max(1, ...rows.map((r) => r.value));
+  return (
+    <div className="rounded-2xl border border-border bg-white p-4 shadow-soft">
+      <div className="mb-3 flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+        <Icon className="h-4 w-4 text-brand" /> {title}
+      </div>
+      {rows.length === 0 ? (
+        <p className="text-sm text-muted-foreground">No data yet.</p>
+      ) : (
+        <ul className="space-y-2">
+          {rows.slice(0, 5).map((r) => (
+            <li key={r.name}>
+              <div className="flex items-center justify-between text-xs font-semibold text-ink">
+                <span className="truncate pr-2 capitalize">{r.name}</span>
+                <span>{r.value}</span>
+              </div>
+              <div className="mt-1 h-1.5 rounded-full bg-cyan-soft">
+                <div className="h-1.5 rounded-full gradient-brand" style={{ width: `${(r.value / max) * 100}%` }} />
+              </div>
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 }

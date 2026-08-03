@@ -99,6 +99,16 @@ export function exportStudentsPdf(rows: Row[]) {
   doc.save(`students_${new Date().toISOString().slice(0, 10)}.pdf`);
 }
 
+/** Downloads a QR + barcode sheet (PNG) encoding the student's verification URL. */
+export async function downloadStudentQr(s: Row, origin: string) {
+  const url = `${origin}/search/student?q=${encodeURIComponent(s.student_code ?? s.admission_number ?? "")}`;
+  const png = await QRCode.toDataURL(url, { margin: 1, width: 512 });
+  const a = document.createElement("a");
+  a.href = png;
+  a.download = `qr_${s.student_code ?? "student"}.png`;
+  a.click();
+}
+
 export function downloadImportTemplate() {
   const ws = XLSX.utils.json_to_sheet([
     {

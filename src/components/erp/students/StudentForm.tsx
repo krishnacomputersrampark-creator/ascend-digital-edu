@@ -10,6 +10,7 @@ import {
   CATEGORIES,
   EMPTY_STUDENT,
   GENDERS,
+  PAYMENT_MODES,
   STUDENT_STATUSES,
   inr,
   netPayable,
@@ -61,8 +62,8 @@ export function StudentForm({
     () => ({
       0: ["full_name", "father_name", "mother_name", "date_of_birth", "gender", "category", "blood_group", "aadhaar_number"],
       1: ["phone", "alternate_mobile", "email", "address", "city", "district", "state", "pincode", "guardian_name", "guardian_phone"],
-      2: ["branch_id", "course_id", "batch_id", "faculty_id", "roll_no", "joined_at", "status"],
-      3: ["course_fee", "admission_fee", "registration_fee", "discount"],
+      2: ["branch_id", "course_id", "batch_id", "faculty_id", "roll_no", "joined_at", "status", "session", "duration", "remarks"],
+      3: ["course_fee", "admission_fee", "registration_fee", "discount", "installments", "payment_mode", "receipt_number"],
       4: ["photo_url", "signature_url", "aadhaar_doc_url", "marksheet_url", "certificate_url"],
     }),
     [],
@@ -278,6 +279,18 @@ export function StudentForm({
                 {STUDENT_STATUSES.map((s) => <option key={s} value={s}>{s[0]!.toUpperCase() + s.slice(1)}</option>)}
               </select>
             </Field>
+            <Field label="Session" error={errors.session}>
+              <input className={inputCls} placeholder="2026-27" value={values.session ?? ""} onChange={(e) => set("session", e.target.value)} />
+            </Field>
+            <Field label="Course duration" error={errors.duration}>
+              <input className={inputCls} placeholder="6 months" value={values.duration ?? ""} onChange={(e) => set("duration", e.target.value)} />
+            </Field>
+            <Field label="Remarks" error={errors.remarks} wide>
+              <textarea rows={2} className={inputCls} value={values.remarks ?? ""} onChange={(e) => set("remarks", e.target.value)} />
+            </Field>
+            <div className="sm:col-span-2 lg:col-span-3 rounded-xl bg-cyan-soft/50 p-4 text-xs text-muted-foreground">
+              Admission number, Student ID, enrollment number, QR code and barcode are generated automatically on save.
+            </div>
           </>
         )}
 
@@ -294,6 +307,18 @@ export function StudentForm({
             </Field>
             <Field label="Discount (₹)" error={errors.discount}>
               <input type="number" min={0} className={inputCls} value={Number(values.discount ?? 0)} onChange={(e) => set("discount", e.target.value)} />
+            </Field>
+            <Field label="Installments" error={errors.installments}>
+              <input type="number" min={1} max={36} className={inputCls} value={Number(values.installments ?? 1)} onChange={(e) => set("installments", e.target.value)} />
+            </Field>
+            <Field label="Payment mode" error={errors.payment_mode}>
+              <select className={inputCls} value={values.payment_mode ?? ""} onChange={(e) => set("payment_mode", e.target.value)}>
+                <option value="">Select</option>
+                {PAYMENT_MODES.map((m) => <option key={m} value={m}>{m.toUpperCase()}</option>)}
+              </select>
+            </Field>
+            <Field label="Receipt number" error={errors.receipt_number}>
+              <input className={inputCls} value={values.receipt_number ?? ""} onChange={(e) => set("receipt_number", e.target.value)} />
             </Field>
             <div className="sm:col-span-2 lg:col-span-3 rounded-xl bg-cyan-soft/50 p-4">
               <div className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Net payable</div>
