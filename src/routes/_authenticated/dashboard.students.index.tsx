@@ -4,6 +4,7 @@ import { useServerFn } from "@tanstack/react-start";
 import {
   Search, Download, Loader2, Users, UserCheck, GraduationCap, UserMinus,
   Plus, Upload, Trash2, Pencil, Eye, IdCard, FileText, ChevronLeft, ChevronRight, X,
+  RefreshCw, Printer, QrCode, Receipt, CalendarPlus, Clock, Building2,
 } from "lucide-react";
 import { toast } from "sonner";
 import { DashboardShell } from "@/components/erp/DashboardShell";
@@ -12,7 +13,8 @@ import {
   deleteStudents, exportStudents, importStudents, listStudentsAdvanced, setStudentStatus, studentStats,
 } from "@/lib/students.functions";
 import {
-  downloadImportTemplate, exportStudentsCsv, exportStudentsPdf, exportStudentsXlsx, parseImportFile, printIdCard,
+  downloadImportTemplate, downloadStudentQr, exportStudentsCsv, exportStudentsPdf, exportStudentsXlsx,
+  parseImportFile, printAdmissionForm, printIdCard,
 } from "@/lib/students.export";
 import { STATUS_CLASS, STATUS_LABEL, STUDENT_STATUSES, fmtDate } from "@/lib/students.shared";
 
@@ -169,6 +171,8 @@ function StudentsPage() {
       subtitle="Master directory across all branches, courses and batches."
       actions={
         <div className="flex flex-wrap gap-2">
+          <button onClick={() => { load(); refreshStats(); toast.success("Refreshed."); }} className={ghostBtn}><RefreshCw className="h-4 w-4" /> Refresh</button>
+          <button onClick={() => doExport("print")} className={ghostBtn}><Printer className="h-4 w-4" /> Print</button>
           <button onClick={() => downloadImportTemplate()} className={ghostBtn}><FileText className="h-4 w-4" /> Template</button>
           <button onClick={() => importRef.current?.click()} disabled={importing} className={ghostBtn}>
             {importing ? <Loader2 className="h-4 w-4 animate-spin" /> : <Upload className="h-4 w-4" />} Import
@@ -183,13 +187,32 @@ function StudentsPage() {
         </div>
       }
     >
-      <div className="mb-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+      <div className="mb-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
         <StatCard label="Total students" value={stats?.total ?? 0} icon={Users} />
         <StatCard label="Active" value={stats?.active ?? 0} icon={UserCheck} />
-        <StatCard label="Completed" value={stats?.completed ?? 0} icon={GraduationCap} />
-        <StatCard label="Dropped" value={stats?.dropped ?? 0} icon={UserMinus} />
-        <StatCard label="New this month" value={stats?.thisMonth ?? 0} icon={Plus} />
+        <StatCard label="Inactive" value={stats?.inactive ?? 0} icon={UserMinus} />
+        <StatCard label="Today's admissions" value={stats?.today ?? 0} icon={CalendarPlus} />
+        <StatCard label="Pending admissions" value={stats?.pendingAdmissions ?? 0} icon={Clock} />
+        <StatCard label="Branches covered" value={stats?.byBranch?.length ?? 0} icon={Building2} />
       </div>
+
+      {stats && (
+        <div className="mb-5 grid gap-4 lg:grid-cols-4">
+          <MiniReport title="Students by branch" rows={stats.byBranch} icon={Building2} />
+          <MiniReport title="Students by course" rows={stats.byCourse} icon={GraduationCap} />
+          <MiniReport title="Students by gender" rows={stats.byGender} icon={Users} />
+          <MiniReport
+            title="Admissions"
+            rows={[
+              { name: "Today", value: stats.today ?? 0 },
+              { name: "This month", value: stats.thisMonth ?? 0 },
+              { name: "Completed", value: stats.completed ?? 0 },
+              { name: "Dropped", value: stats.dropped ?? 0 },
+            ]}
+            icon={CalendarPlus}
+          />
+        </div>
+      )}
 
       <div className="rounded-2xl border border-border bg-white shadow-soft">
         <div className="flex flex-wrap items-center gap-3 border-b border-border p-4">
