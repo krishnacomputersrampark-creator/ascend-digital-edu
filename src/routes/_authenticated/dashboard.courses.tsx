@@ -220,7 +220,7 @@ function CoursesPage() {
                   <td className="px-3 py-3 font-mono text-xs font-semibold text-brand">{r.code}</td>
                   <td className="px-3 py-3 font-semibold text-ink">{r.name}<div className="text-xs font-normal text-muted-foreground">{r.short_name}</div></td>
                   <td className="px-3 py-3">{r.category ?? "—"}</td>
-                  <td className="px-3 py-3">{r.duration ? `${r.duration} ${r.duration_unit}` : "—"}</td>
+                  <td className="px-3 py-3">{r.duration ? (/[a-z]/i.test(r.duration) ? r.duration : `${r.duration} ${r.duration_unit}`) : "—"}</td>
                   <td className="px-3 py-3 font-semibold">{inr(r.course_fee)}</td>
                   <td className="px-3 py-3">{inr(r.registration_fee)}</td>
                   <td className="px-3 py-3">{inr(r.exam_fee)}</td>
