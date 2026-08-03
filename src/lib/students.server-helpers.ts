@@ -84,6 +84,22 @@ export function buildDocRows(studentId: string, docs: Record<string, string>, us
 }
 
 /** Field-level before/after diff for the edit history trail. */
+export async function assertNoDuplicates(supabase: any, record: Record<string, unknown>, excludeId: string | null) {
+  const checks: Array<[string, unknown, string]> = [
+    ["phone", record.phone, "A student with this mobile number already exists."],
+    ["email", record.email, "A student with this email address already exists."],
+    ["student_code", record.student_code, "This Student ID is already in use."],
+    ["admission_number", record.admission_number, "This admission number is already in use."],
+  ];
+  for (const [column, value, message] of checks) {
+    if (!value) continue;
+    let q = supabase.from("students").select("id").is("deleted_at", null).eq(column, value as string);
+    if (excludeId) q = q.neq("id", excludeId);
+    const { data } = await q.maybeSingle();
+    if (data) throw new Error(message);
+  }
+}
+
 export function diffChanges(before: Record<string, unknown> | null, after: Record<string, unknown>) {
   const out: Record<string, { from: unknown; to: unknown }> = {};
   if (!before) return out;
