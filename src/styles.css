@@ -216,6 +216,20 @@
 .animate-blob { animation: blob 18s ease-in-out infinite; }
 
 /* Hide Lovable badge on published deployments */
+.inp {
+  width: 100%;
+  border-radius: 0.75rem;
+  border: 1px solid var(--border);
+  background: #fff;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+  color: var(--foreground);
+}
+.inp:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px color-mix(in oklab, var(--brand, #0891b2) 30%, transparent);
+}
+
 #lovable-badge,
 a[href*="lovable.dev"][href*="badge"],
 a[href*="lovable.dev/?via=badge"],

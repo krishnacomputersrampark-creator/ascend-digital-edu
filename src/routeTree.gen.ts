@@ -69,7 +69,9 @@ import { Route as AuthenticatedDashboardResultsRouteImport } from './routes/_aut
 import { Route as AuthenticatedDashboardProfileRouteImport } from './routes/_authenticated/dashboard.profile'
 import { Route as AuthenticatedDashboardFeesRouteImport } from './routes/_authenticated/dashboard.fees'
 import { Route as AuthenticatedDashboardDownloadsRouteImport } from './routes/_authenticated/dashboard.downloads'
+import { Route as AuthenticatedDashboardCoursesRouteImport } from './routes/_authenticated/dashboard.courses'
 import { Route as AuthenticatedDashboardCertificatesRouteImport } from './routes/_authenticated/dashboard.certificates'
+import { Route as AuthenticatedDashboardBatchesRouteImport } from './routes/_authenticated/dashboard.batches'
 import { Route as AuthenticatedDashboardAttendanceRouteImport } from './routes/_authenticated/dashboard.attendance'
 import { Route as AuthenticatedDashboardAdmissionsRouteImport } from './routes/_authenticated/dashboard.admissions'
 import { Route as AuthenticatedAdminUsersRouteImport } from './routes/_authenticated/admin.users'
@@ -454,10 +456,22 @@ const AuthenticatedDashboardDownloadsRoute =
     path: '/downloads',
     getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
+const AuthenticatedDashboardCoursesRoute =
+  AuthenticatedDashboardCoursesRouteImport.update({
+    id: '/courses',
+    path: '/courses',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
 const AuthenticatedDashboardCertificatesRoute =
   AuthenticatedDashboardCertificatesRouteImport.update({
     id: '/certificates',
     path: '/certificates',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
+const AuthenticatedDashboardBatchesRoute =
+  AuthenticatedDashboardBatchesRouteImport.update({
+    id: '/batches',
+    path: '/batches',
     getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
 const AuthenticatedDashboardAttendanceRoute =
@@ -926,7 +940,9 @@ export interface FileRoutesByFullPath {
   '/admin/users': typeof AuthenticatedAdminUsersRouteWithChildren
   '/dashboard/admissions': typeof AuthenticatedDashboardAdmissionsRouteWithChildren
   '/dashboard/attendance': typeof AuthenticatedDashboardAttendanceRouteWithChildren
+  '/dashboard/batches': typeof AuthenticatedDashboardBatchesRoute
   '/dashboard/certificates': typeof AuthenticatedDashboardCertificatesRouteWithChildren
+  '/dashboard/courses': typeof AuthenticatedDashboardCoursesRoute
   '/dashboard/downloads': typeof AuthenticatedDashboardDownloadsRoute
   '/dashboard/fees': typeof AuthenticatedDashboardFeesRouteWithChildren
   '/dashboard/profile': typeof AuthenticatedDashboardProfileRoute
@@ -1049,6 +1065,8 @@ export interface FileRoutesByTo {
   '/admin/sms': typeof AuthenticatedAdminSmsRoute
   '/admin/students': typeof AuthenticatedAdminStudentsRoute
   '/admin/system': typeof AuthenticatedAdminSystemRoute
+  '/dashboard/batches': typeof AuthenticatedDashboardBatchesRoute
+  '/dashboard/courses': typeof AuthenticatedDashboardCoursesRoute
   '/dashboard/downloads': typeof AuthenticatedDashboardDownloadsRoute
   '/dashboard/profile': typeof AuthenticatedDashboardProfileRoute
   '/dashboard/roles': typeof AuthenticatedDashboardRolesRoute
@@ -1175,7 +1193,9 @@ export interface FileRoutesById {
   '/_authenticated/admin/users': typeof AuthenticatedAdminUsersRouteWithChildren
   '/_authenticated/dashboard/admissions': typeof AuthenticatedDashboardAdmissionsRouteWithChildren
   '/_authenticated/dashboard/attendance': typeof AuthenticatedDashboardAttendanceRouteWithChildren
+  '/_authenticated/dashboard/batches': typeof AuthenticatedDashboardBatchesRoute
   '/_authenticated/dashboard/certificates': typeof AuthenticatedDashboardCertificatesRouteWithChildren
+  '/_authenticated/dashboard/courses': typeof AuthenticatedDashboardCoursesRoute
   '/_authenticated/dashboard/downloads': typeof AuthenticatedDashboardDownloadsRoute
   '/_authenticated/dashboard/fees': typeof AuthenticatedDashboardFeesRouteWithChildren
   '/_authenticated/dashboard/profile': typeof AuthenticatedDashboardProfileRoute
@@ -1305,7 +1325,9 @@ export interface FileRouteTypes {
     | '/admin/users'
     | '/dashboard/admissions'
     | '/dashboard/attendance'
+    | '/dashboard/batches'
     | '/dashboard/certificates'
+    | '/dashboard/courses'
     | '/dashboard/downloads'
     | '/dashboard/fees'
     | '/dashboard/profile'
@@ -1428,6 +1450,8 @@ export interface FileRouteTypes {
     | '/admin/sms'
     | '/admin/students'
     | '/admin/system'
+    | '/dashboard/batches'
+    | '/dashboard/courses'
     | '/dashboard/downloads'
     | '/dashboard/profile'
     | '/dashboard/roles'
@@ -1553,7 +1577,9 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/users'
     | '/_authenticated/dashboard/admissions'
     | '/_authenticated/dashboard/attendance'
+    | '/_authenticated/dashboard/batches'
     | '/_authenticated/dashboard/certificates'
+    | '/_authenticated/dashboard/courses'
     | '/_authenticated/dashboard/downloads'
     | '/_authenticated/dashboard/fees'
     | '/_authenticated/dashboard/profile'
@@ -2081,11 +2107,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardDownloadsRouteImport
       parentRoute: typeof AuthenticatedDashboardRoute
     }
+    '/_authenticated/dashboard/courses': {
+      id: '/_authenticated/dashboard/courses'
+      path: '/courses'
+      fullPath: '/dashboard/courses'
+      preLoaderRoute: typeof AuthenticatedDashboardCoursesRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
     '/_authenticated/dashboard/certificates': {
       id: '/_authenticated/dashboard/certificates'
       path: '/certificates'
       fullPath: '/dashboard/certificates'
       preLoaderRoute: typeof AuthenticatedDashboardCertificatesRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/batches': {
+      id: '/_authenticated/dashboard/batches'
+      path: '/batches'
+      fullPath: '/dashboard/batches'
+      preLoaderRoute: typeof AuthenticatedDashboardBatchesRouteImport
       parentRoute: typeof AuthenticatedDashboardRoute
     }
     '/_authenticated/dashboard/attendance': {
@@ -2687,7 +2727,9 @@ const AuthenticatedDashboardSettingsRouteWithChildren =
 interface AuthenticatedDashboardRouteChildren {
   AuthenticatedDashboardAdmissionsRoute: typeof AuthenticatedDashboardAdmissionsRouteWithChildren
   AuthenticatedDashboardAttendanceRoute: typeof AuthenticatedDashboardAttendanceRouteWithChildren
+  AuthenticatedDashboardBatchesRoute: typeof AuthenticatedDashboardBatchesRoute
   AuthenticatedDashboardCertificatesRoute: typeof AuthenticatedDashboardCertificatesRouteWithChildren
+  AuthenticatedDashboardCoursesRoute: typeof AuthenticatedDashboardCoursesRoute
   AuthenticatedDashboardDownloadsRoute: typeof AuthenticatedDashboardDownloadsRoute
   AuthenticatedDashboardFeesRoute: typeof AuthenticatedDashboardFeesRouteWithChildren
   AuthenticatedDashboardProfileRoute: typeof AuthenticatedDashboardProfileRoute
@@ -2711,8 +2753,10 @@ const AuthenticatedDashboardRouteChildren: AuthenticatedDashboardRouteChildren =
       AuthenticatedDashboardAdmissionsRouteWithChildren,
     AuthenticatedDashboardAttendanceRoute:
       AuthenticatedDashboardAttendanceRouteWithChildren,
+    AuthenticatedDashboardBatchesRoute: AuthenticatedDashboardBatchesRoute,
     AuthenticatedDashboardCertificatesRoute:
       AuthenticatedDashboardCertificatesRouteWithChildren,
+    AuthenticatedDashboardCoursesRoute: AuthenticatedDashboardCoursesRoute,
     AuthenticatedDashboardDownloadsRoute: AuthenticatedDashboardDownloadsRoute,
     AuthenticatedDashboardFeesRoute:
       AuthenticatedDashboardFeesRouteWithChildren,

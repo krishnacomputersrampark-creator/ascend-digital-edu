@@ -334,14 +334,26 @@ export type Database = {
           code: string
           course_id: string
           created_at: string
+          created_by: string | null
+          current_strength: number
+          days: string[]
+          deleted_at: string | null
           end_date: string | null
+          end_time: string | null
           faculty_id: string | null
           id: string
+          mode: string
           name: string
+          remarks: string | null
+          room_number: string | null
+          session: string | null
           start_date: string | null
+          start_time: string | null
           status: string
+          teacher_id: string | null
           timing: string | null
           updated_at: string
+          updated_by: string | null
         }
         Insert: {
           branch_id: string
@@ -349,14 +361,26 @@ export type Database = {
           code: string
           course_id: string
           created_at?: string
+          created_by?: string | null
+          current_strength?: number
+          days?: string[]
+          deleted_at?: string | null
           end_date?: string | null
+          end_time?: string | null
           faculty_id?: string | null
           id?: string
+          mode?: string
           name: string
+          remarks?: string | null
+          room_number?: string | null
+          session?: string | null
           start_date?: string | null
+          start_time?: string | null
           status?: string
+          teacher_id?: string | null
           timing?: string | null
           updated_at?: string
+          updated_by?: string | null
         }
         Update: {
           branch_id?: string
@@ -364,14 +388,26 @@ export type Database = {
           code?: string
           course_id?: string
           created_at?: string
+          created_by?: string | null
+          current_strength?: number
+          days?: string[]
+          deleted_at?: string | null
           end_date?: string | null
+          end_time?: string | null
           faculty_id?: string | null
           id?: string
+          mode?: string
           name?: string
+          remarks?: string | null
+          room_number?: string | null
+          session?: string | null
           start_date?: string | null
+          start_time?: string | null
           status?: string
+          teacher_id?: string | null
           timing?: string | null
           updated_at?: string
+          updated_by?: string | null
         }
         Relationships: [
           {
@@ -407,6 +443,13 @@ export type Database = {
             columns: ["faculty_id"]
             isOneToOne: false
             referencedRelation: "user_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "batches_teacher_id_fkey"
+            columns: ["teacher_id"]
+            isOneToOne: false
+            referencedRelation: "teachers"
             referencedColumns: ["id"]
           },
         ]
@@ -615,56 +658,113 @@ export type Database = {
         Row: {
           category: string | null
           certificate: boolean
+          certificate_type: string | null
           code: string
+          course_fee: number
           created_at: string
+          created_by: string | null
+          deleted_at: string | null
           description: string | null
           duration: string | null
           duration_months: number | null
+          duration_unit: string
           eligibility: string | null
+          exam_fee: number
+          exam_pattern: string | null
           fees: number
+          hours: number | null
           id: string
           is_active: boolean
+          medium: string | null
+          mode: string
           name: string
+          prospectus_url: string | null
+          registration_fee: number
+          short_name: string | null
           slug: string
           sort_order: number
+          status: string
+          study_material: string | null
           syllabus: Json | null
+          syllabus_url: string | null
+          thumbnail_url: string | null
+          training_partner: string | null
           updated_at: string
+          updated_by: string | null
         }
         Insert: {
           category?: string | null
           certificate?: boolean
+          certificate_type?: string | null
           code: string
+          course_fee?: number
           created_at?: string
+          created_by?: string | null
+          deleted_at?: string | null
           description?: string | null
           duration?: string | null
           duration_months?: number | null
+          duration_unit?: string
           eligibility?: string | null
+          exam_fee?: number
+          exam_pattern?: string | null
           fees?: number
+          hours?: number | null
           id?: string
           is_active?: boolean
+          medium?: string | null
+          mode?: string
           name: string
+          prospectus_url?: string | null
+          registration_fee?: number
+          short_name?: string | null
           slug: string
           sort_order?: number
+          status?: string
+          study_material?: string | null
           syllabus?: Json | null
+          syllabus_url?: string | null
+          thumbnail_url?: string | null
+          training_partner?: string | null
           updated_at?: string
+          updated_by?: string | null
         }
         Update: {
           category?: string | null
           certificate?: boolean
+          certificate_type?: string | null
           code?: string
+          course_fee?: number
           created_at?: string
+          created_by?: string | null
+          deleted_at?: string | null
           description?: string | null
           duration?: string | null
           duration_months?: number | null
+          duration_unit?: string
           eligibility?: string | null
+          exam_fee?: number
+          exam_pattern?: string | null
           fees?: number
+          hours?: number | null
           id?: string
           is_active?: boolean
+          medium?: string | null
+          mode?: string
           name?: string
+          prospectus_url?: string | null
+          registration_fee?: number
+          short_name?: string | null
           slug?: string
           sort_order?: number
+          status?: string
+          study_material?: string | null
           syllabus?: Json | null
+          syllabus_url?: string | null
+          thumbnail_url?: string | null
+          training_partner?: string | null
           updated_at?: string
+          updated_by?: string | null
         }
         Relationships: []
       }
@@ -2204,7 +2304,9 @@ export type Database = {
       next_admission_no: { Args: never; Returns: string }
       next_admission_number: { Args: never; Returns: string }
       next_application_no: { Args: never; Returns: string }
+      next_batch_code: { Args: never; Returns: string }
       next_certificate_no: { Args: never; Returns: string }
+      next_course_code: { Args: never; Returns: string }
       next_employee_code: { Args: never; Returns: string }
       next_enrollment_no: { Args: never; Returns: string }
       next_receipt_no: { Args: never; Returns: string }
