@@ -274,20 +274,22 @@ function StudentsPage() {
                 <th className="px-4 py-3">Photo</th>
                 <th className="px-4 py-3">Admission / IDs</th>
                 <th className="px-4 py-3">Name</th>
+                <th className="px-4 py-3">Parents</th>
+                <th className="px-4 py-3">Contact</th>
                 <th className="px-4 py-3">Course</th>
                 <th className="px-4 py-3">Batch</th>
-                <th className="px-4 py-3">Mobile</th>
-                <th className="px-4 py-3">Joined</th>
+                <th className="px-4 py-3">Branch</th>
+                <th className="px-4 py-3">Admission date</th>
                 <th className="px-4 py-3">Status</th>
                 <th className="px-4 py-3 text-right">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-border">
               {loading ? (
-                <tr><td colSpan={10} className="py-14 text-center text-muted-foreground"><Loader2 className="mx-auto h-5 w-5 animate-spin" /></td></tr>
+                <tr><td colSpan={12} className="py-14 text-center text-muted-foreground"><Loader2 className="mx-auto h-5 w-5 animate-spin" /></td></tr>
               ) : rows.length === 0 ? (
                 <tr>
-                  <td colSpan={10} className="py-14 text-center">
+                  <td colSpan={12} className="py-14 text-center">
                     <div className="text-sm font-bold text-ink">No students found</div>
                     <p className="mt-1 text-sm text-muted-foreground">Adjust your filters, import a spreadsheet, or add a student.</p>
                     <Link to="/dashboard/students/new" className="mt-4 inline-flex items-center gap-1.5 rounded-full gradient-brand px-4 py-2 text-sm font-semibold text-white shadow-brand">
@@ -306,9 +308,7 @@ function StudentsPage() {
                     />
                   </td>
                   <td className="px-4 py-3">
-                    <span className="grid h-9 w-9 place-items-center rounded-full bg-cyan-soft text-[11px] font-bold text-brand-dark">
-                      {r.full_name?.slice(0, 2).toUpperCase()}
-                    </span>
+                    <StudentAvatar row={r} />
                   </td>
                   <td className="px-4 py-3">
                     <div className="font-mono text-xs font-bold text-brand-dark">{r.admission_number ?? "—"}</div>
@@ -316,11 +316,19 @@ function StudentsPage() {
                   </td>
                   <td className="px-4 py-3">
                     <Link to="/dashboard/students/$id" params={{ id: r.id }} className="font-semibold text-ink hover:text-brand">{r.full_name}</Link>
-                    <div className="text-xs text-muted-foreground">{r.father_name || r.email || "—"}</div>
+                    <div className="text-[11px] text-muted-foreground">{r.gender ?? "—"}</div>
+                  </td>
+                  <td className="px-4 py-3 text-xs">
+                    <div>{r.father_name || "—"}</div>
+                    <div className="text-muted-foreground">{r.mother_name || "—"}</div>
+                  </td>
+                  <td className="px-4 py-3 text-xs">
+                    <div className="font-semibold text-ink">{r.phone}</div>
+                    <div className="text-muted-foreground">{r.email || "—"}</div>
                   </td>
                   <td className="px-4 py-3 text-xs">{r.course?.name ?? "—"}</td>
                   <td className="px-4 py-3 text-xs">{r.batch?.name ?? "—"}</td>
-                  <td className="px-4 py-3">{r.phone}</td>
+                  <td className="px-4 py-3 text-xs">{r.branch?.name ?? "—"}</td>
                   <td className="px-4 py-3 text-xs text-muted-foreground">{fmtDate(r.joined_at)}</td>
                   <td className="px-4 py-3">
                     <select
