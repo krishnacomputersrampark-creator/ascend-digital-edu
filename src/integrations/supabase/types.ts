@@ -1401,6 +1401,7 @@ export type Database = {
           deleted_at: string | null
           discount: number
           district: string | null
+          duration: string | null
           email: string | null
           emergency_contact: string | null
           enrollment_no: string
@@ -1411,16 +1412,21 @@ export type Database = {
           guardian_name: string | null
           guardian_phone: string | null
           id: string
+          installments: number
           joined_at: string
           mother_name: string | null
           notes: string | null
           occupation: string | null
+          payment_mode: string | null
           phone: string
           photo_url: string | null
           pincode: string | null
           qualification: string | null
+          receipt_number: string | null
           registration_fee: number
+          remarks: string | null
           roll_no: string | null
+          session: string | null
           state: string | null
           status: string
           student_code: string
@@ -1448,6 +1454,7 @@ export type Database = {
           deleted_at?: string | null
           discount?: number
           district?: string | null
+          duration?: string | null
           email?: string | null
           emergency_contact?: string | null
           enrollment_no?: string
@@ -1458,16 +1465,21 @@ export type Database = {
           guardian_name?: string | null
           guardian_phone?: string | null
           id?: string
+          installments?: number
           joined_at?: string
           mother_name?: string | null
           notes?: string | null
           occupation?: string | null
+          payment_mode?: string | null
           phone: string
           photo_url?: string | null
           pincode?: string | null
           qualification?: string | null
+          receipt_number?: string | null
           registration_fee?: number
+          remarks?: string | null
           roll_no?: string | null
+          session?: string | null
           state?: string | null
           status?: string
           student_code?: string
@@ -1495,6 +1507,7 @@ export type Database = {
           deleted_at?: string | null
           discount?: number
           district?: string | null
+          duration?: string | null
           email?: string | null
           emergency_contact?: string | null
           enrollment_no?: string
@@ -1505,16 +1518,21 @@ export type Database = {
           guardian_name?: string | null
           guardian_phone?: string | null
           id?: string
+          installments?: number
           joined_at?: string
           mother_name?: string | null
           notes?: string | null
           occupation?: string | null
+          payment_mode?: string | null
           phone?: string
           photo_url?: string | null
           pincode?: string | null
           qualification?: string | null
+          receipt_number?: string | null
           registration_fee?: number
+          remarks?: string | null
           roll_no?: string | null
+          session?: string | null
           state?: string | null
           status?: string
           student_code?: string
@@ -1935,6 +1953,7 @@ export type Database = {
           deleted_at: string | null
           discount: number
           district: string | null
+          duration: string | null
           email: string | null
           emergency_contact: string | null
           enrollment_no: string
@@ -1945,16 +1964,21 @@ export type Database = {
           guardian_name: string | null
           guardian_phone: string | null
           id: string
+          installments: number
           joined_at: string
           mother_name: string | null
           notes: string | null
           occupation: string | null
+          payment_mode: string | null
           phone: string
           photo_url: string | null
           pincode: string | null
           qualification: string | null
+          receipt_number: string | null
           registration_fee: number
+          remarks: string | null
           roll_no: string | null
+          session: string | null
           state: string | null
           status: string
           student_code: string
