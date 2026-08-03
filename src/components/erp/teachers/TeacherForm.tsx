@@ -310,7 +310,7 @@ export function TeacherForm({
 
       {step === 4 && (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 text-sm">
-          {[
+          {([
             ["Name", values.full_name], ["Mobile", values.mobile], ["Email", values.email],
             ["Designation", values.designation], ["Department", values.department],
             ["Qualification", values.qualification], ["Experience", values.experience],
@@ -318,7 +318,7 @@ export function TeacherForm({
             ["Subjects", values.subjects], ["Working Days", values.working_days],
             ["Timings", values.preferred_timings], ["Status", values.status],
             ["Courses", `${courseIds.length} selected`], ["Batches", `${batchIds.length} selected`],
-          ].map(([k, v]) => (
+          ] as Array<[string, unknown]>).map(([k, v]) => (
             <div key={String(k)} className="rounded-xl border border-border p-3">
               <div className="text-xs font-semibold uppercase text-muted-foreground">{k}</div>
               <div className="font-semibold text-ink">{v ? String(v) : "—"}</div>
