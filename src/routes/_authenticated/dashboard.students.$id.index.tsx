@@ -5,7 +5,7 @@ import { ArrowLeft, IdCard, FileText, Loader2, Pencil } from "lucide-react";
 import { toast } from "sonner";
 import { DashboardShell } from "@/components/erp/DashboardShell";
 import { getStudent } from "@/lib/students.functions";
-import { signedUrlFor } from "@/lib/students.client";
+import { signedUrlFor } from "@/lib/students.storage";
 import { printAdmissionForm, printIdCard } from "@/lib/students.export";
 import { STATUS_CLASS, STATUS_LABEL, fmtDate, inr, netPayable } from "@/lib/students.shared";
 

@@ -4,7 +4,7 @@ import { Loader2, Upload, Check, ChevronLeft, ChevronRight } from "lucide-react"
 import { toast } from "sonner";
 import { listBranchesPublic, listCoursesPublic, listBatchesPublic } from "@/lib/admissions.functions";
 import { listFacultyOptions } from "@/lib/students.functions";
-import { uploadStudentDocFile, uploadStudentPhotoFile } from "@/lib/students.client";
+import { uploadStudentDocFile, uploadStudentPhotoFile } from "@/lib/students.storage";
 import {
   BLOOD_GROUPS,
   CATEGORIES,
