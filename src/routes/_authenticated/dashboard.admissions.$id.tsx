@@ -1,7 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
-import { ArrowLeft, Check, X, Loader2, FileText, ExternalLink, UserPlus, MessageSquare } from "lucide-react";
+import { ArrowLeft, Check, X, Loader2, FileText, ExternalLink, UserPlus, MessageSquare, Printer, Download, Receipt, FileSignature } from "lucide-react";
 import { toast } from "sonner";
 import { DashboardShell } from "@/components/erp/DashboardShell";
 import { supabase } from "@/integrations/supabase/client";
@@ -11,7 +11,9 @@ import {
   updateAdmissionRemarks,
   convertAdmissionToStudent,
   listBranchesPublic,
+  requestAdmissionDocuments,
 } from "@/lib/admissions.functions";
+import { downloadApplicationPdf, downloadWelcomeLetter, downloadAdmissionReceipt } from "@/lib/admissions.pdf";
 import { emailService, smsService } from "@/lib/notifications.stub";
 
 export const Route = createFileRoute("/_authenticated/dashboard/admissions/$id")({
@@ -21,11 +23,11 @@ export const Route = createFileRoute("/_authenticated/dashboard/admissions/$id")
 
 function AdmissionDetail() {
   const { id } = Route.useParams();
-  const navigate = useNavigate();
   const fetchOne = useServerFn(getAdmissionById);
   const doReject = useServerFn(rejectAdmission);
   const doApprove = useServerFn(convertAdmissionToStudent);
   const doRemarks = useServerFn(updateAdmissionRemarks);
+  const doRequestDocs = useServerFn(requestAdmissionDocuments);
   const fetchBranches = useServerFn(listBranchesPublic);
 
   const [row, setRow] = useState<any | null>(null);
@@ -35,6 +37,7 @@ function AdmissionDetail() {
   const [busy, setBusy] = useState<string | null>(null);
   const [remarks, setRemarks] = useState("");
   const [branchOverride, setBranchOverride] = useState("");
+  const [student, setStudent] = useState<any | null>(null);
 
   const load = async () => {
     setLoading(true); setErr(null);
@@ -51,27 +54,48 @@ function AdmissionDetail() {
   const approve = async () => {
     const branch_id = branchOverride || row?.branch_id || branches[0]?.id;
     if (!branch_id) { toast.error("Select a branch first"); return; }
+    if (!window.confirm(`Approve ${row?.full_name}? A student record, ID and welcome letter will be generated.`)) return;
     setBusy("approve");
     try {
       const s = await doApprove({ data: { id, branch_id } });
+      setStudent(s);
       emailService.admissionApproved({ to: row?.email ?? "", applicationNo: row?.application_no ?? row?.admission_no, fullName: row?.full_name, courseName: row?.course?.name, branchName: row?.branch?.name });
       if (row?.phone) smsService.admissionApproved({ to: row.phone, applicationNo: row?.application_no ?? row?.admission_no });
       toast.success(`Approved. Student ${(s as any).student_code} created.`);
+      try {
+        await downloadWelcomeLetter(row, s as any);
+        await downloadAdmissionReceipt(row);
+      } catch { /* PDFs are optional */ }
       await load();
     } catch (e: any) { toast.error(e?.message ?? "Approval failed"); }
     finally { setBusy(null); }
   };
 
   const reject = async () => {
-    if (!remarks.trim() || remarks.trim().length < 3) { toast.error("Add a reason (min 3 chars) in Remarks"); return; }
+    const reason = (remarks.trim().length >= 3 ? remarks : window.prompt("Reason for rejection (required):") ?? "").trim();
+    if (reason.length < 3) { toast.error("A rejection reason is required"); return; }
+    setRemarks(reason);
     setBusy("reject");
     try {
-      await doReject({ data: { id, remarks } });
-      emailService.admissionRejected({ to: row?.email ?? "", applicationNo: row?.application_no ?? row?.admission_no, fullName: row?.full_name, remarks });
+      await doReject({ data: { id, remarks: reason } });
+      emailService.admissionRejected({ to: row?.email ?? "", applicationNo: row?.application_no ?? row?.admission_no, fullName: row?.full_name, remarks: reason });
       if (row?.phone) smsService.admissionRejected({ to: row.phone, applicationNo: row?.application_no ?? row?.admission_no });
       toast.success("Application rejected");
       await load();
     } catch (e: any) { toast.error(e?.message ?? "Reject failed"); }
+    finally { setBusy(null); }
+  };
+
+  const requestDocs = async () => {
+    const note = (window.prompt("Which documents are missing / need re-upload?") ?? "").trim();
+    if (note.length < 3) return;
+    setBusy("docs");
+    try {
+      await doRequestDocs({ data: { id, note } });
+      emailService.admissionSubmitted({ to: row?.email ?? "", applicationNo: row?.application_no ?? row?.admission_no, fullName: row?.full_name, remarks: note });
+      toast.success("Document request recorded");
+      await load();
+    } catch (e: any) { toast.error(e?.message ?? "Failed"); }
     finally { setBusy(null); }
   };
 
@@ -87,9 +111,17 @@ function AdmissionDetail() {
       title="Admission Detail"
       subtitle={row ? `${row.application_no ?? row.admission_no} · ${row.full_name}` : "Loading…"}
       actions={
-        <Link to="/dashboard/admissions" className="inline-flex items-center gap-1.5 rounded-full border border-border bg-white px-4 py-2 text-sm font-semibold text-ink shadow-soft">
-          <ArrowLeft className="h-4 w-4" /> Back
-        </Link>
+        <div className="flex flex-wrap gap-2 print:hidden">
+          <Link to="/dashboard/admissions" className="inline-flex items-center gap-1.5 rounded-full border border-border bg-white px-4 py-2 text-sm font-semibold text-ink shadow-soft">
+            <ArrowLeft className="h-4 w-4" /> Back
+          </Link>
+          <button onClick={() => window.print()} className="inline-flex items-center gap-1.5 rounded-full border border-border bg-white px-4 py-2 text-sm font-semibold text-ink shadow-soft">
+            <Printer className="h-4 w-4" /> Print
+          </button>
+          <button onClick={() => row && downloadApplicationPdf(row)} className="inline-flex items-center gap-1.5 rounded-full border border-border bg-white px-4 py-2 text-sm font-semibold text-ink shadow-soft">
+            <Download className="h-4 w-4" /> PDF
+          </button>
+        </div>
       }
     >
       {loading ? (
@@ -110,9 +142,15 @@ function AdmissionDetail() {
                 <Item k="Alternate Mobile" v={row.alternate_mobile} />
                 <Item k="Email" v={row.email} />
                 <Item k="Aadhaar" v={row.aadhaar_number} />
-                <Item k="Father" v={row.guardian_name} />
+                <Item k="Father" v={row.father_name ?? row.guardian_name} />
                 <Item k="Mother" v={row.mother_name} />
+                <Item k="Blood Group" v={row.blood_group} />
+                <Item k="Category" v={row.category} />
                 <Item k="Qualification" v={row.qualification} />
+                <Item k="School" v={row.school} />
+                <Item k="Board" v={row.board} />
+                <Item k="Passing Year" v={row.passing_year} />
+                <Item k="Percentage" v={row.percentage != null ? String(row.percentage) : null} />
               </Grid>
             </Card>
 
@@ -120,6 +158,7 @@ function AdmissionDetail() {
               <Grid>
                 <Item k="Address" v={row.address} span />
                 <Item k="City" v={row.city} />
+                <Item k="District" v={row.district} />
                 <Item k="State" v={row.state} />
                 <Item k="Pincode" v={row.pincode} />
               </Grid>
@@ -131,6 +170,7 @@ function AdmissionDetail() {
                 <Item k="Course" v={row.course?.name} />
                 <Item k="Batch" v={row.batch?.name} />
                 <Item k="Preferred Timing" v={row.preferred_timing} />
+                <Item k="Session" v={row.session} />
               </Grid>
             </Card>
 
@@ -141,10 +181,14 @@ function AdmissionDetail() {
                   ["Signature", row.signature_url],
                   ["Aadhaar Front", row.aadhaar_front_url],
                   ["Aadhaar Back", row.aadhaar_back_url],
+                  ["Marksheet", row.marksheet_url],
                   ["Qualification", row.qualification_url],
                   ["Passport Photo", row.passport_photo_url],
                 ].map(([label, url]) => (
                   <DocTile key={label as string} label={label as string} url={url as string | null} />
+                ))}
+                {((row.other_documents ?? []) as any[]).map((d: any, i: number) => (
+                  <DocTile key={`other-${i}`} label={d?.name ?? `Other ${i + 1}`} url={d?.url ?? null} />
                 ))}
               </div>
             </Card>
@@ -156,6 +200,9 @@ function AdmissionDetail() {
                 <StatusPill status={row.status} />
                 {row.reviewed_at && <span className="text-xs text-muted-foreground">on {new Date(row.reviewed_at).toLocaleString("en-IN")}</span>}
               </div>
+              {row.approved_at && <p className="mt-2 text-xs text-emerald-700">Approved on {new Date(row.approved_at).toLocaleString("en-IN")}</p>}
+              {row.rejected_at && <p className="mt-2 text-xs text-rose-700">Rejected on {new Date(row.rejected_at).toLocaleString("en-IN")}</p>}
+              {row.documents_requested_at && <p className="mt-2 text-xs text-amber-700">Documents requested: {row.documents_requested_note}</p>}
               {row.student_id && (
                 <p className="mt-3 text-xs text-emerald-700">Converted to student. <Link to="/dashboard/students" className="font-semibold underline">Open students →</Link></p>
               )}
@@ -172,6 +219,15 @@ function AdmissionDetail() {
                 </button>
                 <button disabled={busy !== null || row.status === "rejected"} onClick={reject} className="inline-flex items-center justify-center gap-1.5 rounded-lg border border-border bg-white px-3 py-2 text-sm font-semibold text-rose-600 hover:bg-rose-50 disabled:opacity-50">
                   {busy === "reject" ? <Loader2 className="h-4 w-4 animate-spin" /> : <X className="h-4 w-4" />} Reject
+                </button>
+                <button disabled={busy !== null} onClick={requestDocs} className="inline-flex items-center justify-center gap-1.5 rounded-lg border border-border bg-white px-3 py-2 text-sm font-semibold text-ink disabled:opacity-50">
+                  {busy === "docs" ? <Loader2 className="h-4 w-4 animate-spin" /> : <FileText className="h-4 w-4" />} Request Documents
+                </button>
+                <button onClick={() => downloadWelcomeLetter(row, student)} className="inline-flex items-center justify-center gap-1.5 rounded-lg border border-border bg-white px-3 py-2 text-sm font-semibold text-ink">
+                  <FileSignature className="h-4 w-4" /> Welcome Letter
+                </button>
+                <button onClick={() => downloadAdmissionReceipt(row)} className="inline-flex items-center justify-center gap-1.5 rounded-lg border border-border bg-white px-3 py-2 text-sm font-semibold text-ink">
+                  <Receipt className="h-4 w-4" /> Fee Receipt
                 </button>
               </div>
             </Card>

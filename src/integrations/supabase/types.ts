@@ -23,31 +23,48 @@ export type Database = {
           admission_no: string
           alternate_mobile: string | null
           application_no: string | null
+          approved_at: string | null
+          approved_by: string | null
           batch_id: string | null
+          blood_group: string | null
+          board: string | null
           branch_id: string | null
+          category: string | null
           city: string | null
           course_id: string | null
           course_preference: string | null
           created_at: string
           date_of_birth: string | null
+          district: string | null
+          documents_requested_at: string | null
+          documents_requested_note: string | null
           email: string | null
+          father_name: string | null
           full_name: string
           gender: string | null
           guardian_name: string | null
           guardian_phone: string | null
           id: string
+          marksheet_url: string | null
           mother_name: string | null
           notes: string | null
+          other_documents: Json
+          passing_year: string | null
           passport_photo_url: string | null
+          percentage: number | null
           phone: string
           photo_url: string | null
           pincode: string | null
           preferred_timing: string | null
           qualification: string | null
           qualification_url: string | null
+          rejected_at: string | null
+          rejected_by: string | null
           remarks: string | null
           reviewed_at: string | null
           reviewed_by: string | null
+          school: string | null
+          session: string | null
           signature_url: string | null
           source: string | null
           state: string | null
@@ -63,31 +80,48 @@ export type Database = {
           admission_no?: string
           alternate_mobile?: string | null
           application_no?: string | null
+          approved_at?: string | null
+          approved_by?: string | null
           batch_id?: string | null
+          blood_group?: string | null
+          board?: string | null
           branch_id?: string | null
+          category?: string | null
           city?: string | null
           course_id?: string | null
           course_preference?: string | null
           created_at?: string
           date_of_birth?: string | null
+          district?: string | null
+          documents_requested_at?: string | null
+          documents_requested_note?: string | null
           email?: string | null
+          father_name?: string | null
           full_name: string
           gender?: string | null
           guardian_name?: string | null
           guardian_phone?: string | null
           id?: string
+          marksheet_url?: string | null
           mother_name?: string | null
           notes?: string | null
+          other_documents?: Json
+          passing_year?: string | null
           passport_photo_url?: string | null
+          percentage?: number | null
           phone: string
           photo_url?: string | null
           pincode?: string | null
           preferred_timing?: string | null
           qualification?: string | null
           qualification_url?: string | null
+          rejected_at?: string | null
+          rejected_by?: string | null
           remarks?: string | null
           reviewed_at?: string | null
           reviewed_by?: string | null
+          school?: string | null
+          session?: string | null
           signature_url?: string | null
           source?: string | null
           state?: string | null
@@ -103,31 +137,48 @@ export type Database = {
           admission_no?: string
           alternate_mobile?: string | null
           application_no?: string | null
+          approved_at?: string | null
+          approved_by?: string | null
           batch_id?: string | null
+          blood_group?: string | null
+          board?: string | null
           branch_id?: string | null
+          category?: string | null
           city?: string | null
           course_id?: string | null
           course_preference?: string | null
           created_at?: string
           date_of_birth?: string | null
+          district?: string | null
+          documents_requested_at?: string | null
+          documents_requested_note?: string | null
           email?: string | null
+          father_name?: string | null
           full_name?: string
           gender?: string | null
           guardian_name?: string | null
           guardian_phone?: string | null
           id?: string
+          marksheet_url?: string | null
           mother_name?: string | null
           notes?: string | null
+          other_documents?: Json
+          passing_year?: string | null
           passport_photo_url?: string | null
+          percentage?: number | null
           phone?: string
           photo_url?: string | null
           pincode?: string | null
           preferred_timing?: string | null
           qualification?: string | null
           qualification_url?: string | null
+          rejected_at?: string | null
+          rejected_by?: string | null
           remarks?: string | null
           reviewed_at?: string | null
           reviewed_by?: string | null
+          school?: string | null
+          session?: string | null
           signature_url?: string | null
           source?: string | null
           state?: string | null
@@ -1915,6 +1966,14 @@ export type Database = {
       student_can_see_material: {
         Args: { _mid: string; _uid: string }
         Returns: boolean
+      }
+      submit_admission: {
+        Args: { payload: Json }
+        Returns: {
+          admission_no: string
+          application_no: string
+          id: string
+        }[]
       }
       super_admin_exists: { Args: never; Returns: boolean }
       update_my_student_profile: {

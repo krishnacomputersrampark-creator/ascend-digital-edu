@@ -6,7 +6,7 @@ import { Upload, Sparkles, ArrowRight, ArrowLeft, AlertCircle, Check, Loader2, F
 import { toast } from "sonner";
 import { SiteLayout, PageHero } from "@/components/site/SiteLayout";
 import { supabase } from "@/integrations/supabase/client";
-import { submitAdmission, listCoursesPublic, listBranchesPublic, listBatchesPublic } from "@/lib/admissions.functions";
+import { submitAdmission, listCoursesPublic, listBranchesPublic, listBatchesPublic, checkAdmissionDuplicates } from "@/lib/admissions.functions";
 import { emailService, smsService } from "@/lib/notifications.stub";
 
 export const Route = createFileRoute("/admission")({
@@ -21,16 +21,17 @@ export const Route = createFileRoute("/admission")({
   component: AdmissionPage,
 });
 
-const STEPS = ["Personal", "Address", "Course", "Documents", "Declaration"] as const;
-const DRAFT_KEY = "kcc:admission-draft:v2";
+const STEPS = ["Personal", "Contact", "Academic", "Course", "Documents", "Declaration"] as const;
+const DRAFT_KEY = "kcc:admission-draft:v3";
 const MAX_MB = 3;
 const FILE_FIELDS = [
   { key: "photo_url", label: "Student Photo", accept: "image/jpeg,image/jpg,image/png", required: true },
   { key: "signature_url", label: "Signature", accept: "image/jpeg,image/jpg,image/png", required: true },
   { key: "aadhaar_front_url", label: "Aadhaar Front", accept: "image/jpeg,image/jpg,image/png,application/pdf", required: true },
   { key: "aadhaar_back_url", label: "Aadhaar Back", accept: "image/jpeg,image/jpg,image/png,application/pdf", required: true },
+  { key: "marksheet_url", label: "Marksheet", accept: "image/jpeg,image/jpg,image/png,application/pdf", required: false },
   { key: "qualification_url", label: "Qualification Certificate", accept: "image/jpeg,image/jpg,image/png,application/pdf", required: false },
-  { key: "passport_photo_url", label: "Passport Size Photo", accept: "image/jpeg,image/jpg,image/png", required: false },
+  { key: "other_doc_1_url", label: "Other Document", accept: "image/jpeg,image/jpg,image/png,application/pdf", required: false },
 ] as const;
 
 type FormState = Record<string, string>;
@@ -38,6 +39,7 @@ type FormState = Record<string, string>;
 function AdmissionPage() {
   const navigate = useNavigate();
   const submit = useServerFn(submitAdmission);
+  const checkDup = useServerFn(checkAdmissionDuplicates);
   const loadCourses = useServerFn(listCoursesPublic);
   const loadBranches = useServerFn(listBranchesPublic);
   const loadBatches = useServerFn(listBatchesPublic);
@@ -97,32 +99,54 @@ function AdmissionPage() {
     if (step === 0) {
       if (!form.first_name?.trim()) return "First name is required";
       if (!form.last_name?.trim()) return "Last name is required";
-      if (!/^\d{10}$/.test((form.mobile ?? "").replace(/\D/g, ""))) return "Mobile must be 10 digits";
-      if (form.email && !/^\S+@\S+\.\S+$/.test(form.email)) return "Invalid email";
-      if (form.aadhaar_number && !/^\d{12}$/.test(form.aadhaar_number.replace(/\s/g, ""))) return "Aadhaar must be 12 digits";
       if (!form.father_name?.trim()) return "Father's name is required";
+      if (!form.gender) return "Gender is required";
+      if (!form.dob) return "Date of birth is required";
+      if (form.aadhaar_number && !/^\d{12}$/.test(form.aadhaar_number.replace(/\s/g, ""))) return "Aadhaar must be 12 digits";
     }
     if (step === 1) {
+      if (!/^\d{10}$/.test((form.mobile ?? "").replace(/\D/g, ""))) return "Mobile must be 10 digits";
+      if (form.alternate_mobile && !/^\d{10}$/.test(form.alternate_mobile.replace(/\D/g, ""))) return "Alternate mobile must be 10 digits";
+      if (form.email && !/^\S+@\S+\.\S+$/.test(form.email)) return "Invalid email";
       if (!form.address?.trim()) return "Address is required";
-      if (!form.city?.trim()) return "City is required";
+      if (!form.state?.trim()) return "State is required";
+      if (!form.district?.trim()) return "District is required";
       if (form.pincode && !/^\d{6}$/.test(form.pincode)) return "Pincode must be 6 digits";
     }
     if (step === 2) {
+      if (!form.qualification) return "Qualification is required";
+      if (form.percentage && (Number(form.percentage) < 0 || Number(form.percentage) > 100)) return "Percentage must be between 0 and 100";
+      if (form.passing_year && !/^\d{4}$/.test(form.passing_year)) return "Passing year must be 4 digits";
+    }
+    if (step === 3) {
       if (!form.branch_id) return "Please select a branch";
       if (!form.course_id) return "Please select a course";
     }
-    if (step === 3) {
+    if (step === 4) {
       for (const f of FILE_FIELDS) {
         if (f.required && !uploads[f.key]?.url) return `${f.label} is required`;
       }
     }
-    if (step === 4 && !agree) return "You must accept the declaration to submit";
+    if (step === 5 && !agree) return "You must accept the declaration to submit";
     return null;
   };
 
-  const next = () => {
+  const next = async () => {
     const v = validateStep();
     if (v) { setErr(v); toast.error(v); return; }
+    if (step === 1) {
+      // Live duplicate check on mobile / email / Aadhaar
+      try {
+        const res = await checkDup({
+          data: {
+            phone: (form.mobile ?? "").replace(/\D/g, ""),
+            email: form.email ?? "",
+            aadhaar_number: (form.aadhaar_number ?? "").replace(/\s/g, ""),
+          },
+        });
+        if (!res.ok) { setErr(res.messages.join(" ")); toast.error(res.messages[0]); return; }
+      } catch { /* fall through — server re-validates on submit */ }
+    }
     setErr(null);
     setStep(s => Math.min(STEPS.length - 1, s + 1));
   };
@@ -137,7 +161,7 @@ function AdmissionPage() {
     try {
       const ext = file.name.split(".").pop() || "bin";
       const path = `admissions/${draftId.current}/${key}-${Date.now()}.${ext}`;
-      const { error } = await supabase.storage.from("documents").upload(path, file, { upsert: true, contentType: file.type });
+      const { error } = await supabase.storage.from("documents").upload(path, file, { upsert: false, contentType: file.type });
       if (error) throw error;
       // Store the storage path (private bucket → admin generates signed URL on view).
       setUploads(prev => ({ ...prev, [key]: { url: path, name: file.name } }));
@@ -161,12 +185,21 @@ function AdmissionPage() {
         gender: form.gender ?? "",
         aadhaar_number: (form.aadhaar_number ?? "").replace(/\s/g, ""),
         guardian_name: form.father_name ?? "",
+        father_name: form.father_name ?? "",
         mother_name: form.mother_name ?? "",
+        blood_group: form.blood_group ?? "",
+        category: form.category ?? "",
         address: form.address ?? "",
-        city: form.city ?? "",
+        city: form.district ?? form.city ?? "",
+        district: form.district ?? "",
         state: form.state ?? "",
         pincode: form.pincode ?? "",
         qualification: form.qualification ?? "",
+        school: form.school ?? "",
+        board: form.board ?? "",
+        passing_year: form.passing_year ?? "",
+        percentage: form.percentage ? Number(form.percentage) : "",
+        session: form.session ?? "",
         branch_id: form.branch_id ?? "",
         course_id: form.course_id ?? "",
         batch_id: form.batch_id ?? "",
@@ -176,8 +209,11 @@ function AdmissionPage() {
         signature_url: uploads.signature_url?.url ?? "",
         aadhaar_front_url: uploads.aadhaar_front_url?.url ?? "",
         aadhaar_back_url: uploads.aadhaar_back_url?.url ?? "",
+        marksheet_url: uploads.marksheet_url?.url ?? "",
         qualification_url: uploads.qualification_url?.url ?? "",
-        passport_photo_url: uploads.passport_photo_url?.url ?? "",
+        other_documents: uploads.other_doc_1_url?.url
+          ? [{ name: uploads.other_doc_1_url.name, url: uploads.other_doc_1_url.url }]
+          : [],
       };
       const row = await submit({ data: payload });
       const appNo = (row as any).application_no ?? (row as any).admission_no;
@@ -216,7 +252,7 @@ function AdmissionPage() {
             <div className="h-2 overflow-hidden rounded-full bg-cyan-soft">
               <motion.div initial={false} animate={{ width: `${progress}%` }} className="h-full gradient-brand" />
             </div>
-            <ol className="mt-4 grid grid-cols-5 gap-2">
+            <ol className="mt-4 grid grid-cols-3 gap-2 sm:grid-cols-6">
               {STEPS.map((label, i) => (
                 <li key={label} className={`flex flex-col items-center gap-1 text-center text-[10px] sm:text-xs ${i <= step ? "text-brand-dark" : "text-muted-foreground"}`}>
                   <span className={`grid h-7 w-7 place-items-center rounded-full text-[11px] font-bold ${i < step ? "bg-emerald-500 text-white" : i === step ? "gradient-brand text-white shadow-brand" : "bg-cyan-soft text-brand-dark"}`}>
@@ -241,28 +277,39 @@ function AdmissionPage() {
                   <div className="grid gap-4 sm:grid-cols-2">
                     <Field label="First Name *" value={form.first_name} onChange={(v: string) => set("first_name", v)} />
                     <Field label="Last Name *" value={form.last_name} onChange={(v: string) => set("last_name", v)} />
-                    <SelectField label="Gender" value={form.gender} onChange={(v: string) => set("gender", v)} options={["", "Male", "Female", "Other"]} />
-                    <Field label="Date of Birth" type="date" value={form.dob} onChange={(v: string) => set("dob", v)} />
                     <Field label="Father's Name *" value={form.father_name} onChange={(v: string) => set("father_name", v)} />
                     <Field label="Mother's Name" value={form.mother_name} onChange={(v: string) => set("mother_name", v)} />
-                    <Field label="Mobile Number *" type="tel" inputMode="numeric" maxLength={10} value={form.mobile} onChange={(v: string) => set("mobile", v)} />
-                    <Field label="Alternate Mobile" type="tel" inputMode="numeric" maxLength={10} value={form.alternate_mobile} onChange={(v: string) => set("alternate_mobile", v)} />
-                    <Field label="Email" type="email" value={form.email} onChange={(v: string) => set("email", v)} />
+                    <SelectField label="Gender *" value={form.gender} onChange={(v: string) => set("gender", v)} options={["", "Male", "Female", "Other"]} />
+                    <Field label="Date of Birth *" type="date" value={form.dob} onChange={(v: string) => set("dob", v)} />
+                    <SelectField label="Blood Group" value={form.blood_group} onChange={(v: string) => set("blood_group", v)} options={["", "A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-"]} />
+                    <SelectField label="Category" value={form.category} onChange={(v: string) => set("category", v)} options={["", "General", "OBC", "SC", "ST", "EWS"]} />
                     <Field label="Aadhaar Number" inputMode="numeric" maxLength={12} value={form.aadhaar_number} onChange={(v: string) => set("aadhaar_number", v)} />
                   </div>
                 )}
 
                 {step === 1 && (
                   <div className="grid gap-4 sm:grid-cols-2">
+                    <Field label="Mobile Number *" type="tel" inputMode="numeric" maxLength={10} value={form.mobile} onChange={(v: string) => set("mobile", v)} />
+                    <Field label="Alternate Mobile" type="tel" inputMode="numeric" maxLength={10} value={form.alternate_mobile} onChange={(v: string) => set("alternate_mobile", v)} />
+                    <Field label="Email" type="email" className="sm:col-span-2" value={form.email} onChange={(v: string) => set("email", v)} />
                     <Field label="Address *" className="sm:col-span-2" value={form.address} onChange={(v: string) => set("address", v)} />
-                    <Field label="City *" value={form.city} onChange={(v: string) => set("city", v)} />
-                    <Field label="State" value={form.state} onChange={(v: string) => set("state", v)} />
-                    <Field label="Pincode" inputMode="numeric" maxLength={6} value={form.pincode} onChange={(v: string) => set("pincode", v)} />
-                    <SelectField label="Qualification" value={form.qualification} onChange={(v: string) => set("qualification", v)} options={["", "10th", "12th", "Graduate", "Post Graduate"]} />
+                    <Field label="State *" value={form.state} onChange={(v: string) => set("state", v)} />
+                    <Field label="District *" value={form.district} onChange={(v: string) => set("district", v)} />
+                    <Field label="PIN Code" inputMode="numeric" maxLength={6} value={form.pincode} onChange={(v: string) => set("pincode", v)} />
                   </div>
                 )}
 
                 {step === 2 && (
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <SelectField label="Highest Qualification *" value={form.qualification} onChange={(v: string) => set("qualification", v)} options={["", "8th", "10th", "12th", "Diploma", "Graduate", "Post Graduate"]} />
+                    <Field label="School / College" value={form.school} onChange={(v: string) => set("school", v)} />
+                    <Field label="Board / University" value={form.board} onChange={(v: string) => set("board", v)} />
+                    <Field label="Passing Year" inputMode="numeric" maxLength={4} value={form.passing_year} onChange={(v: string) => set("passing_year", v)} />
+                    <Field label="Percentage / CGPA %" inputMode="decimal" value={form.percentage} onChange={(v: string) => set("percentage", v)} />
+                  </div>
+                )}
+
+                {step === 3 && (
                   <div className="grid gap-4 sm:grid-cols-2">
                     <SelectField label="Select Branch *" value={form.branch_id} onChange={(v: string) => set("branch_id", v)}
                       options={[{ value: "", label: "— Select a branch —" }, ...branches.map(b => ({ value: b.id, label: `${b.name}${b.city ? ` · ${b.city}` : ""}` }))]} />
@@ -270,11 +317,12 @@ function AdmissionPage() {
                       options={[{ value: "", label: "— Select a course —" }, ...courses.map(c => ({ value: c.id, label: `${c.code} · ${c.name}` }))]} />
                     <SelectField label="Select Batch" value={form.batch_id} onChange={(v: string) => set("batch_id", v)}
                       options={[{ value: "", label: batches.length ? "— Select a batch —" : "No active batches" }, ...batches.map(b => ({ value: b.id, label: `${b.name}${b.timing ? ` · ${b.timing}` : ""}` }))]} />
+                    <Field label="Session" value={form.session} onChange={(v: string) => set("session", v)} />
                     <SelectField label="Preferred Timing" value={form.preferred_timing} onChange={(v: string) => set("preferred_timing", v)} options={["", "Morning", "Afternoon", "Evening", "Weekend"]} />
                   </div>
                 )}
 
-                {step === 3 && (
+                {step === 4 && (
                   <div className="grid gap-3 sm:grid-cols-2">
                     {FILE_FIELDS.map(f => (
                       <FileTile key={f.key}
@@ -289,7 +337,7 @@ function AdmissionPage() {
                   </div>
                 )}
 
-                {step === 4 && (
+                {step === 5 && (
                   <div className="space-y-4">
                     <div className="rounded-2xl border bg-cyan-soft/40 p-5">
                       <h3 className="text-sm font-bold uppercase tracking-wider text-brand-dark">Review your application</h3>
