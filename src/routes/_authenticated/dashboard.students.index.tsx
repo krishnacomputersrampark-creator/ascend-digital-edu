@@ -393,6 +393,22 @@ function StatCard({ label, value, icon: Icon }: { label: string; value: number; 
   );
 }
 
+function StudentAvatar({ row }: { row: any }) {
+  const [src, setSrc] = useState<string | null>(null);
+  useEffect(() => {
+    let alive = true;
+    signedUrlFor(row.photo_url).then((u) => { if (alive) setSrc(u); }).catch(() => {});
+    return () => { alive = false; };
+  }, [row.photo_url]);
+  return src ? (
+    <img src={src} alt={`${row.full_name} photo`} className="h-9 w-9 rounded-full object-cover" loading="lazy" />
+  ) : (
+    <span className="grid h-9 w-9 place-items-center rounded-full bg-cyan-soft text-[11px] font-bold text-brand-dark">
+      {row.full_name?.slice(0, 2).toUpperCase()}
+    </span>
+  );
+}
+
 function MiniReport({ title, rows, icon: Icon }: { title: string; rows: Array<{ name: string; value: number }>; icon: any }) {
   const max = Math.max(1, ...rows.map((r) => r.value));
   return (
