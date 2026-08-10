@@ -53,7 +53,7 @@ import { Route as SearchStudentRouteImport } from './routes/search.student'
 import { Route as SearchResultRouteImport } from './routes/search.result'
 import { Route as SearchCertificateRouteImport } from './routes/search.certificate'
 import { Route as CertificateVerificationCertificateNumberRouteImport } from './routes/certificate-verification.$certificateNumber'
-import { Route as AdmissionSuccessRouteImport } from './routes/admission.success'
+import { Route as AdmissionSuccessRouteImport } from './routes/admission_.success'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
 import { Route as Char91DotmcpChar93ListToolsRouteImport } from './routes/[.mcp]/list-tools'
@@ -364,9 +364,9 @@ const CertificateVerificationCertificateNumberRoute =
     getParentRoute: () => CertificateVerificationRoute,
   } as any)
 const AdmissionSuccessRoute = AdmissionSuccessRouteImport.update({
-  id: '/success',
-  path: '/success',
-  getParentRoute: () => AdmissionRoute,
+  id: '/admission_/success',
+  path: '/admission/success',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   id: '/dashboard',
@@ -868,7 +868,7 @@ const AuthenticatedDashboardFeesReceiptIdRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/admission': typeof AdmissionRouteWithChildren
+  '/admission': typeof AdmissionRoute
   '/auth': typeof AuthRoute
   '/blog': typeof BlogRoute
   '/certificate-verification': typeof CertificateVerificationRouteWithChildren
@@ -998,7 +998,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/admission': typeof AdmissionRouteWithChildren
+  '/admission': typeof AdmissionRoute
   '/auth': typeof AuthRoute
   '/blog': typeof BlogRoute
   '/certificate-verification': typeof CertificateVerificationRouteWithChildren
@@ -1121,7 +1121,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
-  '/admission': typeof AdmissionRouteWithChildren
+  '/admission': typeof AdmissionRoute
   '/auth': typeof AuthRoute
   '/blog': typeof BlogRoute
   '/certificate-verification': typeof CertificateVerificationRouteWithChildren
@@ -1146,7 +1146,7 @@ export interface FileRoutesById {
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRouteWithChildren
-  '/admission/success': typeof AdmissionSuccessRoute
+  '/admission_/success': typeof AdmissionSuccessRoute
   '/certificate-verification/$certificateNumber': typeof CertificateVerificationCertificateNumberRoute
   '/search/certificate': typeof SearchCertificateRoute
   '/search/result': typeof SearchResultRoute
@@ -1530,7 +1530,7 @@ export interface FileRouteTypes {
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
     | '/_authenticated/dashboard'
-    | '/admission/success'
+    | '/admission_/success'
     | '/certificate-verification/$certificateNumber'
     | '/search/certificate'
     | '/search/result'
@@ -1637,7 +1637,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
-  AdmissionRoute: typeof AdmissionRouteWithChildren
+  AdmissionRoute: typeof AdmissionRoute
   AuthRoute: typeof AuthRoute
   BlogRoute: typeof BlogRoute
   CertificateVerificationRoute: typeof CertificateVerificationRouteWithChildren
@@ -1661,6 +1661,7 @@ export interface RootRouteChildren {
   VideosRoute: typeof VideosRoute
   Char91DotmcpChar93ListToolsRoute: typeof Char91DotmcpChar93ListToolsRoute
   Char91DotwellKnownChar93OauthProtectedResourceRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
+  AdmissionSuccessRoute: typeof AdmissionSuccessRoute
   SearchCertificateRoute: typeof SearchCertificateRoute
   SearchResultRoute: typeof SearchResultRoute
   SearchStudentRoute: typeof SearchStudentRoute
@@ -1995,12 +1996,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CertificateVerificationCertificateNumberRouteImport
       parentRoute: typeof CertificateVerificationRoute
     }
-    '/admission/success': {
-      id: '/admission/success'
-      path: '/success'
+    '/admission_/success': {
+      id: '/admission_/success'
+      path: '/admission/success'
       fullPath: '/admission/success'
       preLoaderRoute: typeof AdmissionSuccessRouteImport
-      parentRoute: typeof AdmissionRoute
+      parentRoute: typeof rootRouteImport
     }
     '/_authenticated/dashboard': {
       id: '/_authenticated/dashboard'
@@ -2909,18 +2910,6 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
 const AuthenticatedRouteRouteWithChildren =
   AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
 
-interface AdmissionRouteChildren {
-  AdmissionSuccessRoute: typeof AdmissionSuccessRoute
-}
-
-const AdmissionRouteChildren: AdmissionRouteChildren = {
-  AdmissionSuccessRoute: AdmissionSuccessRoute,
-}
-
-const AdmissionRouteWithChildren = AdmissionRoute._addFileChildren(
-  AdmissionRouteChildren,
-)
-
 interface CertificateVerificationRouteChildren {
   CertificateVerificationCertificateNumberRoute: typeof CertificateVerificationCertificateNumberRoute
 }
@@ -3009,7 +2998,7 @@ const StudentDashboardResultsRouteWithChildren =
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
-  AdmissionRoute: AdmissionRouteWithChildren,
+  AdmissionRoute: AdmissionRoute,
   AuthRoute: AuthRoute,
   BlogRoute: BlogRoute,
   CertificateVerificationRoute: CertificateVerificationRouteWithChildren,
@@ -3034,6 +3023,7 @@ const rootRouteChildren: RootRouteChildren = {
   Char91DotmcpChar93ListToolsRoute: Char91DotmcpChar93ListToolsRoute,
   Char91DotwellKnownChar93OauthProtectedResourceRoute:
     Char91DotwellKnownChar93OauthProtectedResourceRoute,
+  AdmissionSuccessRoute: AdmissionSuccessRoute,
   SearchCertificateRoute: SearchCertificateRoute,
   SearchResultRoute: SearchResultRoute,
   SearchStudentRoute: SearchStudentRoute,

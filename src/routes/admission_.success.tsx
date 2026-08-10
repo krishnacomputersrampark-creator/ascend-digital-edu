@@ -10,7 +10,7 @@ const searchSchema = z.object({
   branch: z.string().optional().default(""),
 });
 
-export const Route = createFileRoute("/admission/success")({
+export const Route = createFileRoute("/admission_/success")({
   validateSearch: (s: Record<string, unknown>) => searchSchema.parse(s),
   head: () => ({
     meta: [
