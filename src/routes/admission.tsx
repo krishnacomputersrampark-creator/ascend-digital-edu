@@ -224,7 +224,13 @@ function AdmissionPage() {
       try { localStorage.removeItem(DRAFT_KEY); } catch {}
       navigate({
         to: "/admission/success",
-        search: { app: appNo, name: payload.full_name, course: courseName ?? "", branch: branchName ?? "" },
+        search: {
+          app: appNo,
+          name: payload.full_name,
+          course: courseName ?? "",
+          branch: branchName ?? "",
+          at: new Date().toISOString(),
+        },
       });
     } catch (e: any) {
       setErr(e?.message ?? "Submission failed");
