@@ -654,6 +654,42 @@ export type Database = {
           },
         ]
       }
+      configuration_history: {
+        Row: {
+          changed_by: string | null
+          changed_by_email: string | null
+          created_at: string
+          entity: string
+          entity_id: string | null
+          id: string
+          label: string | null
+          new_value: Json | null
+          old_value: Json | null
+        }
+        Insert: {
+          changed_by?: string | null
+          changed_by_email?: string | null
+          created_at?: string
+          entity: string
+          entity_id?: string | null
+          id?: string
+          label?: string | null
+          new_value?: Json | null
+          old_value?: Json | null
+        }
+        Update: {
+          changed_by?: string | null
+          changed_by_email?: string | null
+          created_at?: string
+          entity?: string
+          entity_id?: string | null
+          id?: string
+          label?: string | null
+          new_value?: Json | null
+          old_value?: Json | null
+        }
+        Relationships: []
+      }
       courses: {
         Row: {
           category: string | null
@@ -765,6 +801,48 @@ export type Database = {
           training_partner?: string | null
           updated_at?: string
           updated_by?: string | null
+        }
+        Relationships: []
+      }
+      document_templates: {
+        Row: {
+          created_at: string
+          footer: string | null
+          header: string | null
+          id: string
+          is_enabled: boolean
+          key: string
+          logo_url: string | null
+          name: string
+          signature_url: string | null
+          terms: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          footer?: string | null
+          header?: string | null
+          id?: string
+          is_enabled?: boolean
+          key: string
+          logo_url?: string | null
+          name: string
+          signature_url?: string | null
+          terms?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          footer?: string | null
+          header?: string | null
+          id?: string
+          is_enabled?: boolean
+          key?: string
+          logo_url?: string | null
+          name?: string
+          signature_url?: string | null
+          terms?: string | null
+          updated_at?: string
         }
         Relationships: []
       }
@@ -1050,6 +1128,214 @@ export type Database = {
           },
         ]
       }
+      form_configs: {
+        Row: {
+          created_at: string
+          description: string | null
+          form_key: string
+          id: string
+          is_active: boolean
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          form_key: string
+          id?: string
+          is_active?: boolean
+          name: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          form_key?: string
+          id?: string
+          is_active?: boolean
+          name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      form_fields: {
+        Row: {
+          created_at: string
+          default_value: string | null
+          field_key: string
+          field_type: string
+          form_config_id: string
+          help_text: string | null
+          id: string
+          is_required: boolean
+          is_visible: boolean
+          label: string
+          placeholder: string | null
+          roles: Database["public"]["Enums"]["app_role"][]
+          sort_order: number
+          updated_at: string
+          validation: Json
+        }
+        Insert: {
+          created_at?: string
+          default_value?: string | null
+          field_key: string
+          field_type?: string
+          form_config_id: string
+          help_text?: string | null
+          id?: string
+          is_required?: boolean
+          is_visible?: boolean
+          label: string
+          placeholder?: string | null
+          roles?: Database["public"]["Enums"]["app_role"][]
+          sort_order?: number
+          updated_at?: string
+          validation?: Json
+        }
+        Update: {
+          created_at?: string
+          default_value?: string | null
+          field_key?: string
+          field_type?: string
+          form_config_id?: string
+          help_text?: string | null
+          id?: string
+          is_required?: boolean
+          is_visible?: boolean
+          label?: string
+          placeholder?: string | null
+          roles?: Database["public"]["Enums"]["app_role"][]
+          sort_order?: number
+          updated_at?: string
+          validation?: Json
+        }
+        Relationships: [
+          {
+            foreignKeyName: "form_fields_form_config_id_fkey"
+            columns: ["form_config_id"]
+            isOneToOne: false
+            referencedRelation: "form_configs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      integration_settings: {
+        Row: {
+          category: string
+          config: Json
+          created_at: string
+          id: string
+          is_enabled: boolean
+          provider: string
+          secret_keys: string[]
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          category: string
+          config?: Json
+          created_at?: string
+          id?: string
+          is_enabled?: boolean
+          provider: string
+          secret_keys?: string[]
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          category?: string
+          config?: Json
+          created_at?: string
+          id?: string
+          is_enabled?: boolean
+          provider?: string
+          secret_keys?: string[]
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: []
+      }
+      master_categories: {
+        Row: {
+          created_at: string
+          description: string | null
+          icon: string | null
+          id: string
+          is_system: boolean
+          key: string
+          name: string
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          icon?: string | null
+          id?: string
+          is_system?: boolean
+          key: string
+          name: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          icon?: string | null
+          id?: string
+          is_system?: boolean
+          key?: string
+          name?: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      master_values: {
+        Row: {
+          category_id: string
+          code: string
+          created_at: string
+          description: string | null
+          id: string
+          is_active: boolean
+          name: string
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          category_id: string
+          code: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          name: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          category_id?: string
+          code?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          name?: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "master_values_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "master_categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       material_favorites: {
         Row: {
           created_at: string
@@ -1079,6 +1365,51 @@ export type Database = {
           },
         ]
       }
+      menu_config: {
+        Row: {
+          created_at: string
+          icon: string | null
+          id: string
+          is_enabled: boolean
+          is_public: boolean
+          key: string
+          label: string
+          path: string | null
+          roles: Database["public"]["Enums"]["app_role"][]
+          section: string | null
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          icon?: string | null
+          id?: string
+          is_enabled?: boolean
+          is_public?: boolean
+          key: string
+          label: string
+          path?: string | null
+          roles?: Database["public"]["Enums"]["app_role"][]
+          section?: string | null
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          icon?: string | null
+          id?: string
+          is_enabled?: boolean
+          is_public?: boolean
+          key?: string
+          label?: string
+          path?: string | null
+          roles?: Database["public"]["Enums"]["app_role"][]
+          section?: string | null
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       notification_reads: {
         Row: {
           notification_id: string
@@ -1104,6 +1435,51 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      notification_templates: {
+        Row: {
+          body: string
+          channel: string
+          created_at: string
+          draft_body: string | null
+          draft_subject: string | null
+          id: string
+          is_active: boolean
+          key: string
+          name: string
+          subject: string | null
+          updated_at: string
+          variables: string[]
+        }
+        Insert: {
+          body?: string
+          channel?: string
+          created_at?: string
+          draft_body?: string | null
+          draft_subject?: string | null
+          id?: string
+          is_active?: boolean
+          key: string
+          name: string
+          subject?: string | null
+          updated_at?: string
+          variables?: string[]
+        }
+        Update: {
+          body?: string
+          channel?: string
+          created_at?: string
+          draft_body?: string | null
+          draft_subject?: string | null
+          id?: string
+          is_active?: boolean
+          key?: string
+          name?: string
+          subject?: string | null
+          updated_at?: string
+          variables?: string[]
+        }
+        Relationships: []
       }
       notifications: {
         Row: {
@@ -1164,6 +1540,42 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      numbering_settings: {
+        Row: {
+          created_at: string
+          format: string
+          id: string
+          key: string
+          name: string
+          next_number: number
+          padding: number
+          prefix: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          format?: string
+          id?: string
+          key: string
+          name: string
+          next_number?: number
+          padding?: number
+          prefix?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          format?: string
+          id?: string
+          key?: string
+          name?: string
+          next_number?: number
+          padding?: number
+          prefix?: string
+          updated_at?: string
+        }
+        Relationships: []
       }
       profiles: {
         Row: {
@@ -1310,6 +1722,33 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      role_permissions: {
+        Row: {
+          created_at: string
+          id: string
+          module: string
+          permissions: string[]
+          role: Database["public"]["Enums"]["app_role"]
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          module: string
+          permissions?: string[]
+          role: Database["public"]["Enums"]["app_role"]
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          module?: string
+          permissions?: string[]
+          role?: Database["public"]["Enums"]["app_role"]
+          updated_at?: string
+        }
+        Relationships: []
       }
       student_documents: {
         Row: {
@@ -1896,6 +2335,39 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      system_settings: {
+        Row: {
+          created_at: string
+          group_key: string
+          id: string
+          is_public: boolean
+          setting_key: string
+          updated_at: string
+          updated_by: string | null
+          value: Json
+        }
+        Insert: {
+          created_at?: string
+          group_key: string
+          id?: string
+          is_public?: boolean
+          setting_key: string
+          updated_at?: string
+          updated_by?: string | null
+          value?: Json
+        }
+        Update: {
+          created_at?: string
+          group_key?: string
+          id?: string
+          is_public?: boolean
+          setting_key?: string
+          updated_at?: string
+          updated_by?: string | null
+          value?: Json
+        }
+        Relationships: []
       }
       teacher_batches: {
         Row: {
