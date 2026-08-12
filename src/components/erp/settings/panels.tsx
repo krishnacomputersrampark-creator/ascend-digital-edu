@@ -104,16 +104,16 @@ export function MastersPanel({ search }: { search: string }) {
     } catch (e) { toast.error((e as Error).message); } finally { setBusy(false); }
   };
 
-  const remove = async (row: repo.MasterValue) => {
+  const remove = async (row: repoTypes.MasterValue) => {
     if (!active) return;
     if (!window.confirm(`Delete "${row.name}"? This cannot be undone.`)) return;
-    try { await repo.deleteMasterValue(row.id, row); toast.success("Deleted"); await load(active); }
+    try { await repo.deleteMasterValue({ id: row.id, prev: row }); toast.success("Deleted"); await load(active); }
     catch (e) { toast.error((e as Error).message); }
   };
 
-  const toggle = async (row: repo.MasterValue) => {
+  const toggle = async (row: repoTypes.MasterValue) => {
     if (!active) return;
-    try { await repo.updateMasterValue(row.id, { is_active: !row.is_active }, row); await load(active); }
+    try { await repo.updateMasterValue({ id: row.id, patch: { is_active: !row.is_active }, prev: row }); await load(active); }
     catch (e) { toast.error((e as Error).message); }
   };
 
@@ -199,15 +199,15 @@ export function MastersPanel({ search }: { search: string }) {
 
 /* ============ branches ============ */
 export function BranchesPanel() {
-  const [rows, setRows] = useState<repo.BranchRow[]>([]);
-  const [draft, setDraft] = useState<Record<string, Partial<repo.BranchRow>>>({});
-  const load = () => repo.listBranches().then(setRows).catch((e) => toast.error(e.message));
+  const [rows, setRows] = useState<repoTypes.BranchRow[]>([]);
+  const [draft, setDraft] = useState<Record<string, Partial<repoTypes.BranchRow>>>({});
+  const load = () => repo.listBranches().then(setRows).catch((e: Error) => toast.error(e.message));
   useEffect(() => { load(); }, []);
 
-  const save = async (row: repo.BranchRow) => {
+  const save = async (row: repoTypes.BranchRow) => {
     const patch = draft[row.id];
     if (!patch) return;
-    try { await repo.saveBranch(row.id, patch, row); toast.success("Branch updated"); setDraft({ ...draft, [row.id]: {} }); load(); }
+    try { await repo.saveBranch({ id: row.id, patch, prev: row }); toast.success("Branch updated"); setDraft({ ...draft, [row.id]: {} }); load(); }
     catch (e) { toast.error((e as Error).message); }
   };
 
@@ -241,14 +241,14 @@ export function BranchesPanel() {
 
 /* ============ menu ============ */
 export function MenuPanel({ search }: { search: string }) {
-  const [rows, setRows] = useState<repo.MenuItemConfig[]>([]);
-  const load = () => repo.listMenuConfig().then(setRows).catch((e) => toast.error(e.message));
+  const [rows, setRows] = useState<repoTypes.MenuItemConfig[]>([]);
+  const load = () => repo.listMenuConfig().then(setRows).catch((e: Error) => toast.error(e.message));
   useEffect(() => { load(); }, []);
   const q = search.trim().toLowerCase();
   const visible = q ? rows.filter((r) => r.label.toLowerCase().includes(q) || r.key.includes(q)) : rows;
 
-  const patch = async (row: repo.MenuItemConfig, p: Partial<repo.MenuItemConfig>) => {
-    try { await repo.updateMenuItem(row.id, p, row); setRows((rs) => rs.map((r) => (r.id === row.id ? { ...r, ...p } : r))); }
+  const patch = async (row: repoTypes.MenuItemConfig, p: Partial<repoTypes.MenuItemConfig>) => {
+    try { await repo.updateMenuItem({ id: row.id, patch: p, prev: row }); setRows((rs) => rs.map((r) => (r.id === row.id ? { ...r, ...p } : r))); }
     catch (e) { toast.error((e as Error).message); }
   };
   const ROLES: AppRole[] = ["super_admin", "admin", "branch_manager", "faculty", "student"];
