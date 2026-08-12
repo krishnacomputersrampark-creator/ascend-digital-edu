@@ -12,7 +12,7 @@ export const getSettings = createServerFn({ method: "GET" })
 
 export const saveSettings = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d: unknown) => z.object({ group: z.string(), key: z.string(), value: z.record(z.any()), label: z.string() }).parse(d))
+  .inputValidator(z.object({ group: z.string(), key: z.string(), value: z.record(z.any()), label: z.string() }).parse)
   .handler(async ({ data, context }) => {
     return repo.saveSettingsServer(context.supabase, data.group, data.key, data.value, data.label);
   });
@@ -165,7 +165,7 @@ export const listIntegrations = createServerFn({ method: "GET" })
 
 export const saveIntegration = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d: unknown) => z.object({ provider: z.string(), category: z.string(), isEnabled: z.boolean(), config: z.record(z.any()), secretKeys: z.array(z.string()) }).parse(d))
+  .inputValidator(z.object({ provider: z.string(), category: z.string(), isEnabled: z.boolean(), config: z.record(z.any()), secretKeys: z.array(z.string()) }).parse)
   .handler(async ({ data, context }) => {
     return repo.saveIntegrationServer(context.supabase, data.provider, data.category, data.isEnabled, data.config, data.secretKeys);
   });
