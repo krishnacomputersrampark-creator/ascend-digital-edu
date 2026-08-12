@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { Loader2, Plus, Save, Trash2, Pencil, History, ShieldCheck, Database } from "lucide-react";
-import * as repo from "@/lib/settings.repo";
+import * as repo from "@/lib/settings.functions";
+import type * as repoTypes from "@/lib/settings.repo";
 import { SETTINGS_GROUPS, INTEGRATION_DEFS, PERMISSION_KEYS, type SettingsGroupDef } from "@/lib/settings.schema";
 import type { AppRole } from "@/lib/auth";
 import { SettingInput, FieldRow, PanelCard, EmptyState, Loading } from "./fields";
@@ -66,16 +67,16 @@ export function GroupSettingsPanel({ def, search }: { def: SettingsGroupDef; sea
 
 /* ============ masters ============ */
 export function MastersPanel({ search }: { search: string }) {
-  const [cats, setCats] = useState<repo.MasterCategory[]>([]);
-  const [active, setActive] = useState<repo.MasterCategory | null>(null);
-  const [rows, setRows] = useState<repo.MasterValue[]>([]);
+  const [cats, setCats] = useState<repoTypes.MasterCategory[]>([]);
+  const [active, setActive] = useState<repoTypes.MasterCategory | null>(null);
+  const [rows, setRows] = useState<repoTypes.MasterValue[]>([]);
   const [rowSearch, setRowSearch] = useState("");
-  const [editing, setEditing] = useState<Partial<repo.MasterValue> | null>(null);
+  const [editing, setEditing] = useState<Partial<repoTypes.MasterValue> | null>(null);
   const [busy, setBusy] = useState(false);
 
   useEffect(() => { repo.listMasterCategories().then(setCats).catch((e) => toast.error(e.message)); }, []);
 
-  const load = async (cat: repo.MasterCategory) => {
+  const load = async (cat: repoTypes.MasterCategory) => {
     setActive(cat);
     setRows(await repo.listMasterValues(cat.id));
   };
