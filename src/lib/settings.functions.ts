@@ -32,7 +32,7 @@ export const listMasterCategories = createServerFn({ method: "GET" })
 
 export const listMasterValues = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d: unknown) => z.string().parse(d ?? ""))
+  .inputValidator((d: unknown) => z.string().parse(d))
   .handler(async ({ data, context }) => {
     return repo.listMasterValuesServer(context.supabase, data);
   });
@@ -99,7 +99,7 @@ export const listFormConfigs = createServerFn({ method: "GET" })
 
 export const listFormFields = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d: unknown) => z.string().parse(d ?? ""))
+  .inputValidator((d: unknown) => z.string().parse(d))
   .handler(async ({ data, context }) => {
     return repo.listFormFieldsServer(context.supabase, data);
   });

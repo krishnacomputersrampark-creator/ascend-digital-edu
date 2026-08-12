@@ -13,7 +13,7 @@ const inp = "w-full rounded-xl border bg-white/80 px-3 py-2 text-sm outline-none
 
 /* ============ generic settings group ============ */
 export function GroupSettingsPanel({ def, search }: { def: SettingsGroupDef; search: string }) {
-  const [value, setValue] = useState<Record<string, unknown> | null>(null);
+  const [value, setValue] = useState<any | null>(null);
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
@@ -215,7 +215,7 @@ export function BranchesPanel() {
     <div className="space-y-4">
       {rows.map((b) => {
         const d = { ...b, ...(draft[b.id] ?? {}) };
-        const set = (k: keyof repo.BranchRow, v: unknown) => setDraft({ ...draft, [b.id]: { ...(draft[b.id] ?? {}), [k]: v } });
+        const set = (k: keyof repoTypes.BranchRow, v: unknown) => setDraft({ ...draft, [b.id]: { ...(draft[b.id] ?? {}), [k]: v } });
         return (
           <PanelCard key={b.id} title={b.name}>
             <div className="grid gap-3 sm:grid-cols-2">
