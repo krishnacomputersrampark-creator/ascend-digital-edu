@@ -1,5 +1,7 @@
+import type { SupabaseClient } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 import type { AppRole } from "@/lib/auth";
+import type { Database } from "@/integrations/supabase/types";
 
 /* ---------------- types ---------------- */
 export type MasterCategory = {
@@ -45,17 +47,17 @@ export type BranchRow = {
 };
 
 /* ---------------- history ---------------- */
-export async function recordHistory(entity: string, entityId: string | null, label: string, oldValue: unknown, newValue: unknown) {
-  const { data: u } = await supabase.auth.getUser();
-  await supabase.from("configuration_history").insert({
+export async function recordHistoryServer(sb: SupabaseClient<Database>, entity: string, entityId: string | null, label: string, oldValue: unknown, newValue: unknown) {
+  const { data: u } = await sb.auth.getUser();
+  await sb.from("configuration_history").insert({
     entity, entity_id: entityId, label,
     old_value: (oldValue ?? null) as never, new_value: (newValue ?? null) as never,
     changed_by: u.user?.id ?? null, changed_by_email: u.user?.email ?? null,
   });
 }
 
-export async function listHistory(entity?: string, limit = 50): Promise<ConfigHistoryRow[]> {
-  let q = supabase.from("configuration_history").select("*").order("created_at", { ascending: false }).limit(limit);
+export async function listHistoryServer(sb: SupabaseClient<Database>, entity?: string, limit = 50): Promise<ConfigHistoryRow[]> {
+  let q = sb.from("configuration_history").select("*").order("created_at", { ascending: false }).limit(limit);
   if (entity) q = q.eq("entity", entity);
   const { data } = await q;
   return (data ?? []) as unknown as ConfigHistoryRow[];
@@ -64,48 +66,37 @@ export async function listHistory(entity?: string, limit = 50): Promise<ConfigHi
 /* ---------------- system settings ---------------- */
 export type SettingsGroupValue = Record<string, unknown>;
 
-export async function getSettings(group: string, key = "config" ): Promise<SettingsGroupValue> {
-  const { data, error } = await supabase.from("system_settings").select("value").eq("group_key", group).eq("setting_key", key).maybeSingle();
+export async function getSettingsServer(sb: SupabaseClient<Database>, group: string, key = "config" ): Promise<SettingsGroupValue> {
+  const { data, error } = await sb.from("system_settings").select("value").eq("group_key", group).eq("setting_key", key).maybeSingle();
   if (error) throw new Error(error.message);
   return (data?.value ?? {}) as SettingsGroupValue;
 }
 
-export async function saveSettings(group: string, key: string, value: SettingsGroupValue, label: string) {
-  const prev = await getSettings(group, key).catch(() => ({}));
-  const { data: u } = await supabase.auth.getUser();
-  const { error } = await supabase
+export async function saveSettingsServer(sb: SupabaseClient<Database>, group: string, key: string, value: SettingsGroupValue, label: string) {
+  const prev = await getSettingsServer(sb, group, key).catch(() => ({}));
+  const { data: u } = await sb.auth.getUser();
+  const { error } = await sb
     .from("system_settings")
     .upsert({ group_key: group, setting_key: key, value: value as never, updated_by: u.user?.id ?? null }, { onConflict: "group_key,setting_key" });
   if (error) throw new Error(error.message);
-  await recordHistory(`system_settings:${group}.${key}`, null, label, prev, value);
+  await recordHistoryServer(sb, `system_settings:${group}.${key}`, null, label, prev, value);
 }
 
 /* ---------------- masters ---------------- */
-export async function listMasterCategories(): Promise<MasterCategory[]> {
-  const { data, error } = await supabase.from("master_categories").select("id,key,name,description,sort_order").order("sort_order");
+export async function listMasterCategoriesServer(sb: SupabaseClient<Database>): Promise<MasterCategory[]> {
+  const { data, error } = await sb.from("master_categories").select("id,key,name,description,sort_order").order("sort_order");
   if (error) throw new Error(error.message);
   return (data ?? []) as MasterCategory[];
 }
 
-export async function listMasterValues(categoryId: string): Promise<MasterValue[]> {
-  const { data, error } = await supabase.from("master_values").select("*").eq("category_id", categoryId).order("sort_order").order("name");
+export async function listMasterValuesServer(sb: SupabaseClient<Database>, categoryId: string): Promise<MasterValue[]> {
+  const { data, error } = await sb.from("master_values").select("*").eq("category_id", categoryId).order("sort_order").order("name");
   if (error) throw new Error(error.message);
   return (data ?? []) as MasterValue[];
 }
 
-/** Public helper for ERP modules: active values for a master category key. */
-export async function getMasterOptions(categoryKey: string): Promise<Array<{ value: string; label: string }>> {
-  const { data } = await supabase
-    .from("master_values")
-    .select("name, code, sort_order, is_active, master_categories!inner(key)")
-    .eq("master_categories.key", categoryKey)
-    .eq("is_active", true)
-    .order("sort_order");
-  return (data ?? []).map((r: { name: string; code: string }) => ({ value: r.code, label: r.name }));
-}
-
-export async function createMasterValue(categoryId: string, input: Partial<MasterValue>) {
-  const { error } = await supabase.from("master_values").insert({
+export async function createMasterValueServer(sb: SupabaseClient<Database>, categoryId: string, input: Partial<MasterValue>) {
+  const { error } = await sb.from("master_values").insert({
     category_id: categoryId,
     name: (input.name ?? "").trim(),
     code: (input.code ?? "").trim().toLowerCase().replace(/\s+/g, "_"),
@@ -114,11 +105,11 @@ export async function createMasterValue(categoryId: string, input: Partial<Maste
     sort_order: input.sort_order ?? 0,
   });
   if (error) throw new Error(error.message.includes("duplicate") ? "This value already exists in the master." : error.message);
-  await recordHistory("master_values", categoryId, `Added master value "${input.name}"`, null, input);
+  await recordHistoryServer(sb, "master_values", categoryId, `Added master value "${input.name}"`, null, input);
 }
 
-export async function updateMasterValue(id: string, patch: Partial<MasterValue>, prev?: MasterValue) {
-  const { error } = await supabase.from("master_values").update({
+export async function updateMasterValueServer(sb: SupabaseClient<Database>, id: string, patch: Partial<MasterValue>, prev?: MasterValue) {
+  const { error } = await sb.from("master_values").update({
     ...(patch.name !== undefined ? { name: patch.name.trim() } : {}),
     ...(patch.code !== undefined ? { code: patch.code.trim().toLowerCase().replace(/\s+/g, "_") } : {}),
     ...(patch.description !== undefined ? { description: patch.description } : {}),
@@ -126,49 +117,49 @@ export async function updateMasterValue(id: string, patch: Partial<MasterValue>,
     ...(patch.sort_order !== undefined ? { sort_order: patch.sort_order } : {}),
   }).eq("id", id);
   if (error) throw new Error(error.message.includes("duplicate") ? "This value already exists in the master." : error.message);
-  await recordHistory("master_values", id, `Updated master value "${patch.name ?? prev?.name ?? ""}"`, prev ?? null, patch);
+  await recordHistoryServer(sb, "master_values", id, `Updated master value "${patch.name ?? prev?.name ?? ""}"`, prev ?? null, patch);
 }
 
-export async function deleteMasterValue(id: string, prev?: MasterValue) {
-  const { error } = await supabase.from("master_values").delete().eq("id", id);
+export async function deleteMasterValueServer(sb: SupabaseClient<Database>, id: string, prev?: MasterValue) {
+  const { error } = await sb.from("master_values").delete().eq("id", id);
   if (error) throw new Error(error.message);
-  await recordHistory("master_values", id, `Deleted master value "${prev?.name ?? id}"`, prev ?? null, null);
+  await recordHistoryServer(sb, "master_values", id, `Deleted master value "${prev?.name ?? id}"`, prev ?? null, null);
 }
 
 /* ---------------- menu ---------------- */
-export async function listMenuConfig(): Promise<MenuItemConfig[]> {
-  const { data, error } = await supabase.from("menu_config").select("*").order("sort_order");
+export async function listMenuConfigServer(sb: SupabaseClient<Database>): Promise<MenuItemConfig[]> {
+  const { data, error } = await sb.from("menu_config").select("*").order("sort_order");
   if (error) throw new Error(error.message);
   return (data ?? []) as unknown as MenuItemConfig[];
 }
 
-export async function updateMenuItem(id: string, patch: Partial<MenuItemConfig>, prev?: MenuItemConfig) {
-  const { error } = await supabase.from("menu_config").update(patch as never).eq("id", id);
+export async function updateMenuItemServer(sb: SupabaseClient<Database>, id: string, patch: Partial<MenuItemConfig>, prev?: MenuItemConfig) {
+  const { error } = await sb.from("menu_config").update(patch as never).eq("id", id);
   if (error) throw new Error(error.message);
-  await recordHistory("menu_config", id, `Updated menu "${prev?.label ?? id}"`, prev ?? null, patch);
+  await recordHistoryServer(sb, "menu_config", id, `Updated menu "${prev?.label ?? id}"`, prev ?? null, patch);
 }
 
 /* ---------------- forms ---------------- */
-export async function listFormConfigs(): Promise<FormConfig[]> {
-  const { data, error } = await supabase.from("form_configs").select("*").order("name");
+export async function listFormConfigsServer(sb: SupabaseClient<Database>): Promise<FormConfig[]> {
+  const { data, error } = await sb.from("form_configs").select("*").order("name");
   if (error) throw new Error(error.message);
   return (data ?? []) as FormConfig[];
 }
 
-export async function listFormFields(formConfigId: string): Promise<FormField[]> {
-  const { data, error } = await supabase.from("form_fields").select("*").eq("form_config_id", formConfigId).order("sort_order");
+export async function listFormFieldsServer(sb: SupabaseClient<Database>, formConfigId: string): Promise<FormField[]> {
+  const { data, error } = await sb.from("form_fields").select("*").eq("form_config_id", formConfigId).order("sort_order");
   if (error) throw new Error(error.message);
   return (data ?? []) as unknown as FormField[];
 }
 
-export async function updateFormField(id: string, patch: Partial<FormField>, prev?: FormField) {
-  const { error } = await supabase.from("form_fields").update(patch as never).eq("id", id);
+export async function updateFormFieldServer(sb: SupabaseClient<Database>, id: string, patch: Partial<FormField>, prev?: FormField) {
+  const { error } = await sb.from("form_fields").update(patch as never).eq("id", id);
   if (error) throw new Error(error.message);
-  await recordHistory("form_fields", id, `Updated field "${prev?.label ?? id}"`, prev ?? null, patch);
+  await recordHistoryServer(sb, "form_fields", id, `Updated field "${prev?.label ?? id}"`, prev ?? null, patch);
 }
 
-export async function createFormField(formConfigId: string, patch: Partial<FormField>) {
-  const { error } = await supabase.from("form_fields").insert({
+export async function createFormFieldServer(sb: SupabaseClient<Database>, formConfigId: string, patch: Partial<FormField>) {
+  const { error } = await sb.from("form_fields").insert({
     form_config_id: formConfigId,
     field_key: (patch.field_key ?? "").trim(),
     label: (patch.label ?? "").trim(),
@@ -181,51 +172,51 @@ export async function createFormField(formConfigId: string, patch: Partial<FormF
     default_value: patch.default_value ?? null,
   });
   if (error) throw new Error(error.message);
-  await recordHistory("form_fields", formConfigId, `Added field "${patch.label}"`, null, patch);
+  await recordHistoryServer(sb, "form_fields", formConfigId, `Added field "${patch.label}"`, null, patch);
 }
 
-export async function deleteFormField(id: string, prev?: FormField) {
-  const { error } = await supabase.from("form_fields").delete().eq("id", id);
+export async function deleteFormFieldServer(sb: SupabaseClient<Database>, id: string, prev?: FormField) {
+  const { error } = await sb.from("form_fields").delete().eq("id", id);
   if (error) throw new Error(error.message);
-  await recordHistory("form_fields", id, `Deleted field "${prev?.label ?? id}"`, prev ?? null, null);
+  await recordHistoryServer(sb, "form_fields", id, `Deleted field "${prev?.label ?? id}"`, prev ?? null, null);
 }
 
 /* ---------------- templates ---------------- */
-export async function listNotificationTemplates(): Promise<NotificationTemplate[]> {
-  const { data, error } = await supabase.from("notification_templates").select("*").order("name");
+export async function listNotificationTemplatesServer(sb: SupabaseClient<Database>): Promise<NotificationTemplate[]> {
+  const { data, error } = await sb.from("notification_templates").select("*").order("name");
   if (error) throw new Error(error.message);
   return (data ?? []) as unknown as NotificationTemplate[];
 }
 
-export async function saveNotificationTemplate(id: string, patch: Partial<NotificationTemplate>, prev?: NotificationTemplate) {
-  const { error } = await supabase.from("notification_templates").update(patch as never).eq("id", id);
+export async function saveNotificationTemplateServer(sb: SupabaseClient<Database>, id: string, patch: Partial<NotificationTemplate>, prev?: NotificationTemplate) {
+  const { error } = await sb.from("notification_templates").update(patch as never).eq("id", id);
   if (error) throw new Error(error.message);
-  await recordHistory("notification_templates", id, `Updated template "${prev?.name ?? id}"`, prev ?? null, patch);
+  await recordHistoryServer(sb, "notification_templates", id, `Updated template "${prev?.name ?? id}"`, prev ?? null, patch);
 }
 
-export async function listDocumentTemplates(): Promise<DocumentTemplate[]> {
-  const { data, error } = await supabase.from("document_templates").select("*").order("name");
+export async function listDocumentTemplatesServer(sb: SupabaseClient<Database>): Promise<DocumentTemplate[]> {
+  const { data, error } = await sb.from("document_templates").select("*").order("name");
   if (error) throw new Error(error.message);
   return (data ?? []) as unknown as DocumentTemplate[];
 }
 
-export async function saveDocumentTemplate(id: string, patch: Partial<DocumentTemplate>, prev?: DocumentTemplate) {
-  const { error } = await supabase.from("document_templates").update(patch as never).eq("id", id);
+export async function saveDocumentTemplateServer(sb: SupabaseClient<Database>, id: string, patch: Partial<DocumentTemplate>, prev?: DocumentTemplate) {
+  const { error } = await sb.from("document_templates").update(patch as never).eq("id", id);
   if (error) throw new Error(error.message);
-  await recordHistory("document_templates", id, `Updated document "${prev?.name ?? id}"`, prev ?? null, patch);
+  await recordHistoryServer(sb, "document_templates", id, `Updated document "${prev?.name ?? id}"`, prev ?? null, patch);
 }
 
 /* ---------------- numbering ---------------- */
-export async function listNumbering(): Promise<NumberingSetting[]> {
-  const { data, error } = await supabase.from("numbering_settings").select("*").order("name");
+export async function listNumberingServer(sb: SupabaseClient<Database>): Promise<NumberingSetting[]> {
+  const { data, error } = await sb.from("numbering_settings").select("*").order("name");
   if (error) throw new Error(error.message);
   return (data ?? []) as NumberingSetting[];
 }
 
-export async function saveNumbering(id: string, patch: Partial<NumberingSetting>, prev?: NumberingSetting) {
-  const { error } = await supabase.from("numbering_settings").update(patch as never).eq("id", id);
+export async function saveNumberingServer(sb: SupabaseClient<Database>, id: string, patch: Partial<NumberingSetting>, prev?: NumberingSetting) {
+  const { error } = await sb.from("numbering_settings").update(patch as never).eq("id", id);
   if (error) throw new Error(error.message);
-  await recordHistory("numbering_settings", id, `Updated numbering "${prev?.name ?? id}"`, prev ?? null, patch);
+  await recordHistoryServer(sb, "numbering_settings", id, `Updated numbering "${prev?.name ?? id}"`, prev ?? null, patch);
 }
 
 export function previewNumber(n: NumberingSetting): string {
@@ -238,59 +229,98 @@ export function previewNumber(n: NumberingSetting): string {
 }
 
 /* ---------------- integrations ---------------- */
-export async function listIntegrations(): Promise<IntegrationSetting[]> {
-  const { data, error } = await supabase.from("integration_settings").select("*").order("provider");
+export async function listIntegrationsServer(sb: SupabaseClient<Database>): Promise<IntegrationSetting[]> {
+  const { data, error } = await sb.from("integration_settings").select("*").order("provider");
   if (error) throw new Error(error.message);
   return (data ?? []) as unknown as IntegrationSetting[];
 }
 
-export async function saveIntegration(provider: string, category: string, isEnabled: boolean, config: Record<string, unknown>, secretKeys: string[]) {
-  const prev = (await listIntegrations()).find((i) => i.provider === provider);
-  const { data: u } = await supabase.auth.getUser();
-  const { error } = await supabase.from("integration_settings").upsert(
+export async function saveIntegrationServer(sb: SupabaseClient<Database>, provider: string, category: string, isEnabled: boolean, config: Record<string, unknown>, secretKeys: string[]) {
+  const prev = (await listIntegrationsServer(sb)).find((i) => i.provider === provider);
+  const { data: u } = await sb.auth.getUser();
+  const { error } = await sb.from("integration_settings").upsert(
     { provider, category, is_enabled: isEnabled, config: config as never, secret_keys: secretKeys, updated_by: u.user?.id ?? null },
     { onConflict: "provider" },
   );
   if (error) throw new Error(error.message);
-  await recordHistory("integration_settings", provider, `Updated integration "${provider}"`, prev ?? null, { is_enabled: isEnabled, config });
+  await recordHistoryServer(sb, "integration_settings", provider, `Updated integration "${provider}"`, prev ?? null, { is_enabled: isEnabled, config });
 }
 
 /* ---------------- roles ---------------- */
-export async function listRolePermissions(): Promise<RolePermission[]> {
-  const { data, error } = await supabase.from("role_permissions").select("*").order("module");
+export async function listRolePermissionsServer(sb: SupabaseClient<Database>): Promise<RolePermission[]> {
+  const { data, error } = await sb.from("role_permissions").select("*").order("module");
   if (error) throw new Error(error.message);
   return (data ?? []) as unknown as RolePermission[];
 }
 
-export async function saveRolePermission(role: AppRole, module: string, permissions: string[]) {
-  const { error } = await supabase.from("role_permissions").upsert(
+export async function saveRolePermissionServer(sb: SupabaseClient<Database>, role: AppRole, module: string, permissions: string[]) {
+  const { error } = await sb.from("role_permissions").upsert(
     { role, module, permissions }, { onConflict: "role,module" },
   );
   if (error) throw new Error(error.message);
-  await recordHistory("role_permissions", `${role}:${module}`, `Updated permissions for ${role} / ${module}`, null, permissions);
+  await recordHistoryServer(sb, "role_permissions", `${role}:${module}`, `Updated permissions for ${role} / ${module}`, null, permissions);
 }
 
 /* ---------------- branches ---------------- */
-export async function listBranches(): Promise<BranchRow[]> {
-  const { data, error } = await supabase.from("branches").select("*").order("name");
+export async function listBranchesServer(sb: SupabaseClient<Database>): Promise<BranchRow[]> {
+  const { data, error } = await sb.from("branches").select("*").order("name");
   if (error) throw new Error(error.message);
   return (data ?? []) as BranchRow[];
 }
 
-export async function saveBranch(id: string, patch: Partial<BranchRow>, prev?: BranchRow) {
-  const { error } = await supabase.from("branches").update(patch as never).eq("id", id);
+export async function saveBranchServer(sb: SupabaseClient<Database>, id: string, patch: Partial<BranchRow>, prev?: BranchRow) {
+  const { error } = await sb.from("branches").update(patch as never).eq("id", id);
   if (error) throw new Error(error.message);
-  await recordHistory("branches", id, `Updated branch "${prev?.name ?? id}"`, prev ?? null, patch);
+  await recordHistoryServer(sb, "branches", id, `Updated branch "${prev?.name ?? id}"`, prev ?? null, patch);
 }
 
 /* ---------------- backup snapshot ---------------- */
-export async function dataSnapshot() {
+export async function dataSnapshotServer(sb: SupabaseClient<Database>) {
   const tables = ["students", "teachers", "admissions", "courses", "batches", "certificates", "student_fees"] as const;
   const counts = await Promise.all(
     tables.map(async (t) => {
-      const { count } = await supabase.from(t).select("id", { count: "exact", head: true });
+      const { count } = await sb.from(t).select("id", { count: "exact", head: true });
       return { table: t, count: count ?? 0 };
     }),
   );
   return counts;
+}
+
+/** Legacy global client functions (used by old/browser code) */
+export async function getSettings(group: string, key = "config") { return getSettingsServer(supabase, group, key); }
+export async function saveSettings(group: string, key: string, value: SettingsGroupValue, label: string) { return saveSettingsServer(supabase, group, key, value, label); }
+export async function listMasterCategories() { return listMasterCategoriesServer(supabase); }
+export async function listMasterValues(catId: string) { return listMasterValuesServer(supabase, catId); }
+export async function createMasterValue(catId: string, input: any) { return createMasterValueServer(supabase, catId, input); }
+export async function updateMasterValue(id: string, patch: any, prev?: any) { return updateMasterValueServer(supabase, id, patch, prev); }
+export async function deleteMasterValue(id: string, prev?: any) { return deleteMasterValueServer(supabase, id, prev); }
+export async function listBranches() { return listBranchesServer(supabase); }
+export async function saveBranch(id: string, patch: any, prev?: any) { return saveBranchServer(supabase, id, patch, prev); }
+export async function listMenuConfig() { return listMenuConfigServer(supabase); }
+export async function updateMenuItem(id: string, patch: any, prev?: any) { return updateMenuItemServer(supabase, id, patch, prev); }
+export async function listFormConfigs() { return listFormConfigsServer(supabase); }
+export async function listFormFields(formId: string) { return listFormFieldsServer(supabase, formId); }
+export async function createFormField(formId: string, patch: any) { return createFormFieldServer(supabase, formId, patch); }
+export async function updateFormField(id: string, patch: any, prev?: any) { return updateFormFieldServer(supabase, id, patch, prev); }
+export async function deleteFormField(id: string, prev?: any) { return deleteFormFieldServer(supabase, id, prev); }
+export async function listNotificationTemplates() { return listNotificationTemplatesServer(supabase); }
+export async function saveNotificationTemplate(id: string, patch: any, prev?: any) { return saveNotificationTemplateServer(supabase, id, patch, prev); }
+export async function listDocumentTemplates() { return listDocumentTemplatesServer(supabase); }
+export async function saveDocumentTemplate(id: string, patch: any, prev?: any) { return saveDocumentTemplateServer(supabase, id, patch, prev); }
+export async function listNumbering() { return listNumberingServer(supabase); }
+export async function saveNumbering(id: string, patch: any, prev?: any) { return saveNumberingServer(supabase, id, patch, prev); }
+export async function listIntegrations() { return listIntegrationsServer(supabase); }
+export async function saveIntegration(p: string, c: string, e: boolean, cfg: any, s: string[]) { return saveIntegrationServer(supabase, p, c, e, cfg, s); }
+export async function listRolePermissions() { return listRolePermissionsServer(supabase); }
+export async function saveRolePermission(r: any, m: string, p: string[]) { return saveRolePermissionServer(supabase, r, m, p); }
+export async function listHistory(entity?: string, limit?: number) { return listHistoryServer(supabase, entity, limit); }
+export async function dataSnapshot() { return dataSnapshotServer(supabase); }
+export async function getMasterOptions(categoryKey: string) {
+  const { data } = await supabase
+    .from("master_values")
+    .select("name, code, sort_order, is_active, master_categories!inner(key)")
+    .eq("master_categories.key", categoryKey)
+    .eq("is_active", true)
+    .order("sort_order");
+  return (data ?? []).map((r: { name: string; code: string }) => ({ value: r.code, label: r.name }));
 }
