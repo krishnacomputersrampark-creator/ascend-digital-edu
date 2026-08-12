@@ -19,7 +19,7 @@ export type FormConfig = { id: string; form_key: string; name: string; descripti
 export type FormField = {
   id: string; form_config_id: string; field_key: string; label: string; field_type: string;
   is_required: boolean; is_visible: boolean; sort_order: number; help_text: string | null;
-  placeholder: string | null; default_value: string | null; validation: Record<string, unknown>; roles: AppRole[];
+  placeholder: string | null; default_value: string | null; validation: Record<string, any>; roles: AppRole[];
 };
 export type NotificationTemplate = {
   id: string; key: string; channel: string; name: string; subject: string | null; body: string;
@@ -34,12 +34,12 @@ export type NumberingSetting = {
 };
 export type IntegrationSetting = {
   id: string; provider: string; category: string; is_enabled: boolean;
-  config: Record<string, unknown>; secret_keys: string[];
+  config: Record<string, any>; secret_keys: string[];
 };
 export type RolePermission = { id: string; role: AppRole; module: string; permissions: string[] };
 export type ConfigHistoryRow = {
   id: string; entity: string; entity_id: string | null; label: string | null;
-  old_value: unknown; new_value: unknown; changed_by_email: string | null; created_at: string;
+  old_value: any; new_value: any; changed_by_email: string | null; created_at: string;
 };
 export type BranchRow = {
   id: string; name: string; code: string; address: string | null; city: string | null; state: string | null;
@@ -64,7 +64,7 @@ export async function listHistoryServer(sb: SupabaseClient<Database>, entity?: s
 }
 
 /* ---------------- system settings ---------------- */
-export type SettingsGroupValue = Record<string, unknown>;
+export type SettingsGroupValue = Record<string, any>;
 
 export async function getSettingsServer(sb: SupabaseClient<Database>, group: string, key = "config" ): Promise<SettingsGroupValue> {
   const { data, error } = await sb.from("system_settings").select("value").eq("group_key", group).eq("setting_key", key).maybeSingle();
