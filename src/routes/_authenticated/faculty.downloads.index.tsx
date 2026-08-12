@@ -53,7 +53,7 @@ function FacultyDownloadsPage() {
     <DashboardShell
       title="Study material — my uploads"
       subtitle="Upload and manage materials for your assigned batches"
-      actions={<Link to="/faculty/downloads/upload" className="inline-flex items-center gap-1.5 rounded-xl bg-brand px-3 py-2 text-sm font-semibold text-white shadow"><Plus className="h-4 w-4"/>Upload</Link>}
+      actions={<Link to="/faculty/downloads/upload" search={{ id: undefined } as any} className="inline-flex items-center gap-1.5 rounded-xl bg-brand px-3 py-2 text-sm font-semibold text-white shadow"><Plus className="h-4 w-4"/>Upload</Link>}
     >
       <div className="mb-4 flex items-center gap-2 rounded-2xl border bg-white p-3 shadow-soft">
         <div className="relative flex-1">

@@ -229,7 +229,6 @@ function AdmissionPage() {
           name: payload.full_name,
           course: courseName ?? "",
           branch: branchName ?? "",
-          at: new Date().toISOString(),
         },
       });
     } catch (e: any) {
