@@ -2,6 +2,13 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import * as repo from "./settings.repo";
+export type { 
+  MasterCategory, MasterValue, BranchRow, MenuItemConfig, FormConfig, FormField, 
+  NotificationTemplate, DocumentTemplate, NumberingSetting, IntegrationSetting, 
+  RolePermission, ConfigHistoryRow 
+} from "./settings.repo";
+
+export const previewNumber = repo.previewNumber;
 
 export const getSettings = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
