@@ -112,7 +112,7 @@ function AdminDownloadsPage() {
       subtitle="Manage all study materials, categories and downloads"
       actions={
         <>
-          <Link to="/admin/downloads/upload" className="inline-flex items-center gap-1.5 rounded-xl bg-brand px-3 py-2 text-sm font-semibold text-white shadow"><Plus className="h-4 w-4"/>Upload</Link>
+          <Link to="/admin/downloads/upload" search={{ id: undefined } as any} className="inline-flex items-center gap-1.5 rounded-xl bg-brand px-3 py-2 text-sm font-semibold text-white shadow"><Plus className="h-4 w-4"/>Upload</Link>
           <Link to="/admin/downloads/categories" className="inline-flex items-center gap-1.5 rounded-xl border bg-white px-3 py-2 text-sm font-semibold"><LayoutTemplate className="h-4 w-4"/>Categories</Link>
           <Link to="/admin/downloads/history" className="inline-flex items-center gap-1.5 rounded-xl border bg-white px-3 py-2 text-sm font-semibold"><HistoryIcon className="h-4 w-4"/>History</Link>
           <button onClick={onExport} className="inline-flex items-center gap-1.5 rounded-xl border bg-white px-3 py-2 text-sm font-semibold"><FileSpreadsheet className="h-4 w-4"/>Export</button>
@@ -211,7 +211,7 @@ function AdminDownloadsPage() {
                               ? <button title="Publish" onClick={() => onSetStatus(m.id, "published")} className="rounded-lg border border-emerald-200 px-2 py-1 text-xs text-emerald-700 hover:bg-emerald-50"><CheckCircle2 className="h-3.5 w-3.5"/></button>
                               : <button title="Unpublish" onClick={() => onSetStatus(m.id, "unpublished")} className="rounded-lg border border-amber-200 px-2 py-1 text-xs text-amber-700 hover:bg-amber-50"><XCircle className="h-3.5 w-3.5"/></button>
                             }
-                            <Link to="/admin/downloads/upload" search={{ id: m.id } as any} className="rounded-lg border px-2 py-1 text-xs"><Pencil className="h-3.5 w-3.5"/></Link>
+                             <Link to="/admin/downloads/upload" search={{ id: m.id } as any} className="rounded-lg border px-2 py-1 text-xs"><Pencil className="h-3.5 w-3.5"/></Link>
                             <button title="Delete" onClick={() => onDelete(m.id)} className="rounded-lg border border-rose-200 px-2 py-1 text-xs text-rose-600 hover:bg-rose-50"><Trash2 className="h-3.5 w-3.5"/></button>
                           </div>
                         </td>

@@ -98,7 +98,7 @@ function StudentDashboardPage() {
   const onLogout = async () => {
     await supabase.auth.signOut();
     toast.success("Signed out");
-    navigate({ to: "/login" });
+    navigate({ to: "/login", search: { redirect: "/student-dashboard" } });
   };
 
   if (loading || !session) {

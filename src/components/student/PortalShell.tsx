@@ -27,7 +27,7 @@ export function PortalShell({
   const onLogout = async () => {
     await supabase.auth.signOut();
     toast.success("Signed out");
-    navigate({ to: "/login" });
+    navigate({ to: "/login", search: { redirect: "/student-dashboard" } });
   };
   return (
     <div className="min-h-screen bg-gradient-to-br from-cyan-soft/40 via-white to-white">
