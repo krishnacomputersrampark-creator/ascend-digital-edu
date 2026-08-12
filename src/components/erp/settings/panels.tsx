@@ -18,8 +18,8 @@ export function GroupSettingsPanel({ def, search }: { def: SettingsGroupDef; sea
 
   useEffect(() => {
     let alive = true;
-    repo.getSettings(def.group, def.settingKey)
-      .then((v) => { if (alive) setValue(v); })
+    repo.getSettings({ group: def.group, key: def.settingKey })
+      .then((v) => { if (alive) setValue(v as any); })
       .catch((e) => toast.error(e.message));
     return () => { alive = false; };
   }, [def.group, def.settingKey]);
@@ -37,7 +37,7 @@ export function GroupSettingsPanel({ def, search }: { def: SettingsGroupDef; sea
   const save = async () => {
     setBusy(true);
     try {
-      await repo.saveSettings(def.group, def.settingKey, value, def.title);
+      await repo.saveSettings({ group: def.group, key: def.settingKey, value, label: def.title });
       toast.success(`${def.title} saved`);
     } catch (e) { toast.error((e as Error).message); } finally { setBusy(false); }
   };
@@ -96,8 +96,8 @@ export function MastersPanel({ search }: { search: string }) {
     if (!editing.name?.trim()) { toast.error("Display name is required"); return; }
     setBusy(true);
     try {
-      if (editing.id) await repo.updateMasterValue(editing.id, editing, rows.find((r) => r.id === editing.id));
-      else await repo.createMasterValue(active.id, { ...editing, code: editing.code || editing.name });
+      if (editing.id) await repo.updateMasterValue({ id: editing.id, patch: editing, prev: rows.find((r) => r.id === editing.id) });
+      else await repo.createMasterValue({ categoryId: active.id, input: { ...editing, code: editing.code || editing.name } });
       toast.success("Master saved");
       setEditing(null);
       await load(active);
@@ -293,16 +293,16 @@ export function MenuPanel({ search }: { search: string }) {
 
 /* ============ forms ============ */
 export function FormsPanel() {
-  const [forms, setForms] = useState<repo.FormConfig[]>([]);
-  const [active, setActive] = useState<repo.FormConfig | null>(null);
-  const [fields, setFields] = useState<repo.FormField[]>([]);
-  const [adding, setAdding] = useState<Partial<repo.FormField> | null>(null);
+  const [forms, setForms] = useState<repoTypes.FormConfig[]>([]);
+  const [active, setActive] = useState<repoTypes.FormConfig | null>(null);
+  const [fields, setFields] = useState<repoTypes.FormField[]>([]);
+  const [adding, setAdding] = useState<Partial<repoTypes.FormField> | null>(null);
 
   useEffect(() => { repo.listFormConfigs().then(setForms).catch((e) => toast.error(e.message)); }, []);
-  const load = async (f: repo.FormConfig) => { setActive(f); setFields(await repo.listFormFields(f.id)); };
+  const load = async (f: repoTypes.FormConfig) => { setActive(f); setFields(await repo.listFormFields(f.id)); };
 
-  const patch = async (f: repo.FormField, p: Partial<repo.FormField>) => {
-    try { await repo.updateFormField(f.id, p, f); setFields((fs) => fs.map((x) => (x.id === f.id ? { ...x, ...p } : x))); }
+  const patch = async (f: repoTypes.FormField, p: Partial<repoTypes.FormField>) => {
+    try { await repo.updateFormField({ id: f.id, patch: p, prev: f }); setFields((fs) => fs.map((x) => (x.id === f.id ? { ...x, ...p } : x))); }
     catch (e) { toast.error((e as Error).message); }
   };
 
@@ -343,7 +343,7 @@ export function FormsPanel() {
           <div className="mt-3 flex justify-end gap-2">
             <button className={btnGhost} onClick={() => setAdding(null)}>Cancel</button>
             <button className={btn} onClick={async () => {
-              try { await repo.createFormField(active.id, adding); setAdding(null); await load(active); toast.success("Field added"); }
+              try { await repo.createFormField({ formConfigId: active.id, patch: adding }); setAdding(null); await load(active); toast.success("Field added"); }
               catch (e) { toast.error((e as Error).message); }
             }}><Save className="h-4 w-4" /> Add</button>
           </div>
@@ -354,7 +354,7 @@ export function FormsPanel() {
         <PanelCard key={f.id} title={`${f.label} (${f.field_key})`} action={
           <button className={`${btnGhost} text-red-600`} onClick={async () => {
             if (!window.confirm(`Delete field "${f.label}"?`)) return;
-            try { await repo.deleteFormField(f.id, f); await load(active); toast.success("Field deleted"); } catch (e) { toast.error((e as Error).message); }
+            try { await repo.deleteFormField({ id: f.id, prev: f }); await load(active); toast.success("Field deleted"); } catch (e) { toast.error((e as Error).message); }
           }}><Trash2 className="h-3.5 w-3.5" /> Delete</button>
         }>
           <div className="grid gap-3 sm:grid-cols-3">
@@ -384,9 +384,9 @@ export function FormsPanel() {
 /* ============ notification + document templates ============ */
 export function TemplatesPanel() {
   const [tab, setTab] = useState<"notification" | "document">("notification");
-  const [notifs, setNotifs] = useState<repo.NotificationTemplate[]>([]);
-  const [docs, setDocs] = useState<repo.DocumentTemplate[]>([]);
-  const [drafts, setDrafts] = useState<Record<string, Partial<repo.NotificationTemplate>>>({});
+  const [notifs, setNotifs] = useState<repoTypes.NotificationTemplate[]>([]);
+  const [docs, setDocs] = useState<repoTypes.DocumentTemplate[]>([]);
+  const [drafts, setDrafts] = useState<Record<string, Partial<repoTypes.NotificationTemplate>>>({});
   const [preview, setPreview] = useState<string | null>(null);
 
   useEffect(() => {
@@ -406,7 +406,7 @@ export function TemplatesPanel() {
 
       {tab === "notification" ? notifs.map((t) => {
         const d = { ...t, ...(drafts[t.id] ?? {}) };
-        const set = (p: Partial<repo.NotificationTemplate>) => setDrafts({ ...drafts, [t.id]: { ...(drafts[t.id] ?? {}), ...p } });
+        const set = (p: Partial<repoTypes.NotificationTemplate>) => setDrafts({ ...drafts, [t.id]: { ...(drafts[t.id] ?? {}), ...p } });
         return (
           <PanelCard key={t.id} title={`${t.name} · ${t.channel}`}>
             <div className="space-y-3">
@@ -414,17 +414,17 @@ export function TemplatesPanel() {
                 <input className={`${inp} mt-1`} value={d.subject ?? ""} onChange={(e) => set({ subject: e.target.value })} /></label>
               <label className="block"><span className="text-xs font-semibold text-ink/80">Body</span>
                 <textarea rows={3} className={`${inp} mt-1`} value={d.draft_body ?? d.body} onChange={(e) => set({ draft_body: e.target.value })} /></label>
-              <p className="text-[11px] text-muted-foreground">Variables: {t.variables.map((v) => `{{${v}}}`).join(", ")}</p>
+              <p className="text-[11px] text-muted-foreground">Variables: {t.variables.map((v: string) => `{{${v}}}`).join(", ")}</p>
               {preview === t.id ? <pre className="whitespace-pre-wrap rounded-xl border bg-cyan-soft/40 p-3 text-xs">{d.draft_body ?? d.body}</pre> : null}
               <div className="flex flex-wrap justify-end gap-2">
                 <button className={btnGhost} onClick={async () => {
-                  try { await repo.saveNotificationTemplate(t.id, { draft_body: d.draft_body ?? d.body, draft_subject: d.subject ?? null }, t); toast.success("Draft saved"); }
+                  try { await repo.saveNotificationTemplate({ id: t.id, patch: { draft_body: d.draft_body ?? d.body, draft_subject: d.subject ?? null }, prev: t }); toast.success("Draft saved"); }
                   catch (e) { toast.error((e as Error).message); }
                 }}>Save Draft</button>
                 <button className={btnGhost} onClick={() => setPreview(preview === t.id ? null : t.id)}>Preview</button>
                 <button className={btn} onClick={async () => {
                   try {
-                    await repo.saveNotificationTemplate(t.id, { body: d.draft_body ?? d.body, subject: d.subject ?? null, draft_body: null }, t);
+                    await repo.saveNotificationTemplate({ id: t.id, patch: { body: d.draft_body ?? d.body, subject: d.subject ?? null, draft_body: null }, prev: t });
                     setNotifs(await repo.listNotificationTemplates());
                     toast.success("Template published");
                   } catch (e) { toast.error((e as Error).message); }
@@ -438,20 +438,20 @@ export function TemplatesPanel() {
           <div className="grid gap-3 sm:grid-cols-2">
             <label className="flex items-center gap-2 text-xs font-semibold text-ink/80 sm:col-span-2">
               <input type="checkbox" checked={doc.is_enabled} onChange={async (e) => {
-                await repo.saveDocumentTemplate(doc.id, { is_enabled: e.target.checked }, doc);
+                await repo.saveDocumentTemplate({ id: doc.id, patch: { is_enabled: e.target.checked }, prev: doc });
                 setDocs(await repo.listDocumentTemplates());
               }} /> Enabled
             </label>
             <label className="block"><span className="text-xs font-semibold text-ink/80">Header</span>
-              <input className={`${inp} mt-1`} defaultValue={doc.header ?? ""} onBlur={(e) => repo.saveDocumentTemplate(doc.id, { header: e.target.value }, doc)} /></label>
+              <input className={`${inp} mt-1`} defaultValue={doc.header ?? ""} onBlur={(e) => repo.saveDocumentTemplate({ id: doc.id, patch: { header: e.target.value }, prev: doc })} /></label>
             <label className="block"><span className="text-xs font-semibold text-ink/80">Footer</span>
-              <input className={`${inp} mt-1`} defaultValue={doc.footer ?? ""} onBlur={(e) => repo.saveDocumentTemplate(doc.id, { footer: e.target.value }, doc)} /></label>
+              <input className={`${inp} mt-1`} defaultValue={doc.footer ?? ""} onBlur={(e) => repo.saveDocumentTemplate({ id: doc.id, patch: { footer: e.target.value }, prev: doc })} /></label>
             <label className="block"><span className="text-xs font-semibold text-ink/80">Logo URL</span>
-              <input className={`${inp} mt-1`} defaultValue={doc.logo_url ?? ""} onBlur={(e) => repo.saveDocumentTemplate(doc.id, { logo_url: e.target.value }, doc)} /></label>
+              <input className={`${inp} mt-1`} defaultValue={doc.logo_url ?? ""} onBlur={(e) => repo.saveDocumentTemplate({ id: doc.id, patch: { logo_url: e.target.value }, prev: doc })} /></label>
             <label className="block"><span className="text-xs font-semibold text-ink/80">Signature URL</span>
-              <input className={`${inp} mt-1`} defaultValue={doc.signature_url ?? ""} onBlur={(e) => repo.saveDocumentTemplate(doc.id, { signature_url: e.target.value }, doc)} /></label>
+              <input className={`${inp} mt-1`} defaultValue={doc.signature_url ?? ""} onBlur={(e) => repo.saveDocumentTemplate({ id: doc.id, patch: { signature_url: e.target.value }, prev: doc })} /></label>
             <label className="block sm:col-span-2"><span className="text-xs font-semibold text-ink/80">Terms</span>
-              <textarea rows={2} className={`${inp} mt-1`} defaultValue={doc.terms ?? ""} onBlur={(e) => repo.saveDocumentTemplate(doc.id, { terms: e.target.value }, doc)} /></label>
+              <textarea rows={2} className={`${inp} mt-1`} defaultValue={doc.terms ?? ""} onBlur={(e) => repo.saveDocumentTemplate({ id: doc.id, patch: { terms: e.target.value }, prev: doc })} /></label>
           </div>
         </PanelCard>
       ))}
@@ -461,7 +461,7 @@ export function TemplatesPanel() {
 
 /* ============ integrations ============ */
 export function IntegrationsPanel({ only, search }: { only?: string[]; search: string }) {
-  const [rows, setRows] = useState<repo.IntegrationSetting[]>([]);
+  const [rows, setRows] = useState<repoTypes.IntegrationSetting[]>([]);
   const [drafts, setDrafts] = useState<Record<string, { enabled: boolean; config: Record<string, unknown> }>>({});
   useEffect(() => { repo.listIntegrations().then(setRows).catch((e) => toast.error(e.message)); }, []);
 
@@ -502,7 +502,7 @@ export function IntegrationsPanel({ only, search }: { only?: string[]; search: s
             <div className="mt-3 flex justify-end gap-2">
               <button className={btnGhost} onClick={() => toast.info("Test dispatch requires the provider secret to be configured in backend secret storage.")}>Send Test</button>
               <button className={btn} onClick={async () => {
-                try { await repo.saveIntegration(def.provider, def.category, draft.enabled, draft.config, def.secrets); setRows(await repo.listIntegrations()); toast.success(`${def.title} saved`); }
+                try { await repo.saveIntegration({ provider: def.provider, category: def.category, isEnabled: draft.enabled, config: draft.config, secretKeys: def.secrets }); setRows(await repo.listIntegrations()); toast.success(`${def.title} saved`); }
                 catch (e) { toast.error((e as Error).message); }
               }}><Save className="h-4 w-4" /> Save</button>
             </div>
@@ -516,15 +516,15 @@ export function IntegrationsPanel({ only, search }: { only?: string[]; search: s
 
 /* ============ numbering ============ */
 export function NumberingPanel() {
-  const [rows, setRows] = useState<repo.NumberingSetting[]>([]);
-  const [drafts, setDrafts] = useState<Record<string, Partial<repo.NumberingSetting>>>({});
+  const [rows, setRows] = useState<repoTypes.NumberingSetting[]>([]);
+  const [drafts, setDrafts] = useState<Record<string, Partial<repoTypes.NumberingSetting>>>({});
   useEffect(() => { repo.listNumbering().then(setRows).catch((e) => toast.error(e.message)); }, []);
 
   return (
     <div className="space-y-3">
       {rows.map((n) => {
-        const d = { ...n, ...(drafts[n.id] ?? {}) } as repo.NumberingSetting;
-        const set = (p: Partial<repo.NumberingSetting>) => setDrafts({ ...drafts, [n.id]: { ...(drafts[n.id] ?? {}), ...p } });
+        const d = { ...n, ...(drafts[n.id] ?? {}) } as repoTypes.NumberingSetting;
+        const set = (p: Partial<repoTypes.NumberingSetting>) => setDrafts({ ...drafts, [n.id]: { ...(drafts[n.id] ?? {}), ...p } });
         return (
           <PanelCard key={n.id} title={n.name} action={<span className="rounded-full bg-cyan-soft px-3 py-1 text-[11px] font-bold text-ink">{repo.previewNumber(d)}</span>}>
             <div className="grid gap-3 sm:grid-cols-4">
@@ -534,7 +534,7 @@ export function NumberingPanel() {
             </div>
             <div className="mt-3 flex justify-end">
               <button className={btn} onClick={async () => {
-                try { await repo.saveNumbering(n.id, { prefix: d.prefix, format: d.format, padding: d.padding }, n); setRows(await repo.listNumbering()); toast.success("Numbering saved"); }
+                try { await repo.saveNumbering({ id: n.id, patch: { prefix: d.prefix, format: d.format, padding: d.padding }, prev: n }); setRows(await repo.listNumbering()); toast.success("Numbering saved"); }
                 catch (e) { toast.error((e as Error).message); }
               }}><Save className="h-4 w-4" /> Save</button>
             </div>
@@ -547,15 +547,15 @@ export function NumberingPanel() {
 
 /* ============ role permissions ============ */
 export function RolesPanel() {
-  const [rows, setRows] = useState<repo.RolePermission[]>([]);
+  const [rows, setRows] = useState<repoTypes.RolePermission[]>([]);
   useEffect(() => { repo.listRolePermissions().then(setRows).catch((e) => toast.error(e.message)); }, []);
   const modules = Array.from(new Set(rows.map((r) => r.module)));
   const roles = Array.from(new Set(rows.map((r) => r.role)));
 
-  const toggle = async (row: repo.RolePermission, perm: string) => {
-    const next = row.permissions.includes(perm) ? row.permissions.filter((p) => p !== perm) : [...row.permissions, perm];
+  const toggle = async (row: repoTypes.RolePermission, perm: string) => {
+    const next = row.permissions.includes(perm) ? row.permissions.filter((p: string) => p !== perm) : [...row.permissions, perm];
     try {
-      await repo.saveRolePermission(row.role, row.module, next);
+      await repo.saveRolePermission({ role: row.role, module: row.module, permissions: next });
       setRows((rs) => rs.map((r) => (r.id === row.id ? { ...r, permissions: next } : r)));
     } catch (e) { toast.error((e as Error).message); }
   };
@@ -622,7 +622,7 @@ export function BackupPanel() {
 
 /* ============ history / audit ============ */
 export function HistoryPanel() {
-  const [rows, setRows] = useState<repo.ConfigHistoryRow[]>([]);
+  const [rows, setRows] = useState<repoTypes.ConfigHistoryRow[]>([]);
   useEffect(() => { repo.listHistory().then(setRows).catch((e) => toast.error(e.message)); }, []);
   return (
     <PanelCard title="Configuration Change History" action={<History className="h-4 w-4 text-brand" />}>
