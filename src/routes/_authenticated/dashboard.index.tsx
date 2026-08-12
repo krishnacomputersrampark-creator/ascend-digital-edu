@@ -164,7 +164,7 @@ function DashboardHome() {
         <div className="lg:col-span-2 rounded-2xl border border-border bg-white p-6 shadow-soft">
           <div className="mb-4 flex items-center justify-between">
             <h2 className="text-lg font-extrabold text-ink">Recent Activity</h2>
-            <Link to="/dashboard/reports" className="text-xs font-semibold text-brand hover:underline">View reports →</Link>
+            <Link to="/dashboard/fees/reports" className="text-xs font-semibold text-brand hover:underline">View reports →</Link>
           </div>
           <ul className="divide-y divide-border">
             {[
