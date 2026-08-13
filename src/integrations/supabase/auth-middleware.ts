@@ -95,10 +95,10 @@ export const requireSupabaseAuth = createMiddleware({ type: 'function' }).server
 
     const { data, error } = await supabase.auth.getClaims(token);
     if (error || !data?.claims) {
-      console.error('[Supabase Auth] getClaims failed for token:', token.substring(0, 10) + '...', error?.message || 'No claims returned');
-      // On some custom domains/Vercel deployments, getClaims might fail if the environment key doesn't match the token issuer.
-      // We will add a fallback check if it fails, to log the exact error for the user to see in their logs.
-      throw new Error(`Unauthorized: Invalid token (${error?.message || 'Verification failed'})`);
+      const errorMsg = error?.message || 'No claims returned';
+      console.error(`[Supabase Auth] getClaims failed on ${request.headers.get('host')}:`, errorMsg);
+      // Detailed error to help identify key/environment mismatches on custom domains
+      throw new Error(`Unauthorized: Invalid token (${errorMsg}). Verify that the custom domain deployment has the correct SUPABASE_URL and SUPABASE_PUBLISHABLE_KEY environment variables.`);
     }
 
     if (!data.claims.sub) {
