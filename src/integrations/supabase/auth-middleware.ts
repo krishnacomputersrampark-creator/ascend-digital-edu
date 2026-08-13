@@ -93,12 +93,22 @@ export const requireSupabaseAuth = createMiddleware({ type: 'function' }).server
       }
     );
 
+    let payload: any = null;
+    try {
+      const parts = token.split('.');
+      payload = JSON.parse(atob(parts[1]));
+    } catch (e) {}
+
     const { data, error } = await supabase.auth.getClaims(token);
     if (error || !data?.claims) {
       const errorMsg = error?.message || 'No claims returned';
-      console.error(`[Supabase Auth] getClaims failed on ${request.headers.get('host')}:`, errorMsg);
-      // Detailed error to help identify key/environment mismatches on custom domains
-      throw new Error(`Unauthorized: Invalid token (${errorMsg}). Verify that the custom domain deployment has the correct SUPABASE_URL and SUPABASE_PUBLISHABLE_KEY environment variables.`);
+      const host = request.headers.get('host') || 'unknown';
+      console.error(`[Supabase Auth] JWT Verification FAILED on ${host}`);
+      console.error(`- Error: ${errorMsg}`);
+      console.error(`- Token Issuer (iss): ${payload?.iss || 'unknown'}`);
+      console.error(`- Configured Supabase URL: ${SUPABASE_URL}`);
+      
+      throw new Error(`Unauthorized: Invalid token (${errorMsg}). JWT issuer mismatch? Token issued by ${payload?.iss || 'unknown'} but verified against ${SUPABASE_URL}. Check Vercel environment variables.`);
     }
 
     if (!data.claims.sub) {
