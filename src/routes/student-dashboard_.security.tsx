@@ -67,7 +67,7 @@ function SecurityPage() {
 
   const onForgot = async () => {
     if (!email) return;
-    const { error } = await supabase.auth.resetPasswordForEmail(email, { redirectTo: `${window.location.origin}/login` });
+    const { error } = await supabase.auth.resetPasswordForEmail(email, { redirectTo: `${window.location.origin}/update-password` });
     if (error) toast.error(error.message); else toast.success("Password reset link sent");
   };
 

@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as VideosRouteImport } from './routes/videos'
 import { Route as VerifyCertificateRouteImport } from './routes/verify-certificate'
+import { Route as UpdatePasswordRouteImport } from './routes/update-password'
 import { Route as TestimonialsRouteImport } from './routes/testimonials'
 import { Route as StudentZoneRouteImport } from './routes/student-zone'
 import { Route as StudentDashboardRouteImport } from './routes/student-dashboard'
@@ -148,6 +149,11 @@ const VideosRoute = VideosRouteImport.update({
 const VerifyCertificateRoute = VerifyCertificateRouteImport.update({
   id: '/verify-certificate',
   path: '/verify-certificate',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const UpdatePasswordRoute = UpdatePasswordRouteImport.update({
+  id: '/update-password',
+  path: '/update-password',
   getParentRoute: () => rootRouteImport,
 } as any)
 const TestimonialsRoute = TestimonialsRouteImport.update({
@@ -895,6 +901,7 @@ export interface FileRoutesByFullPath {
   '/student-dashboard': typeof StudentDashboardRoute
   '/student-zone': typeof StudentZoneRoute
   '/testimonials': typeof TestimonialsRoute
+  '/update-password': typeof UpdatePasswordRoute
   '/verify-certificate': typeof VerifyCertificateRoute
   '/videos': typeof VideosRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
@@ -1026,6 +1033,7 @@ export interface FileRoutesByTo {
   '/student-dashboard': typeof StudentDashboardRoute
   '/student-zone': typeof StudentZoneRoute
   '/testimonials': typeof TestimonialsRoute
+  '/update-password': typeof UpdatePasswordRoute
   '/verify-certificate': typeof VerifyCertificateRoute
   '/videos': typeof VideosRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
@@ -1150,6 +1158,7 @@ export interface FileRoutesById {
   '/student-dashboard': typeof StudentDashboardRoute
   '/student-zone': typeof StudentZoneRoute
   '/testimonials': typeof TestimonialsRoute
+  '/update-password': typeof UpdatePasswordRoute
   '/verify-certificate': typeof VerifyCertificateRoute
   '/videos': typeof VideosRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
@@ -1283,6 +1292,7 @@ export interface FileRouteTypes {
     | '/student-dashboard'
     | '/student-zone'
     | '/testimonials'
+    | '/update-password'
     | '/verify-certificate'
     | '/videos'
     | '/.mcp/list-tools'
@@ -1414,6 +1424,7 @@ export interface FileRouteTypes {
     | '/student-dashboard'
     | '/student-zone'
     | '/testimonials'
+    | '/update-password'
     | '/verify-certificate'
     | '/videos'
     | '/.mcp/list-tools'
@@ -1537,6 +1548,7 @@ export interface FileRouteTypes {
     | '/student-dashboard'
     | '/student-zone'
     | '/testimonials'
+    | '/update-password'
     | '/verify-certificate'
     | '/videos'
     | '/.mcp/list-tools'
@@ -1670,6 +1682,7 @@ export interface RootRouteChildren {
   StudentDashboardRoute: typeof StudentDashboardRoute
   StudentZoneRoute: typeof StudentZoneRoute
   TestimonialsRoute: typeof TestimonialsRoute
+  UpdatePasswordRoute: typeof UpdatePasswordRoute
   VerifyCertificateRoute: typeof VerifyCertificateRoute
   VideosRoute: typeof VideosRoute
   Char91DotmcpChar93ListToolsRoute: typeof Char91DotmcpChar93ListToolsRoute
@@ -1713,6 +1726,13 @@ declare module '@tanstack/react-router' {
       path: '/verify-certificate'
       fullPath: '/verify-certificate'
       preLoaderRoute: typeof VerifyCertificateRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/update-password': {
+      id: '/update-password'
+      path: '/update-password'
+      fullPath: '/update-password'
+      preLoaderRoute: typeof UpdatePasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/testimonials': {
@@ -3041,6 +3061,7 @@ const rootRouteChildren: RootRouteChildren = {
   StudentDashboardRoute: StudentDashboardRoute,
   StudentZoneRoute: StudentZoneRoute,
   TestimonialsRoute: TestimonialsRoute,
+  UpdatePasswordRoute: UpdatePasswordRoute,
   VerifyCertificateRoute: VerifyCertificateRoute,
   VideosRoute: VideosRoute,
   Char91DotmcpChar93ListToolsRoute: Char91DotmcpChar93ListToolsRoute,
