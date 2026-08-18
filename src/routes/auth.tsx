@@ -45,6 +45,7 @@ function AuthPage() {
   const [mode, setMode] = useState<"signin" | "signup">("signin");
   const [showPw, setShowPw] = useState(false);
   const [notice, setNotice] = useState<string | null>(null);
+  const [resetBusy, setResetBusy] = useState(false);
   const navigate = useNavigate();
   const { next } = Route.useSearch();
   const ensureAdmin = useServerFn(ensureDefaultSuperAdmin);
@@ -66,6 +67,23 @@ function AuthPage() {
     toast.success("Welcome back!");
     if (next) { window.location.href = next; return; }
     navigate({ to: "/dashboard" });
+  };
+
+  const onForgotPassword = async () => {
+    const email = signIn.getValues("email").trim();
+    if (!email || !email.includes("@")) {
+      toast.error("Enter your email address above first, then click “Forgot password?”");
+      return;
+    }
+    setResetBusy(true);
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/update-password`,
+    });
+    setResetBusy(false);
+    if (error) { toast.error(error.message); return; }
+    const msg = "Password reset email sent. Open the link on this same website to set a new password.";
+    setNotice(msg);
+    toast.success(msg);
   };
 
   const onSignUp = async (v: SignUpForm) => {
@@ -148,6 +166,11 @@ function AuthPage() {
                   >
                     <input type={showPw ? "text" : "password"} autoComplete="current-password" placeholder="Enter your password" className="w-full bg-transparent text-sm focus:outline-none" {...signIn.register("password")} />
                   </Field>
+                  <div className="flex justify-end">
+                    <button type="button" onClick={onForgotPassword} disabled={resetBusy} className="text-xs font-semibold text-brand hover:underline disabled:opacity-60">
+                      {resetBusy ? "Sending reset link…" : "Forgot password?"}
+                    </button>
+                  </div>
                   <button disabled={busy} className="inline-flex w-full items-center justify-center gap-2 rounded-xl gradient-brand py-3 text-sm font-semibold text-white shadow-brand transition hover:-translate-y-0.5 disabled:opacity-70">
                     {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : <>Sign In <ArrowRight className="h-4 w-4" /></>}
                   </button>
