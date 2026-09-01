@@ -283,7 +283,7 @@ function Hero() {
             Learn Today.
             <br />
             <span className="bg-gradient-to-r from-white via-cyan-soft to-cyan bg-clip-text text-transparent">
-              Lead Tomorrow! TEST
+              Lead Tomorrow.
             </span>
           </motion.h1>
           <motion.p
