@@ -1,5 +1,5 @@
 -- target-post-migration.sql
--- Run this in the Supabase SQL Editor for project ylzupmcftshsbwsxxknn.
+-- Run this in the SQL Editor of your target Supabase project.
 -- Purpose only:
 --   1. Advance public numbering sequences past migrated values.
 --   2. Recreate the 16 storage access policies on storage.objects.
