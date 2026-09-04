@@ -103,6 +103,7 @@ import { Route as DotlovableOauthConsentRouteImport } from './routes/[.]lovable.
 import { Route as AuthenticatedFacultyDownloadsIndexRouteImport } from './routes/_authenticated/faculty.downloads.index'
 import { Route as AuthenticatedDashboardTeachersIndexRouteImport } from './routes/_authenticated/dashboard.teachers.index'
 import { Route as AuthenticatedDashboardStudentsIndexRouteImport } from './routes/_authenticated/dashboard.students.index'
+import { Route as AuthenticatedDashboardSettingsIndexRouteImport } from './routes/_authenticated/dashboard.settings.index'
 import { Route as AuthenticatedDashboardResultsIndexRouteImport } from './routes/_authenticated/dashboard.results.index'
 import { Route as AuthenticatedDashboardFeesIndexRouteImport } from './routes/_authenticated/dashboard.fees.index'
 import { Route as AuthenticatedDashboardCertificatesIndexRouteImport } from './routes/_authenticated/dashboard.certificates.index'
@@ -658,6 +659,12 @@ const AuthenticatedDashboardStudentsIndexRoute =
     path: '/students/',
     getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
+const AuthenticatedDashboardSettingsIndexRoute =
+  AuthenticatedDashboardSettingsIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthenticatedDashboardSettingsRoute,
+  } as any)
 const AuthenticatedDashboardResultsIndexRoute =
   AuthenticatedDashboardResultsIndexRouteImport.update({
     id: '/',
@@ -1017,6 +1024,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/certificates/': typeof AuthenticatedDashboardCertificatesIndexRoute
   '/dashboard/fees/': typeof AuthenticatedDashboardFeesIndexRoute
   '/dashboard/results/': typeof AuthenticatedDashboardResultsIndexRoute
+  '/dashboard/settings/': typeof AuthenticatedDashboardSettingsIndexRoute
   '/dashboard/students/': typeof AuthenticatedDashboardStudentsIndexRoute
   '/dashboard/teachers/': typeof AuthenticatedDashboardTeachersIndexRoute
   '/faculty/downloads/': typeof AuthenticatedFacultyDownloadsIndexRoute
@@ -1102,7 +1110,6 @@ export interface FileRoutesByTo {
   '/dashboard/downloads': typeof AuthenticatedDashboardDownloadsRoute
   '/dashboard/profile': typeof AuthenticatedDashboardProfileRoute
   '/dashboard/roles': typeof AuthenticatedDashboardRolesRoute
-  '/dashboard/settings': typeof AuthenticatedDashboardSettingsRouteWithChildren
   '/student-dashboard/downloads/$id': typeof StudentDashboardDownloadsIdRoute
   '/student-dashboard/fees/history': typeof StudentDashboardFeesHistoryRoute
   '/student-dashboard/profile/edit': typeof StudentDashboardProfileEditRoute
@@ -1142,6 +1149,7 @@ export interface FileRoutesByTo {
   '/dashboard/certificates': typeof AuthenticatedDashboardCertificatesIndexRoute
   '/dashboard/fees': typeof AuthenticatedDashboardFeesIndexRoute
   '/dashboard/results': typeof AuthenticatedDashboardResultsIndexRoute
+  '/dashboard/settings': typeof AuthenticatedDashboardSettingsIndexRoute
   '/dashboard/students': typeof AuthenticatedDashboardStudentsIndexRoute
   '/dashboard/teachers': typeof AuthenticatedDashboardTeachersIndexRoute
   '/faculty/downloads': typeof AuthenticatedFacultyDownloadsIndexRoute
@@ -1278,6 +1286,7 @@ export interface FileRoutesById {
   '/_authenticated/dashboard/certificates/': typeof AuthenticatedDashboardCertificatesIndexRoute
   '/_authenticated/dashboard/fees/': typeof AuthenticatedDashboardFeesIndexRoute
   '/_authenticated/dashboard/results/': typeof AuthenticatedDashboardResultsIndexRoute
+  '/_authenticated/dashboard/settings/': typeof AuthenticatedDashboardSettingsIndexRoute
   '/_authenticated/dashboard/students/': typeof AuthenticatedDashboardStudentsIndexRoute
   '/_authenticated/dashboard/teachers/': typeof AuthenticatedDashboardTeachersIndexRoute
   '/_authenticated/faculty/downloads/': typeof AuthenticatedFacultyDownloadsIndexRoute
@@ -1414,6 +1423,7 @@ export interface FileRouteTypes {
     | '/dashboard/certificates/'
     | '/dashboard/fees/'
     | '/dashboard/results/'
+    | '/dashboard/settings/'
     | '/dashboard/students/'
     | '/dashboard/teachers/'
     | '/faculty/downloads/'
@@ -1499,7 +1509,6 @@ export interface FileRouteTypes {
     | '/dashboard/downloads'
     | '/dashboard/profile'
     | '/dashboard/roles'
-    | '/dashboard/settings'
     | '/student-dashboard/downloads/$id'
     | '/student-dashboard/fees/history'
     | '/student-dashboard/profile/edit'
@@ -1539,6 +1548,7 @@ export interface FileRouteTypes {
     | '/dashboard/certificates'
     | '/dashboard/fees'
     | '/dashboard/results'
+    | '/dashboard/settings'
     | '/dashboard/students'
     | '/dashboard/teachers'
     | '/faculty/downloads'
@@ -1674,6 +1684,7 @@ export interface FileRouteTypes {
     | '/_authenticated/dashboard/certificates/'
     | '/_authenticated/dashboard/fees/'
     | '/_authenticated/dashboard/results/'
+    | '/_authenticated/dashboard/settings/'
     | '/_authenticated/dashboard/students/'
     | '/_authenticated/dashboard/teachers/'
     | '/_authenticated/faculty/downloads/'
@@ -2398,6 +2409,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardStudentsIndexRouteImport
       parentRoute: typeof AuthenticatedDashboardRoute
     }
+    '/_authenticated/dashboard/settings/': {
+      id: '/_authenticated/dashboard/settings/'
+      path: '/'
+      fullPath: '/dashboard/settings/'
+      preLoaderRoute: typeof AuthenticatedDashboardSettingsIndexRouteImport
+      parentRoute: typeof AuthenticatedDashboardSettingsRoute
+    }
     '/_authenticated/dashboard/results/': {
       id: '/_authenticated/dashboard/results/'
       path: '/'
@@ -2793,6 +2811,7 @@ const AuthenticatedDashboardResultsRouteWithChildren =
 interface AuthenticatedDashboardSettingsRouteChildren {
   AuthenticatedDashboardSettingsLogoRoute: typeof AuthenticatedDashboardSettingsLogoRoute
   AuthenticatedDashboardSettingsSecurityRoute: typeof AuthenticatedDashboardSettingsSecurityRoute
+  AuthenticatedDashboardSettingsIndexRoute: typeof AuthenticatedDashboardSettingsIndexRoute
 }
 
 const AuthenticatedDashboardSettingsRouteChildren: AuthenticatedDashboardSettingsRouteChildren =
@@ -2801,6 +2820,8 @@ const AuthenticatedDashboardSettingsRouteChildren: AuthenticatedDashboardSetting
       AuthenticatedDashboardSettingsLogoRoute,
     AuthenticatedDashboardSettingsSecurityRoute:
       AuthenticatedDashboardSettingsSecurityRoute,
+    AuthenticatedDashboardSettingsIndexRoute:
+      AuthenticatedDashboardSettingsIndexRoute,
   }
 
 const AuthenticatedDashboardSettingsRouteWithChildren =
