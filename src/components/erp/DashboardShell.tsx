@@ -7,7 +7,7 @@ import {
   Menu, X, ChevronDown, Search, Bell, UserRound, MessageSquare, Mail,
   ScrollText, PanelLeftClose, PanelLeftOpen, ChevronRight,
 } from "lucide-react";
-import logoAsset from "@/assets/logo.jpg.asset.json";
+import { useLogoUrl } from "@/lib/branding";
 import { SecurityNotice } from "@/components/erp/SecurityNotice";
 import { useAuth, signOutAndRedirect, ROLE_LABEL, type AppRole } from "@/lib/auth";
 
@@ -69,6 +69,7 @@ const ALL_GROUPS: NavGroup[] = [
       { label: "Roles & Permissions", to: "/admin/roles", icon: ShieldCheck, roles: ["super_admin", "admin"] },
       { label: "System Logs", to: "/admin/audit-logs", icon: ScrollText, roles: ["super_admin", "admin"] },
       { label: "Settings", to: "/dashboard/settings", icon: Settings, roles: ["super_admin", "admin"] },
+      { label: "Logo Manager", to: "/dashboard/settings/logo", icon: ImageIcon, roles: ["super_admin", "admin"] },
       { label: "My Profile", to: "/dashboard/profile", icon: UserRound },
     ],
   },
@@ -94,6 +95,7 @@ export function DashboardShell({ children, title, subtitle, actions }: { childre
   const [mobileOpen, setMobileOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
+  const logoUrl = useLogoUrl();
 
   const effectiveRole: AppRole = role ?? "guest";
   const groups = filterForRole(effectiveRole);
@@ -105,7 +107,7 @@ export function DashboardShell({ children, title, subtitle, actions }: { childre
       {/* Mobile top bar */}
       <div className="sticky top-0 z-40 flex items-center justify-between border-b border-border/60 bg-white/95 px-4 py-2.5 backdrop-blur-lg lg:hidden">
         <Link to="/dashboard" className="flex items-center gap-2">
-          <img src={logoAsset.url} alt="KCC" className="h-8 w-8 rounded-lg object-contain ring-1 ring-border" />
+          <img src={logoUrl} alt="KCC" className="h-8 w-8 rounded-lg object-contain ring-1 ring-border" />
           <span className="text-sm font-extrabold text-brand-dark">KCC ERP</span>
         </Link>
         <button onClick={() => setMobileOpen(true)} className="grid h-10 w-10 place-items-center rounded-xl bg-cyan-soft text-brand" aria-label="Open menu">
@@ -119,7 +121,7 @@ export function DashboardShell({ children, title, subtitle, actions }: { childre
           <div className="flex h-full flex-col">
             <div className="flex items-center justify-between border-b border-border/60 px-5 py-4">
               <Link to="/dashboard" className="flex items-center gap-2.5">
-                <img src={logoAsset.url} alt="KCC" className="h-10 w-10 rounded-xl object-contain ring-1 ring-border" />
+                <img src={logoUrl} alt="KCC" className="h-10 w-10 rounded-xl object-contain ring-1 ring-border" />
                 <div className={`leading-tight ${collapsed ? "lg:hidden" : ""}`}>
                   <div className="text-[13px] font-extrabold text-brand-dark">KCC · ERP</div>
                   <div className="text-[10px] text-muted-foreground">{ROLE_LABEL[effectiveRole]}</div>

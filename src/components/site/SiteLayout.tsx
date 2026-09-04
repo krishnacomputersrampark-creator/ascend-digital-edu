@@ -22,7 +22,7 @@ import {
   Languages,
   Sparkles,
 } from "lucide-react";
-import logoAsset from "@/assets/logo.jpg.asset.json";
+import { useLogoUrl } from "@/lib/branding";
 import { useLang } from "./language";
 import { useAuth, signOutAndRedirect, ROLE_LABEL } from "@/lib/auth";
 import { LayoutDashboard, LogOut } from "lucide-react";
@@ -61,6 +61,7 @@ export function SiteHeader() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const { lang, t } = useLang();
+  const logoUrl = useLogoUrl();
   const { user, role, profile } = useAuth();
   const signedIn = !!user;
   const displayName = profile?.full_name || user?.email?.split("@")[0] || "";
@@ -79,7 +80,7 @@ export function SiteHeader() {
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-2.5 sm:px-6 lg:px-8">
         <Link to="/" className="flex items-center gap-2.5">
           <img
-            src={logoAsset.url}
+            src={logoUrl}
             alt="Krishna Computer Center logo"
             width={44}
             height={44}
@@ -190,6 +191,7 @@ export function SiteHeader() {
 }
 
 export function SiteFooter() {
+  const logoUrl = useLogoUrl();
   return (
     <footer className="relative overflow-hidden bg-ink pt-16 pb-8 text-white/85">
       <div className="absolute inset-0 opacity-30">
@@ -200,7 +202,7 @@ export function SiteFooter() {
         <div className="grid gap-10 lg:grid-cols-4">
           <div>
             <div className="flex items-center gap-3">
-              <img src={logoAsset.url} alt="Krishna Computer Center" width={44} height={44} className="h-11 w-11 rounded-xl bg-white object-contain p-1" />
+              <img src={logoUrl} alt="Krishna Computer Center" width={44} height={44} className="h-11 w-11 rounded-xl bg-white object-contain p-1" />
               <div>
                 <div className="text-sm font-bold text-white">KRISHNA COMPUTER CENTER</div>
                 <div className="text-[11px] text-white/60">Empowering Students Through Digital Education</div>
