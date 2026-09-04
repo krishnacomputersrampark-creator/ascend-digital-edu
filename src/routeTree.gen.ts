@@ -119,6 +119,7 @@ import { Route as AuthenticatedFacultyDownloadsUploadRouteImport } from './route
 import { Route as AuthenticatedDashboardTeachersNewRouteImport } from './routes/_authenticated/dashboard.teachers.new'
 import { Route as AuthenticatedDashboardStudentsNewRouteImport } from './routes/_authenticated/dashboard.students.new'
 import { Route as AuthenticatedDashboardSettingsSecurityRouteImport } from './routes/_authenticated/dashboard.settings.security'
+import { Route as AuthenticatedDashboardSettingsLogoRouteImport } from './routes/_authenticated/dashboard.settings.logo'
 import { Route as AuthenticatedDashboardResultsPublishRouteImport } from './routes/_authenticated/dashboard.results.publish'
 import { Route as AuthenticatedDashboardResultsMarksEntryRouteImport } from './routes/_authenticated/dashboard.results.marks-entry'
 import { Route as AuthenticatedDashboardResultsHistoryRouteImport } from './routes/_authenticated/dashboard.results.history'
@@ -752,6 +753,12 @@ const AuthenticatedDashboardSettingsSecurityRoute =
     path: '/security',
     getParentRoute: () => AuthenticatedDashboardSettingsRoute,
   } as any)
+const AuthenticatedDashboardSettingsLogoRoute =
+  AuthenticatedDashboardSettingsLogoRouteImport.update({
+    id: '/logo',
+    path: '/logo',
+    getParentRoute: () => AuthenticatedDashboardSettingsRoute,
+  } as any)
 const AuthenticatedDashboardResultsPublishRoute =
   AuthenticatedDashboardResultsPublishRouteImport.update({
     id: '/publish',
@@ -993,6 +1000,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/results/history': typeof AuthenticatedDashboardResultsHistoryRoute
   '/dashboard/results/marks-entry': typeof AuthenticatedDashboardResultsMarksEntryRoute
   '/dashboard/results/publish': typeof AuthenticatedDashboardResultsPublishRoute
+  '/dashboard/settings/logo': typeof AuthenticatedDashboardSettingsLogoRoute
   '/dashboard/settings/security': typeof AuthenticatedDashboardSettingsSecurityRoute
   '/dashboard/students/new': typeof AuthenticatedDashboardStudentsNewRoute
   '/dashboard/teachers/new': typeof AuthenticatedDashboardTeachersNewRoute
@@ -1117,6 +1125,7 @@ export interface FileRoutesByTo {
   '/dashboard/results/history': typeof AuthenticatedDashboardResultsHistoryRoute
   '/dashboard/results/marks-entry': typeof AuthenticatedDashboardResultsMarksEntryRoute
   '/dashboard/results/publish': typeof AuthenticatedDashboardResultsPublishRoute
+  '/dashboard/settings/logo': typeof AuthenticatedDashboardSettingsLogoRoute
   '/dashboard/settings/security': typeof AuthenticatedDashboardSettingsSecurityRoute
   '/dashboard/students/new': typeof AuthenticatedDashboardStudentsNewRoute
   '/dashboard/teachers/new': typeof AuthenticatedDashboardTeachersNewRoute
@@ -1252,6 +1261,7 @@ export interface FileRoutesById {
   '/_authenticated/dashboard/results/history': typeof AuthenticatedDashboardResultsHistoryRoute
   '/_authenticated/dashboard/results/marks-entry': typeof AuthenticatedDashboardResultsMarksEntryRoute
   '/_authenticated/dashboard/results/publish': typeof AuthenticatedDashboardResultsPublishRoute
+  '/_authenticated/dashboard/settings/logo': typeof AuthenticatedDashboardSettingsLogoRoute
   '/_authenticated/dashboard/settings/security': typeof AuthenticatedDashboardSettingsSecurityRoute
   '/_authenticated/dashboard/students/new': typeof AuthenticatedDashboardStudentsNewRoute
   '/_authenticated/dashboard/teachers/new': typeof AuthenticatedDashboardTeachersNewRoute
@@ -1387,6 +1397,7 @@ export interface FileRouteTypes {
     | '/dashboard/results/history'
     | '/dashboard/results/marks-entry'
     | '/dashboard/results/publish'
+    | '/dashboard/settings/logo'
     | '/dashboard/settings/security'
     | '/dashboard/students/new'
     | '/dashboard/teachers/new'
@@ -1511,6 +1522,7 @@ export interface FileRouteTypes {
     | '/dashboard/results/history'
     | '/dashboard/results/marks-entry'
     | '/dashboard/results/publish'
+    | '/dashboard/settings/logo'
     | '/dashboard/settings/security'
     | '/dashboard/students/new'
     | '/dashboard/teachers/new'
@@ -1645,6 +1657,7 @@ export interface FileRouteTypes {
     | '/_authenticated/dashboard/results/history'
     | '/_authenticated/dashboard/results/marks-entry'
     | '/_authenticated/dashboard/results/publish'
+    | '/_authenticated/dashboard/settings/logo'
     | '/_authenticated/dashboard/settings/security'
     | '/_authenticated/dashboard/students/new'
     | '/_authenticated/dashboard/teachers/new'
@@ -2497,6 +2510,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardSettingsSecurityRouteImport
       parentRoute: typeof AuthenticatedDashboardSettingsRoute
     }
+    '/_authenticated/dashboard/settings/logo': {
+      id: '/_authenticated/dashboard/settings/logo'
+      path: '/logo'
+      fullPath: '/dashboard/settings/logo'
+      preLoaderRoute: typeof AuthenticatedDashboardSettingsLogoRouteImport
+      parentRoute: typeof AuthenticatedDashboardSettingsRoute
+    }
     '/_authenticated/dashboard/results/publish': {
       id: '/_authenticated/dashboard/results/publish'
       path: '/publish'
@@ -2771,11 +2791,14 @@ const AuthenticatedDashboardResultsRouteWithChildren =
   )
 
 interface AuthenticatedDashboardSettingsRouteChildren {
+  AuthenticatedDashboardSettingsLogoRoute: typeof AuthenticatedDashboardSettingsLogoRoute
   AuthenticatedDashboardSettingsSecurityRoute: typeof AuthenticatedDashboardSettingsSecurityRoute
 }
 
 const AuthenticatedDashboardSettingsRouteChildren: AuthenticatedDashboardSettingsRouteChildren =
   {
+    AuthenticatedDashboardSettingsLogoRoute:
+      AuthenticatedDashboardSettingsLogoRoute,
     AuthenticatedDashboardSettingsSecurityRoute:
       AuthenticatedDashboardSettingsSecurityRoute,
   }
