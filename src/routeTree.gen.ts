@@ -114,6 +114,7 @@ import { Route as StudentDashboardResultsViewIdRouteImport } from './routes/stud
 import { Route as StudentDashboardFeesReceiptIdRouteImport } from './routes/student-dashboard_.fees.receipt.$id'
 import { Route as StudentDashboardCertificatesViewIdRouteImport } from './routes/student-dashboard_.certificates.view.$id'
 import { Route as ApiPublicHooksFeeRemindersRouteImport } from './routes/api/public/hooks/fee-reminders'
+import { Route as ApiPublicBrandingSplatRouteImport } from './routes/api/public/branding.$'
 import { Route as AuthenticatedFacultyDownloadsUploadRouteImport } from './routes/_authenticated/faculty.downloads.upload'
 import { Route as AuthenticatedDashboardTeachersNewRouteImport } from './routes/_authenticated/dashboard.teachers.new'
 import { Route as AuthenticatedDashboardStudentsNewRouteImport } from './routes/_authenticated/dashboard.students.new'
@@ -722,6 +723,11 @@ const ApiPublicHooksFeeRemindersRoute =
     path: '/api/public/hooks/fee-reminders',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicBrandingSplatRoute = ApiPublicBrandingSplatRouteImport.update({
+  id: '/api/public/branding/$',
+  path: '/api/public/branding/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthenticatedFacultyDownloadsUploadRoute =
   AuthenticatedFacultyDownloadsUploadRouteImport.update({
     id: '/upload',
@@ -991,6 +997,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/students/new': typeof AuthenticatedDashboardStudentsNewRoute
   '/dashboard/teachers/new': typeof AuthenticatedDashboardTeachersNewRoute
   '/faculty/downloads/upload': typeof AuthenticatedFacultyDownloadsUploadRoute
+  '/api/public/branding/$': typeof ApiPublicBrandingSplatRoute
   '/api/public/hooks/fee-reminders': typeof ApiPublicHooksFeeRemindersRoute
   '/student-dashboard/certificates/view/$id': typeof StudentDashboardCertificatesViewIdRoute
   '/student-dashboard/fees/receipt/$id': typeof StudentDashboardFeesReceiptIdRoute
@@ -1114,6 +1121,7 @@ export interface FileRoutesByTo {
   '/dashboard/students/new': typeof AuthenticatedDashboardStudentsNewRoute
   '/dashboard/teachers/new': typeof AuthenticatedDashboardTeachersNewRoute
   '/faculty/downloads/upload': typeof AuthenticatedFacultyDownloadsUploadRoute
+  '/api/public/branding/$': typeof ApiPublicBrandingSplatRoute
   '/api/public/hooks/fee-reminders': typeof ApiPublicHooksFeeRemindersRoute
   '/student-dashboard/certificates/view/$id': typeof StudentDashboardCertificatesViewIdRoute
   '/student-dashboard/fees/receipt/$id': typeof StudentDashboardFeesReceiptIdRoute
@@ -1248,6 +1256,7 @@ export interface FileRoutesById {
   '/_authenticated/dashboard/students/new': typeof AuthenticatedDashboardStudentsNewRoute
   '/_authenticated/dashboard/teachers/new': typeof AuthenticatedDashboardTeachersNewRoute
   '/_authenticated/faculty/downloads/upload': typeof AuthenticatedFacultyDownloadsUploadRoute
+  '/api/public/branding/$': typeof ApiPublicBrandingSplatRoute
   '/api/public/hooks/fee-reminders': typeof ApiPublicHooksFeeRemindersRoute
   '/student-dashboard_/certificates/view/$id': typeof StudentDashboardCertificatesViewIdRoute
   '/student-dashboard_/fees/receipt/$id': typeof StudentDashboardFeesReceiptIdRoute
@@ -1382,6 +1391,7 @@ export interface FileRouteTypes {
     | '/dashboard/students/new'
     | '/dashboard/teachers/new'
     | '/faculty/downloads/upload'
+    | '/api/public/branding/$'
     | '/api/public/hooks/fee-reminders'
     | '/student-dashboard/certificates/view/$id'
     | '/student-dashboard/fees/receipt/$id'
@@ -1505,6 +1515,7 @@ export interface FileRouteTypes {
     | '/dashboard/students/new'
     | '/dashboard/teachers/new'
     | '/faculty/downloads/upload'
+    | '/api/public/branding/$'
     | '/api/public/hooks/fee-reminders'
     | '/student-dashboard/certificates/view/$id'
     | '/student-dashboard/fees/receipt/$id'
@@ -1638,6 +1649,7 @@ export interface FileRouteTypes {
     | '/_authenticated/dashboard/students/new'
     | '/_authenticated/dashboard/teachers/new'
     | '/_authenticated/faculty/downloads/upload'
+    | '/api/public/branding/$'
     | '/api/public/hooks/fee-reminders'
     | '/student-dashboard_/certificates/view/$id'
     | '/student-dashboard_/fees/receipt/$id'
@@ -1709,6 +1721,7 @@ export interface RootRouteChildren {
   StudentResultsRoute: typeof StudentResultsRoute
   DotlovableOauthConsentRoute: typeof DotlovableOauthConsentRoute
   Char91DotmcpChar93InvokeToolToolRoute: typeof Char91DotmcpChar93InvokeToolToolRoute
+  ApiPublicBrandingSplatRoute: typeof ApiPublicBrandingSplatRoute
   ApiPublicHooksFeeRemindersRoute: typeof ApiPublicHooksFeeRemindersRoute
 }
 
@@ -2449,6 +2462,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicHooksFeeRemindersRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/branding/$': {
+      id: '/api/public/branding/$'
+      path: '/api/public/branding/$'
+      fullPath: '/api/public/branding/$'
+      preLoaderRoute: typeof ApiPublicBrandingSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_authenticated/faculty/downloads/upload': {
       id: '/_authenticated/faculty/downloads/upload'
       path: '/upload'
@@ -3090,6 +3110,7 @@ const rootRouteChildren: RootRouteChildren = {
   StudentResultsRoute: StudentResultsRoute,
   DotlovableOauthConsentRoute: DotlovableOauthConsentRoute,
   Char91DotmcpChar93InvokeToolToolRoute: Char91DotmcpChar93InvokeToolToolRoute,
+  ApiPublicBrandingSplatRoute: ApiPublicBrandingSplatRoute,
   ApiPublicHooksFeeRemindersRoute: ApiPublicHooksFeeRemindersRoute,
 }
 export const routeTree = rootRouteImport
