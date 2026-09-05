@@ -35,6 +35,15 @@ const FILE_FIELDS = [
 ] as const;
 
 type FormState = Record<string, string>;
+type FieldCfg = { field_key: string; label: string; is_visible: boolean; is_required: boolean; sort_order: number };
+
+const DEFAULT_REQUIRED = new Set([
+  "first_name", "last_name", "father_name", "gender", "dob",
+  "mobile", "address", "state", "district", "qualification",
+  "branch_id", "course_id",
+  "photo_url", "signature_url", "aadhaar_front_url", "aadhaar_back_url",
+  "declaration_agree",
+]);
 
 function AdmissionPage() {
   const navigate = useNavigate();
@@ -43,6 +52,7 @@ function AdmissionPage() {
   const loadCourses = useServerFn(listCoursesPublic);
   const loadBranches = useServerFn(listBranchesPublic);
   const loadBatches = useServerFn(listBatchesPublic);
+  const loadFieldCfg = useServerFn(listAdmissionFormFields);
 
   const [step, setStep] = useState(0);
   const [form, setForm] = useState<FormState>({});
@@ -53,9 +63,19 @@ function AdmissionPage() {
   const [courses, setCourses] = useState<any[]>([]);
   const [branches, setBranches] = useState<any[]>([]);
   const [batches, setBatches] = useState<any[]>([]);
+  const [cfg, setCfg] = useState<Record<string, FieldCfg>>({});
   const [agree, setAgree] = useState(false);
   const draftLoaded = useRef(false);
   const draftId = useRef<string>("");
+
+  // Field-level configuration controlled by Super Admin (Configuration → Forms)
+  const vis = (k: string) => cfg[k]?.is_visible !== false;
+  const req = (k: string) => (cfg[k] ? cfg[k].is_required : DEFAULT_REQUIRED.has(k));
+  const lbl = (k: string, fallback: string) => `${cfg[k]?.label || fallback}${req(k) ? " *" : ""}`;
+  const ord = (k: string, fallback: number) => cfg[k]?.sort_order ?? fallback;
+  const ordered = (items: { key: string; node: React.ReactNode }[]) =>
+    items.filter(i => vis(i.key)).sort((a, b) => ord(a.key, 0) - ord(b.key, 0)).map(i => <div key={i.key} className="contents">{i.node}</div>);
+
 
   // Load draft + a per-session upload folder id
   useEffect(() => {
