@@ -450,6 +450,31 @@ export const listBranchesPublic = createServerFn({ method: "GET" }).handler(asyn
   return data ?? [];
 });
 
+export type PublicFormFieldCfg = {
+  field_key: string;
+  label: string;
+  is_visible: boolean;
+  is_required: boolean;
+  sort_order: number;
+  placeholder: string | null;
+  help_text: string | null;
+};
+
+export const listAdmissionFormFields = createServerFn({ method: "GET" }).handler(async () => {
+  const sb = publicClient();
+  const { data: cfg, error: cErr } = await sb
+    .from("form_configs").select("id, is_active").eq("form_key", "admission_form").maybeSingle();
+  if (cErr) throw new Error(cErr.message);
+  if (!cfg) return [] as PublicFormFieldCfg[];
+  const { data, error } = await sb
+    .from("form_fields")
+    .select("field_key, label, is_visible, is_required, sort_order, placeholder, help_text")
+    .eq("form_config_id", cfg.id)
+    .order("sort_order");
+  if (error) throw new Error(error.message);
+  return (data ?? []) as PublicFormFieldCfg[];
+});
+
 export const claimSuperAdmin = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
