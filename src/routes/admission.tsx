@@ -104,7 +104,10 @@ function AdmissionPage() {
   useEffect(() => {
     loadCourses().then(setCourses).catch(() => {});
     loadBranches().then(setBranches).catch(() => {});
-  }, [loadCourses, loadBranches]);
+    loadFieldCfg()
+      .then((rows: any[]) => setCfg(Object.fromEntries((rows ?? []).map(r => [r.field_key, r]))))
+      .catch(() => {});
+  }, [loadCourses, loadBranches, loadFieldCfg]);
 
   useEffect(() => {
     if (form.branch_id || form.course_id) {
@@ -116,40 +119,52 @@ function AdmissionPage() {
   const set = (k: string, v: string) => setForm(prev => ({ ...prev, [k]: v }));
 
   const validateStep = (): string | null => {
+    // A hidden field is never validated; a visible field is validated per its configured requirement.
+    const missing = (k: string, fallbackLabel: string) =>
+      vis(k) && req(k) && !(form[k] ?? "").trim() ? `${cfg[k]?.label || fallbackLabel} is required` : null;
+    const filled = (k: string) => vis(k) && !!(form[k] ?? "").trim();
+
     if (step === 0) {
-      if (!form.first_name?.trim()) return "First name is required";
-      if (!form.last_name?.trim()) return "Last name is required";
-      if (!form.father_name?.trim()) return "Father's name is required";
-      if (!form.gender) return "Gender is required";
-      if (!form.dob) return "Date of birth is required";
-      if (form.aadhaar_number && !/^\d{12}$/.test(form.aadhaar_number.replace(/\s/g, ""))) return "Aadhaar must be 12 digits";
+      for (const [k, l] of [["first_name", "First name"], ["last_name", "Last name"], ["father_name", "Father's name"],
+        ["mother_name", "Mother's name"], ["gender", "Gender"], ["dob", "Date of birth"],
+        ["blood_group", "Blood group"], ["category", "Category"], ["aadhaar_number", "Aadhaar number"]] as const) {
+        const m = missing(k, l); if (m) return m;
+      }
+      if (filled("aadhaar_number") && !/^\d{12}$/.test(form.aadhaar_number.replace(/\s/g, ""))) return "Aadhaar must be 12 digits";
     }
     if (step === 1) {
-      if (!/^\d{10}$/.test((form.mobile ?? "").replace(/\D/g, ""))) return "Mobile must be 10 digits";
-      if (form.alternate_mobile && !/^\d{10}$/.test(form.alternate_mobile.replace(/\D/g, ""))) return "Alternate mobile must be 10 digits";
-      if (form.email && !/^\S+@\S+\.\S+$/.test(form.email)) return "Invalid email";
-      if (!form.address?.trim()) return "Address is required";
-      if (!form.state?.trim()) return "State is required";
-      if (!form.district?.trim()) return "District is required";
-      if (form.pincode && !/^\d{6}$/.test(form.pincode)) return "Pincode must be 6 digits";
+      for (const [k, l] of [["mobile", "Mobile number"], ["alternate_mobile", "Alternate mobile"], ["email", "Email"],
+        ["address", "Address"], ["state", "State"], ["district", "District"], ["pincode", "PIN code"]] as const) {
+        const m = missing(k, l); if (m) return m;
+      }
+      if (filled("mobile") && !/^\d{10}$/.test(form.mobile.replace(/\D/g, ""))) return "Mobile must be 10 digits";
+      if (filled("alternate_mobile") && !/^\d{10}$/.test(form.alternate_mobile.replace(/\D/g, ""))) return "Alternate mobile must be 10 digits";
+      if (filled("email") && !/^\S+@\S+\.\S+$/.test(form.email)) return "Invalid email";
+      if (filled("pincode") && !/^\d{6}$/.test(form.pincode)) return "Pincode must be 6 digits";
     }
     if (step === 2) {
-      if (!form.qualification) return "Qualification is required";
-      if (form.percentage && (Number(form.percentage) < 0 || Number(form.percentage) > 100)) return "Percentage must be between 0 and 100";
-      if (form.passing_year && !/^\d{4}$/.test(form.passing_year)) return "Passing year must be 4 digits";
+      for (const [k, l] of [["qualification", "Qualification"], ["school", "School / College"], ["board", "Board / University"],
+        ["passing_year", "Passing year"], ["percentage", "Percentage"]] as const) {
+        const m = missing(k, l); if (m) return m;
+      }
+      if (filled("percentage") && (Number(form.percentage) < 0 || Number(form.percentage) > 100)) return "Percentage must be between 0 and 100";
+      if (filled("passing_year") && !/^\d{4}$/.test(form.passing_year)) return "Passing year must be 4 digits";
     }
     if (step === 3) {
-      if (!form.branch_id) return "Please select a branch";
-      if (!form.course_id) return "Please select a course";
+      for (const [k, l] of [["branch_id", "Branch"], ["course_id", "Course"], ["batch_id", "Batch"],
+        ["session", "Session"], ["preferred_timing", "Preferred timing"]] as const) {
+        const m = missing(k, l); if (m) return m;
+      }
     }
     if (step === 4) {
       for (const f of FILE_FIELDS) {
-        if (f.required && !uploads[f.key]?.url) return `${f.label} is required`;
+        if (vis(f.key) && req(f.key) && !uploads[f.key]?.url) return `${cfg[f.key]?.label || f.label} is required`;
       }
     }
-    if (step === 5 && !agree) return "You must accept the declaration to submit";
+    if (step === 5 && vis("declaration_agree") && req("declaration_agree") && !agree) return "You must accept the declaration to submit";
     return null;
   };
+
 
   const next = async () => {
     const v = validateStep();
