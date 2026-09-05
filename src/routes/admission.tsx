@@ -6,7 +6,7 @@ import { Upload, Sparkles, ArrowRight, ArrowLeft, AlertCircle, Check, Loader2, F
 import { toast } from "sonner";
 import { SiteLayout, PageHero } from "@/components/site/SiteLayout";
 import { supabase } from "@/integrations/supabase/client";
-import { submitAdmission, listCoursesPublic, listBranchesPublic, listBatchesPublic, checkAdmissionDuplicates } from "@/lib/admissions.functions";
+import { submitAdmission, listCoursesPublic, listBranchesPublic, listBatchesPublic, checkAdmissionDuplicates, listAdmissionFormFields } from "@/lib/admissions.functions";
 import { emailService, smsService } from "@/lib/notifications.stub";
 
 export const Route = createFileRoute("/admission")({
@@ -35,6 +35,15 @@ const FILE_FIELDS = [
 ] as const;
 
 type FormState = Record<string, string>;
+type FieldCfg = { field_key: string; label: string; is_visible: boolean; is_required: boolean; sort_order: number };
+
+const DEFAULT_REQUIRED = new Set([
+  "first_name", "last_name", "father_name", "gender", "dob",
+  "mobile", "address", "state", "district", "qualification",
+  "branch_id", "course_id",
+  "photo_url", "signature_url", "aadhaar_front_url", "aadhaar_back_url",
+  "declaration_agree",
+]);
 
 function AdmissionPage() {
   const navigate = useNavigate();
@@ -43,6 +52,7 @@ function AdmissionPage() {
   const loadCourses = useServerFn(listCoursesPublic);
   const loadBranches = useServerFn(listBranchesPublic);
   const loadBatches = useServerFn(listBatchesPublic);
+  const loadFieldCfg = useServerFn(listAdmissionFormFields);
 
   const [step, setStep] = useState(0);
   const [form, setForm] = useState<FormState>({});
@@ -53,9 +63,19 @@ function AdmissionPage() {
   const [courses, setCourses] = useState<any[]>([]);
   const [branches, setBranches] = useState<any[]>([]);
   const [batches, setBatches] = useState<any[]>([]);
+  const [cfg, setCfg] = useState<Record<string, FieldCfg>>({});
   const [agree, setAgree] = useState(false);
   const draftLoaded = useRef(false);
   const draftId = useRef<string>("");
+
+  // Field-level configuration controlled by Super Admin (Configuration → Forms)
+  const vis = (k: string) => cfg[k]?.is_visible !== false;
+  const req = (k: string) => (cfg[k] ? cfg[k].is_required : DEFAULT_REQUIRED.has(k));
+  const lbl = (k: string, fallback: string) => `${cfg[k]?.label || fallback}${req(k) ? " *" : ""}`;
+  const ord = (k: string, fallback: number) => cfg[k]?.sort_order ?? fallback;
+  const ordered = (items: { key: string; node: React.ReactNode }[]) =>
+    items.filter(i => vis(i.key)).sort((a, b) => ord(a.key, 0) - ord(b.key, 0)).map(i => <div key={i.key} className="contents">{i.node}</div>);
+
 
   // Load draft + a per-session upload folder id
   useEffect(() => {
@@ -84,7 +104,10 @@ function AdmissionPage() {
   useEffect(() => {
     loadCourses().then(setCourses).catch(() => {});
     loadBranches().then(setBranches).catch(() => {});
-  }, [loadCourses, loadBranches]);
+    loadFieldCfg()
+      .then((rows: any[]) => setCfg(Object.fromEntries((rows ?? []).map(r => [r.field_key, r]))))
+      .catch(() => {});
+  }, [loadCourses, loadBranches, loadFieldCfg]);
 
   useEffect(() => {
     if (form.branch_id || form.course_id) {
@@ -96,40 +119,52 @@ function AdmissionPage() {
   const set = (k: string, v: string) => setForm(prev => ({ ...prev, [k]: v }));
 
   const validateStep = (): string | null => {
+    // A hidden field is never validated; a visible field is validated per its configured requirement.
+    const missing = (k: string, fallbackLabel: string) =>
+      vis(k) && req(k) && !(form[k] ?? "").trim() ? `${cfg[k]?.label || fallbackLabel} is required` : null;
+    const filled = (k: string) => vis(k) && !!(form[k] ?? "").trim();
+
     if (step === 0) {
-      if (!form.first_name?.trim()) return "First name is required";
-      if (!form.last_name?.trim()) return "Last name is required";
-      if (!form.father_name?.trim()) return "Father's name is required";
-      if (!form.gender) return "Gender is required";
-      if (!form.dob) return "Date of birth is required";
-      if (form.aadhaar_number && !/^\d{12}$/.test(form.aadhaar_number.replace(/\s/g, ""))) return "Aadhaar must be 12 digits";
+      for (const [k, l] of [["first_name", "First name"], ["last_name", "Last name"], ["father_name", "Father's name"],
+        ["mother_name", "Mother's name"], ["gender", "Gender"], ["dob", "Date of birth"],
+        ["blood_group", "Blood group"], ["category", "Category"], ["aadhaar_number", "Aadhaar number"]] as const) {
+        const m = missing(k, l); if (m) return m;
+      }
+      if (filled("aadhaar_number") && !/^\d{12}$/.test(form.aadhaar_number.replace(/\s/g, ""))) return "Aadhaar must be 12 digits";
     }
     if (step === 1) {
-      if (!/^\d{10}$/.test((form.mobile ?? "").replace(/\D/g, ""))) return "Mobile must be 10 digits";
-      if (form.alternate_mobile && !/^\d{10}$/.test(form.alternate_mobile.replace(/\D/g, ""))) return "Alternate mobile must be 10 digits";
-      if (form.email && !/^\S+@\S+\.\S+$/.test(form.email)) return "Invalid email";
-      if (!form.address?.trim()) return "Address is required";
-      if (!form.state?.trim()) return "State is required";
-      if (!form.district?.trim()) return "District is required";
-      if (form.pincode && !/^\d{6}$/.test(form.pincode)) return "Pincode must be 6 digits";
+      for (const [k, l] of [["mobile", "Mobile number"], ["alternate_mobile", "Alternate mobile"], ["email", "Email"],
+        ["address", "Address"], ["state", "State"], ["district", "District"], ["pincode", "PIN code"]] as const) {
+        const m = missing(k, l); if (m) return m;
+      }
+      if (filled("mobile") && !/^\d{10}$/.test(form.mobile.replace(/\D/g, ""))) return "Mobile must be 10 digits";
+      if (filled("alternate_mobile") && !/^\d{10}$/.test(form.alternate_mobile.replace(/\D/g, ""))) return "Alternate mobile must be 10 digits";
+      if (filled("email") && !/^\S+@\S+\.\S+$/.test(form.email)) return "Invalid email";
+      if (filled("pincode") && !/^\d{6}$/.test(form.pincode)) return "Pincode must be 6 digits";
     }
     if (step === 2) {
-      if (!form.qualification) return "Qualification is required";
-      if (form.percentage && (Number(form.percentage) < 0 || Number(form.percentage) > 100)) return "Percentage must be between 0 and 100";
-      if (form.passing_year && !/^\d{4}$/.test(form.passing_year)) return "Passing year must be 4 digits";
+      for (const [k, l] of [["qualification", "Qualification"], ["school", "School / College"], ["board", "Board / University"],
+        ["passing_year", "Passing year"], ["percentage", "Percentage"]] as const) {
+        const m = missing(k, l); if (m) return m;
+      }
+      if (filled("percentage") && (Number(form.percentage) < 0 || Number(form.percentage) > 100)) return "Percentage must be between 0 and 100";
+      if (filled("passing_year") && !/^\d{4}$/.test(form.passing_year)) return "Passing year must be 4 digits";
     }
     if (step === 3) {
-      if (!form.branch_id) return "Please select a branch";
-      if (!form.course_id) return "Please select a course";
+      for (const [k, l] of [["branch_id", "Branch"], ["course_id", "Course"], ["batch_id", "Batch"],
+        ["session", "Session"], ["preferred_timing", "Preferred timing"]] as const) {
+        const m = missing(k, l); if (m) return m;
+      }
     }
     if (step === 4) {
       for (const f of FILE_FIELDS) {
-        if (f.required && !uploads[f.key]?.url) return `${f.label} is required`;
+        if (vis(f.key) && req(f.key) && !uploads[f.key]?.url) return `${cfg[f.key]?.label || f.label} is required`;
       }
     }
-    if (step === 5 && !agree) return "You must accept the declaration to submit";
+    if (step === 5 && vis("declaration_agree") && req("declaration_agree") && !agree) return "You must accept the declaration to submit";
     return null;
   };
+
 
   const next = async () => {
     const v = validateStep();
@@ -280,64 +315,75 @@ function AdmissionPage() {
               <motion.div key={step} initial={{ opacity: 0, x: 12 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -12 }}>
                 {step === 0 && (
                   <div className="grid gap-4 sm:grid-cols-2">
-                    <Field label="First Name *" value={form.first_name} onChange={(v: string) => set("first_name", v)} />
-                    <Field label="Last Name *" value={form.last_name} onChange={(v: string) => set("last_name", v)} />
-                    <Field label="Father's Name *" value={form.father_name} onChange={(v: string) => set("father_name", v)} />
-                    <Field label="Mother's Name" value={form.mother_name} onChange={(v: string) => set("mother_name", v)} />
-                    <SelectField label="Gender *" value={form.gender} onChange={(v: string) => set("gender", v)} options={["", "Male", "Female", "Other"]} />
-                    <Field label="Date of Birth *" type="date" value={form.dob} onChange={(v: string) => set("dob", v)} />
-                    <SelectField label="Blood Group" value={form.blood_group} onChange={(v: string) => set("blood_group", v)} options={["", "A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-"]} />
-                    <SelectField label="Category" value={form.category} onChange={(v: string) => set("category", v)} options={["", "General", "OBC", "SC", "ST", "EWS"]} />
-                    <Field label="Aadhaar Number" inputMode="numeric" maxLength={12} value={form.aadhaar_number} onChange={(v: string) => set("aadhaar_number", v)} />
+                    {ordered([
+                      { key: "first_name", node: <Field label={lbl("first_name", "First Name")} value={form.first_name} onChange={(v: string) => set("first_name", v)} /> },
+                      { key: "last_name", node: <Field label={lbl("last_name", "Last Name")} value={form.last_name} onChange={(v: string) => set("last_name", v)} /> },
+                      { key: "father_name", node: <Field label={lbl("father_name", "Father's Name")} value={form.father_name} onChange={(v: string) => set("father_name", v)} /> },
+                      { key: "mother_name", node: <Field label={lbl("mother_name", "Mother's Name")} value={form.mother_name} onChange={(v: string) => set("mother_name", v)} /> },
+                      { key: "gender", node: <SelectField label={lbl("gender", "Gender")} value={form.gender} onChange={(v: string) => set("gender", v)} options={["", "Male", "Female", "Other"]} /> },
+                      { key: "dob", node: <Field label={lbl("dob", "Date of Birth")} type="date" value={form.dob} onChange={(v: string) => set("dob", v)} /> },
+                      { key: "blood_group", node: <SelectField label={lbl("blood_group", "Blood Group")} value={form.blood_group} onChange={(v: string) => set("blood_group", v)} options={["", "A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-"]} /> },
+                      { key: "category", node: <SelectField label={lbl("category", "Category")} value={form.category} onChange={(v: string) => set("category", v)} options={["", "General", "OBC", "SC", "ST", "EWS"]} /> },
+                      { key: "aadhaar_number", node: <Field label={lbl("aadhaar_number", "Aadhaar Number")} inputMode="numeric" maxLength={12} value={form.aadhaar_number} onChange={(v: string) => set("aadhaar_number", v)} /> },
+                    ])}
                   </div>
                 )}
 
                 {step === 1 && (
                   <div className="grid gap-4 sm:grid-cols-2">
-                    <Field label="Mobile Number *" type="tel" inputMode="numeric" maxLength={10} value={form.mobile} onChange={(v: string) => set("mobile", v)} />
-                    <Field label="Alternate Mobile" type="tel" inputMode="numeric" maxLength={10} value={form.alternate_mobile} onChange={(v: string) => set("alternate_mobile", v)} />
-                    <Field label="Email" type="email" className="sm:col-span-2" value={form.email} onChange={(v: string) => set("email", v)} />
-                    <Field label="Address *" className="sm:col-span-2" value={form.address} onChange={(v: string) => set("address", v)} />
-                    <Field label="State *" value={form.state} onChange={(v: string) => set("state", v)} />
-                    <Field label="District *" value={form.district} onChange={(v: string) => set("district", v)} />
-                    <Field label="PIN Code" inputMode="numeric" maxLength={6} value={form.pincode} onChange={(v: string) => set("pincode", v)} />
+                    {ordered([
+                      { key: "mobile", node: <Field label={lbl("mobile", "Mobile Number")} type="tel" inputMode="numeric" maxLength={10} value={form.mobile} onChange={(v: string) => set("mobile", v)} /> },
+                      { key: "alternate_mobile", node: <Field label={lbl("alternate_mobile", "Alternate Mobile")} type="tel" inputMode="numeric" maxLength={10} value={form.alternate_mobile} onChange={(v: string) => set("alternate_mobile", v)} /> },
+                      { key: "email", node: <Field label={lbl("email", "Email")} type="email" className="sm:col-span-2" value={form.email} onChange={(v: string) => set("email", v)} /> },
+                      { key: "address", node: <Field label={lbl("address", "Address")} className="sm:col-span-2" value={form.address} onChange={(v: string) => set("address", v)} /> },
+                      { key: "state", node: <Field label={lbl("state", "State")} value={form.state} onChange={(v: string) => set("state", v)} /> },
+                      { key: "district", node: <Field label={lbl("district", "District")} value={form.district} onChange={(v: string) => set("district", v)} /> },
+                      { key: "pincode", node: <Field label={lbl("pincode", "PIN Code")} inputMode="numeric" maxLength={6} value={form.pincode} onChange={(v: string) => set("pincode", v)} /> },
+                    ])}
                   </div>
                 )}
 
                 {step === 2 && (
                   <div className="grid gap-4 sm:grid-cols-2">
-                    <SelectField label="Highest Qualification *" value={form.qualification} onChange={(v: string) => set("qualification", v)} options={["", "8th", "10th", "12th", "Diploma", "Graduate", "Post Graduate"]} />
-                    <Field label="School / College" value={form.school} onChange={(v: string) => set("school", v)} />
-                    <Field label="Board / University" value={form.board} onChange={(v: string) => set("board", v)} />
-                    <Field label="Passing Year" inputMode="numeric" maxLength={4} value={form.passing_year} onChange={(v: string) => set("passing_year", v)} />
-                    <Field label="Percentage / CGPA %" inputMode="decimal" value={form.percentage} onChange={(v: string) => set("percentage", v)} />
+                    {ordered([
+                      { key: "qualification", node: <SelectField label={lbl("qualification", "Highest Qualification")} value={form.qualification} onChange={(v: string) => set("qualification", v)} options={["", "8th", "10th", "12th", "Diploma", "Graduate", "Post Graduate"]} /> },
+                      { key: "school", node: <Field label={lbl("school", "School / College")} value={form.school} onChange={(v: string) => set("school", v)} /> },
+                      { key: "board", node: <Field label={lbl("board", "Board / University")} value={form.board} onChange={(v: string) => set("board", v)} /> },
+                      { key: "passing_year", node: <Field label={lbl("passing_year", "Passing Year")} inputMode="numeric" maxLength={4} value={form.passing_year} onChange={(v: string) => set("passing_year", v)} /> },
+                      { key: "percentage", node: <Field label={lbl("percentage", "Percentage / CGPA %")} inputMode="decimal" value={form.percentage} onChange={(v: string) => set("percentage", v)} /> },
+                    ])}
                   </div>
                 )}
 
                 {step === 3 && (
                   <div className="grid gap-4 sm:grid-cols-2">
-                    <SelectField label="Select Branch *" value={form.branch_id} onChange={(v: string) => set("branch_id", v)}
-                      options={[{ value: "", label: "— Select a branch —" }, ...branches.map(b => ({ value: b.id, label: `${b.name}${b.city ? ` · ${b.city}` : ""}` }))]} />
-                    <SelectField label="Select Course *" value={form.course_id} onChange={(v: string) => set("course_id", v)}
-                      options={[{ value: "", label: "— Select a course —" }, ...courses.map(c => ({ value: c.id, label: `${c.code} · ${c.name}` }))]} />
-                    <SelectField label="Select Batch" value={form.batch_id} onChange={(v: string) => set("batch_id", v)}
-                      options={[{ value: "", label: batches.length ? "— Select a batch —" : "No active batches" }, ...batches.map(b => ({ value: b.id, label: `${b.name}${b.timing ? ` · ${b.timing}` : ""}` }))]} />
-                    <Field label="Session" value={form.session} onChange={(v: string) => set("session", v)} />
-                    <SelectField label="Preferred Timing" value={form.preferred_timing} onChange={(v: string) => set("preferred_timing", v)} options={["", "Morning", "Afternoon", "Evening", "Weekend"]} />
+                    {ordered([
+                      { key: "branch_id", node: <SelectField label={lbl("branch_id", "Select Branch")} value={form.branch_id} onChange={(v: string) => set("branch_id", v)}
+                        options={[{ value: "", label: "— Select a branch —" }, ...branches.map(b => ({ value: b.id, label: `${b.name}${b.city ? ` · ${b.city}` : ""}` }))]} /> },
+                      { key: "course_id", node: <SelectField label={lbl("course_id", "Select Course")} value={form.course_id} onChange={(v: string) => set("course_id", v)}
+                        options={[{ value: "", label: "— Select a course —" }, ...courses.map(c => ({ value: c.id, label: `${c.code} · ${c.name}` }))]} /> },
+                      { key: "batch_id", node: <SelectField label={lbl("batch_id", "Select Batch")} value={form.batch_id} onChange={(v: string) => set("batch_id", v)}
+                        options={[{ value: "", label: batches.length ? "— Select a batch —" : "No active batches" }, ...batches.map(b => ({ value: b.id, label: `${b.name}${b.timing ? ` · ${b.timing}` : ""}` }))]} /> },
+                      { key: "session", node: <Field label={lbl("session", "Session")} value={form.session} onChange={(v: string) => set("session", v)} /> },
+                      { key: "preferred_timing", node: <SelectField label={lbl("preferred_timing", "Preferred Timing")} value={form.preferred_timing} onChange={(v: string) => set("preferred_timing", v)} options={["", "Morning", "Afternoon", "Evening", "Weekend"]} /> },
+                    ])}
                   </div>
                 )}
 
                 {step === 4 && (
                   <div className="grid gap-3 sm:grid-cols-2">
-                    {FILE_FIELDS.map(f => (
-                      <FileTile key={f.key}
-                        label={f.label + (f.required ? " *" : "")}
-                        accept={f.accept}
-                        state={uploads[f.key]}
-                        loading={uploading === f.key}
-                        onFile={(file) => uploadFile(f.key, file, f.accept)}
-                      />
-                    ))}
+                    {ordered(FILE_FIELDS.map(f => ({
+                      key: f.key,
+                      node: (
+                        <FileTile
+                          label={lbl(f.key, f.label)}
+                          accept={f.accept}
+                          state={uploads[f.key]}
+                          loading={uploading === f.key}
+                          onFile={(file) => uploadFile(f.key, file, f.accept)}
+                        />
+                      ),
+                    })))}
                     <p className="sm:col-span-2 text-xs text-muted-foreground">Accepted formats: JPG, PNG, PDF (where applicable). Max {MAX_MB}MB per file.</p>
                   </div>
                 )}
@@ -348,21 +394,24 @@ function AdmissionPage() {
                       <h3 className="text-sm font-bold uppercase tracking-wider text-brand-dark">Review your application</h3>
                       <dl className="mt-3 grid gap-x-6 gap-y-1.5 text-sm sm:grid-cols-2">
                         <Row k="Name" v={`${form.first_name ?? ""} ${form.last_name ?? ""}`} />
-                        <Row k="Mobile" v={form.mobile} />
-                        <Row k="Email" v={form.email} />
-                        <Row k="Course" v={courses.find(c => c.id === form.course_id)?.name} />
-                        <Row k="Branch" v={branches.find(b => b.id === form.branch_id)?.name} />
-                        <Row k="Batch" v={batches.find(b => b.id === form.batch_id)?.name || "—"} />
+                        {vis("mobile") ? <Row k="Mobile" v={form.mobile} /> : null}
+                        {vis("email") ? <Row k="Email" v={form.email} /> : null}
+                        {vis("course_id") ? <Row k="Course" v={courses.find(c => c.id === form.course_id)?.name} /> : null}
+                        {vis("branch_id") ? <Row k="Branch" v={branches.find(b => b.id === form.branch_id)?.name} /> : null}
+                        {vis("batch_id") ? <Row k="Batch" v={batches.find(b => b.id === form.batch_id)?.name || "—"} /> : null}
                       </dl>
                     </div>
-                    <label className="flex items-start gap-3 rounded-xl border bg-white p-4">
-                      <input type="checkbox" checked={agree} onChange={e => setAgree(e.target.checked)} className="mt-1 h-4 w-4 accent-brand" />
-                      <span className="text-sm text-ink">
-                        I certify that all information provided is correct and I have uploaded genuine documents. I understand that any false information may lead to cancellation of admission.
-                      </span>
-                    </label>
+                    {vis("declaration_agree") ? (
+                      <label className="flex items-start gap-3 rounded-xl border bg-white p-4">
+                        <input type="checkbox" checked={agree} onChange={e => setAgree(e.target.checked)} className="mt-1 h-4 w-4 accent-brand" />
+                        <span className="text-sm text-ink">
+                          I certify that all information provided is correct and I have uploaded genuine documents. I understand that any false information may lead to cancellation of admission.
+                        </span>
+                      </label>
+                    ) : null}
                   </div>
                 )}
+
               </motion.div>
             </AnimatePresence>
 
