@@ -6,7 +6,7 @@ import { Upload, Sparkles, ArrowRight, ArrowLeft, AlertCircle, Check, Loader2, F
 import { toast } from "sonner";
 import { SiteLayout, PageHero } from "@/components/site/SiteLayout";
 import { supabase } from "@/integrations/supabase/client";
-import { submitAdmission, listCoursesPublic, listBranchesPublic, listBatchesPublic, checkAdmissionDuplicates } from "@/lib/admissions.functions";
+import { submitAdmission, listCoursesPublic, listBranchesPublic, listBatchesPublic, checkAdmissionDuplicates, listAdmissionFormFields } from "@/lib/admissions.functions";
 import { emailService, smsService } from "@/lib/notifications.stub";
 
 export const Route = createFileRoute("/admission")({
