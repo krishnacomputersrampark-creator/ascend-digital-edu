@@ -393,18 +393,19 @@ function AdmissionPage() {
                       <h3 className="text-sm font-bold uppercase tracking-wider text-brand-dark">Review your application</h3>
                       <dl className="mt-3 grid gap-x-6 gap-y-1.5 text-sm sm:grid-cols-2">
                         <Row k="Name" v={`${form.first_name ?? ""} ${form.last_name ?? ""}`} />
-                        {vis("mobile") ? <Row k="Mobile" v={form.mobile} /> : null}
-                        {vis("email") ? <Row k="Email" v={form.email} /> : null}
-                        {vis("course_id") ? <Row k="Course" v={courses.find(c => c.id === form.course_id)?.name} /> : null}
-                        {vis("branch_id") ? <Row k="Branch" v={branches.find(b => b.id === form.branch_id)?.name} /> : null}
-                        {vis("batch_id") ? <Row k="Batch" v={batches.find(b => b.id === form.batch_id)?.name || "—"} /> : null}
+                        {vis("mobile") ? <Row k={cfg["mobile"]?.label || "Mobile"} v={form.mobile} /> : null}
+                        {vis("email") ? <Row k={cfg["email"]?.label || "Email"} v={form.email} /> : null}
+                        {vis("course_id") ? <Row k={cfg["course_id"]?.label || "Course"} v={courses.find(c => c.id === form.course_id)?.name} /> : null}
+                        {vis("branch_id") ? <Row k={cfg["branch_id"]?.label || "Branch"} v={branches.find(b => b.id === form.branch_id)?.name} /> : null}
+                        {vis("batch_id") ? <Row k={cfg["batch_id"]?.label || "Batch"} v={batches.find(b => b.id === form.batch_id)?.name || "—"} /> : null}
                       </dl>
                     </div>
                     {vis("declaration_agree") ? (
                       <label className="flex items-start gap-3 rounded-xl border bg-white p-4">
                         <input type="checkbox" checked={agree} onChange={e => setAgree(e.target.checked)} className="mt-1 h-4 w-4 accent-brand" />
                         <span className="text-sm text-ink">
-                          I certify that all information provided is correct and I have uploaded genuine documents. I understand that any false information may lead to cancellation of admission.
+                          {cfg["declaration_agree"]?.help_text || null}
+                          {cfg["declaration_agree"]?.help_text ? null : <>I certify that all information provided is correct and I have uploaded genuine documents. I understand that any false information may lead to cancellation of admission.</>}
                         </span>
                       </label>
                     ) : null}
@@ -428,7 +429,7 @@ function AdmissionPage() {
                   Next <ArrowRight className="h-4 w-4" />
                 </button>
               ) : (
-                <button type="button" onClick={onSubmit} disabled={busy || !agree} className="inline-flex items-center gap-2 rounded-full gradient-brand px-6 py-2.5 text-sm font-semibold text-white shadow-brand disabled:opacity-60">
+                <button type="button" onClick={onSubmit} disabled={busy || (vis("declaration_agree") && req("declaration_agree") && !agree)} className="inline-flex items-center gap-2 rounded-full gradient-brand px-6 py-2.5 text-sm font-semibold text-white shadow-brand disabled:opacity-60">
                   {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
                   {busy ? "Submitting…" : "Submit Application"}
                 </button>
