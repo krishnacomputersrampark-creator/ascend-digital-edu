@@ -1167,11 +1167,14 @@ export type Database = {
           form_config_id: string
           help_text: string | null
           id: string
+          is_active: boolean
           is_required: boolean
           is_visible: boolean
           label: string
+          options: Json
           placeholder: string | null
           roles: Database["public"]["Enums"]["app_role"][]
+          section: string | null
           sort_order: number
           updated_at: string
           validation: Json
@@ -1184,11 +1187,14 @@ export type Database = {
           form_config_id: string
           help_text?: string | null
           id?: string
+          is_active?: boolean
           is_required?: boolean
           is_visible?: boolean
           label: string
+          options?: Json
           placeholder?: string | null
           roles?: Database["public"]["Enums"]["app_role"][]
+          section?: string | null
           sort_order?: number
           updated_at?: string
           validation?: Json
@@ -1201,11 +1207,14 @@ export type Database = {
           form_config_id?: string
           help_text?: string | null
           id?: string
+          is_active?: boolean
           is_required?: boolean
           is_visible?: boolean
           label?: string
+          options?: Json
           placeholder?: string | null
           roles?: Database["public"]["Enums"]["app_role"][]
+          section?: string | null
           sort_order?: number
           updated_at?: string
           validation?: Json
