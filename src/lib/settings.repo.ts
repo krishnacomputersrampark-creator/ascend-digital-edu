@@ -20,6 +20,7 @@ export type FormField = {
   id: string; form_config_id: string; field_key: string; label: string; field_type: string;
   is_required: boolean; is_visible: boolean; sort_order: number; help_text: string | null;
   placeholder: string | null; default_value: string | null; validation: Record<string, any>; roles: AppRole[];
+  section: string | null; options: string[]; is_active: boolean;
 };
 export type NotificationTemplate = {
   id: string; key: string; channel: string; name: string; subject: string | null; body: string;

@@ -458,6 +458,9 @@ export type PublicFormFieldCfg = {
   sort_order: number;
   placeholder: string | null;
   help_text: string | null;
+  section: string | null;
+  options: string[];
+  is_active: boolean;
 };
 
 export const listAdmissionFormFields = createServerFn({ method: "GET" }).handler(async () => {
@@ -468,7 +471,7 @@ export const listAdmissionFormFields = createServerFn({ method: "GET" }).handler
   if (!cfg) return [] as PublicFormFieldCfg[];
   const { data, error } = await sb
     .from("form_fields")
-    .select("field_key, label, is_visible, is_required, sort_order, placeholder, help_text")
+    .select("field_key, label, is_visible, is_required, sort_order, placeholder, help_text, section, options, is_active")
     .eq("form_config_id", cfg.id)
     .order("sort_order");
   if (error) throw new Error(error.message);

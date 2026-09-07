@@ -370,9 +370,19 @@ export function FormsPanel() {
               <input className={`${inp} mt-1`} defaultValue={f.help_text ?? ""} onBlur={(e) => patch(f, { help_text: e.target.value })} /></label>
             <label className="block"><span className="text-xs font-semibold text-ink/80">Default Value</span>
               <input className={`${inp} mt-1`} defaultValue={f.default_value ?? ""} onBlur={(e) => patch(f, { default_value: e.target.value })} /></label>
-            <div className="flex items-center gap-4 sm:col-span-3">
+            <label className="block"><span className="text-xs font-semibold text-ink/80">Section / Step</span>
+              <input className={`${inp} mt-1`} defaultValue={f.section ?? ""} placeholder="Personal, Contact, Academic…" onBlur={(e) => e.target.value !== (f.section ?? "") && patch(f, { section: e.target.value || null })} /></label>
+            <label className="block sm:col-span-2"><span className="text-xs font-semibold text-ink/80">Dropdown Options (comma separated)</span>
+              <input className={`${inp} mt-1`} disabled={f.field_type !== "dropdown"} defaultValue={(f.options ?? []).join(", ")}
+                placeholder={f.field_type === "dropdown" ? "Male, Female, Other" : "Only for dropdown fields"}
+                onBlur={(e) => {
+                  const next = e.target.value.split(",").map((x) => x.trim()).filter(Boolean);
+                  if (JSON.stringify(next) !== JSON.stringify(f.options ?? [])) patch(f, { options: next });
+                }} /></label>
+            <div className="flex flex-wrap items-center gap-4 sm:col-span-3">
               <label className="flex items-center gap-2 text-xs font-semibold text-ink/80"><input type="checkbox" checked={f.is_required} onChange={(e) => patch(f, { is_required: e.target.checked })} /> Required</label>
               <label className="flex items-center gap-2 text-xs font-semibold text-ink/80"><input type="checkbox" checked={f.is_visible} onChange={(e) => patch(f, { is_visible: e.target.checked })} /> Visible</label>
+              <label className="flex items-center gap-2 text-xs font-semibold text-ink/80"><input type="checkbox" checked={f.is_active !== false} onChange={(e) => patch(f, { is_active: e.target.checked })} /> Active</label>
             </div>
           </div>
         </PanelCard>

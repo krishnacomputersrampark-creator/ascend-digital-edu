@@ -35,7 +35,11 @@ const FILE_FIELDS = [
 ] as const;
 
 type FormState = Record<string, string>;
-type FieldCfg = { field_key: string; label: string; is_visible: boolean; is_required: boolean; sort_order: number };
+type FieldCfg = {
+  field_key: string; label: string; is_visible: boolean; is_required: boolean; sort_order: number;
+  placeholder?: string | null; help_text?: string | null; section?: string | null;
+  options?: string[] | null; is_active?: boolean;
+};
 
 const DEFAULT_REQUIRED = new Set([
   "first_name", "last_name", "father_name", "gender", "dob",
@@ -69,12 +73,20 @@ function AdmissionPage() {
   const draftId = useRef<string>("");
 
   // Field-level configuration controlled by Super Admin (Configuration → Forms)
-  const vis = (k: string) => cfg[k]?.is_visible !== false;
+  const vis = (k: string) => (cfg[k] ? cfg[k].is_visible !== false && cfg[k].is_active !== false : true);
   const req = (k: string) => (cfg[k] ? cfg[k].is_required : DEFAULT_REQUIRED.has(k));
   const lbl = (k: string, fallback: string) => `${cfg[k]?.label || fallback}${req(k) ? " *" : ""}`;
   const ord = (k: string, fallback: number) => cfg[k]?.sort_order ?? fallback;
   const ordered = (items: { key: string; node: React.ReactNode }[]) =>
     items.filter(i => vis(i.key)).sort((a, b) => ord(a.key, 0) - ord(b.key, 0)).map(i => <div key={i.key} className="contents">{i.node}</div>);
+  const ph = (k: string) => cfg[k]?.placeholder || undefined;
+  const help = (k: string) => cfg[k]?.help_text || undefined;
+  const sect = (k: string, fallback: string) => cfg[k]?.section || fallback;
+  // Configured dropdown options win over the built-in defaults
+  const opts = (k: string, fallback: string[]) => {
+    const c = cfg[k]?.options;
+    return c && c.length ? ["", ...c] : fallback;
+  };
 
 
   // Load draft + a per-session upload folder id
@@ -274,6 +286,56 @@ function AdmissionPage() {
 
   const progress = useMemo(() => Math.round(((step + 1) / STEPS.length) * 100), [step]);
 
+  // Every admission field, driven entirely by Configuration → Forms → Student Admission Form
+  const ITEMS: { key: string; section: string; node: React.ReactNode }[] = [
+    { key: "first_name", section: "Personal", node: <Field label={lbl("first_name", "First Name")} placeholder={ph("first_name")} help={help("first_name")} value={form.first_name} onChange={(v: string) => set("first_name", v)} /> },
+    { key: "last_name", section: "Personal", node: <Field label={lbl("last_name", "Last Name")} placeholder={ph("last_name")} help={help("last_name")} value={form.last_name} onChange={(v: string) => set("last_name", v)} /> },
+    { key: "father_name", section: "Personal", node: <Field label={lbl("father_name", "Father's Name")} placeholder={ph("father_name")} help={help("father_name")} value={form.father_name} onChange={(v: string) => set("father_name", v)} /> },
+    { key: "mother_name", section: "Personal", node: <Field label={lbl("mother_name", "Mother's Name")} placeholder={ph("mother_name")} help={help("mother_name")} value={form.mother_name} onChange={(v: string) => set("mother_name", v)} /> },
+    { key: "gender", section: "Personal", node: <SelectField label={lbl("gender", "Gender")} help={help("gender")} value={form.gender} onChange={(v: string) => set("gender", v)} options={opts("gender", ["", "Male", "Female", "Other"])} /> },
+    { key: "dob", section: "Personal", node: <Field label={lbl("dob", "Date of Birth")} help={help("dob")} type="date" value={form.dob} onChange={(v: string) => set("dob", v)} /> },
+    { key: "blood_group", section: "Personal", node: <SelectField label={lbl("blood_group", "Blood Group")} help={help("blood_group")} value={form.blood_group} onChange={(v: string) => set("blood_group", v)} options={opts("blood_group", ["", "A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-"])} /> },
+    { key: "category", section: "Personal", node: <SelectField label={lbl("category", "Category")} help={help("category")} value={form.category} onChange={(v: string) => set("category", v)} options={opts("category", ["", "General", "OBC", "SC", "ST", "EWS"])} /> },
+    { key: "aadhaar_number", section: "Personal", node: <Field label={lbl("aadhaar_number", "Aadhaar Number")} placeholder={ph("aadhaar_number")} help={help("aadhaar_number")} inputMode="numeric" maxLength={12} value={form.aadhaar_number} onChange={(v: string) => set("aadhaar_number", v)} /> },
+
+    { key: "mobile", section: "Contact", node: <Field label={lbl("mobile", "Mobile Number")} placeholder={ph("mobile")} help={help("mobile")} type="tel" inputMode="numeric" maxLength={10} value={form.mobile} onChange={(v: string) => set("mobile", v)} /> },
+    { key: "alternate_mobile", section: "Contact", node: <Field label={lbl("alternate_mobile", "Alternate Mobile")} placeholder={ph("alternate_mobile")} help={help("alternate_mobile")} type="tel" inputMode="numeric" maxLength={10} value={form.alternate_mobile} onChange={(v: string) => set("alternate_mobile", v)} /> },
+    { key: "email", section: "Contact", node: <Field label={lbl("email", "Email")} placeholder={ph("email")} help={help("email")} type="email" className="sm:col-span-2" value={form.email} onChange={(v: string) => set("email", v)} /> },
+    { key: "address", section: "Contact", node: <Field label={lbl("address", "Address")} placeholder={ph("address")} help={help("address")} className="sm:col-span-2" value={form.address} onChange={(v: string) => set("address", v)} /> },
+    { key: "state", section: "Contact", node: <Field label={lbl("state", "State")} placeholder={ph("state")} help={help("state")} value={form.state} onChange={(v: string) => set("state", v)} /> },
+    { key: "district", section: "Contact", node: <Field label={lbl("district", "District")} placeholder={ph("district")} help={help("district")} value={form.district} onChange={(v: string) => set("district", v)} /> },
+    { key: "pincode", section: "Contact", node: <Field label={lbl("pincode", "PIN Code")} placeholder={ph("pincode")} help={help("pincode")} inputMode="numeric" maxLength={6} value={form.pincode} onChange={(v: string) => set("pincode", v)} /> },
+
+    { key: "qualification", section: "Academic", node: <SelectField label={lbl("qualification", "Highest Qualification")} help={help("qualification")} value={form.qualification} onChange={(v: string) => set("qualification", v)} options={opts("qualification", ["", "8th", "10th", "12th", "Diploma", "Graduate", "Post Graduate"])} /> },
+    { key: "school", section: "Academic", node: <Field label={lbl("school", "School / College")} placeholder={ph("school")} help={help("school")} value={form.school} onChange={(v: string) => set("school", v)} /> },
+    { key: "board", section: "Academic", node: <Field label={lbl("board", "Board / University")} placeholder={ph("board")} help={help("board")} value={form.board} onChange={(v: string) => set("board", v)} /> },
+    { key: "passing_year", section: "Academic", node: <Field label={lbl("passing_year", "Passing Year")} placeholder={ph("passing_year")} help={help("passing_year")} inputMode="numeric" maxLength={4} value={form.passing_year} onChange={(v: string) => set("passing_year", v)} /> },
+    { key: "percentage", section: "Academic", node: <Field label={lbl("percentage", "Percentage / CGPA %")} placeholder={ph("percentage")} help={help("percentage")} inputMode="decimal" value={form.percentage} onChange={(v: string) => set("percentage", v)} /> },
+
+    { key: "branch_id", section: "Course", node: <SelectField label={lbl("branch_id", "Select Branch")} help={help("branch_id")} value={form.branch_id} onChange={(v: string) => set("branch_id", v)}
+      options={[{ value: "", label: "— Select a branch —" }, ...branches.map(b => ({ value: b.id, label: `${b.name}${b.city ? ` · ${b.city}` : ""}` }))]} /> },
+    { key: "course_id", section: "Course", node: <SelectField label={lbl("course_id", "Select Course")} help={help("course_id")} value={form.course_id} onChange={(v: string) => set("course_id", v)}
+      options={[{ value: "", label: "— Select a course —" }, ...courses.map(c => ({ value: c.id, label: `${c.code} · ${c.name}` }))]} /> },
+    { key: "batch_id", section: "Course", node: <SelectField label={lbl("batch_id", "Select Batch")} help={help("batch_id")} value={form.batch_id} onChange={(v: string) => set("batch_id", v)}
+      options={[{ value: "", label: batches.length ? "— Select a batch —" : "No active batches" }, ...batches.map(b => ({ value: b.id, label: `${b.name}${b.timing ? ` · ${b.timing}` : ""}` }))]} /> },
+    { key: "session", section: "Course", node: <Field label={lbl("session", "Session")} placeholder={ph("session")} help={help("session")} value={form.session} onChange={(v: string) => set("session", v)} /> },
+    { key: "preferred_timing", section: "Course", node: <SelectField label={lbl("preferred_timing", "Preferred Timing")} help={help("preferred_timing")} value={form.preferred_timing} onChange={(v: string) => set("preferred_timing", v)} options={opts("preferred_timing", ["", "Morning", "Afternoon", "Evening", "Weekend"])} /> },
+
+    ...FILE_FIELDS.map(f => ({
+      key: f.key as string,
+      section: "Documents",
+      node: (
+        <FileTile
+          label={lbl(f.key, f.label)}
+          accept={f.accept}
+          state={uploads[f.key]}
+          loading={uploading === f.key}
+          onFile={(file: File) => uploadFile(f.key, file, f.accept)}
+        />
+      ),
+    })),
+  ];
+
   return (
     <SiteLayout>
       <PageHero
@@ -313,80 +375,17 @@ function AdmissionPage() {
 
             <AnimatePresence mode="wait">
               <motion.div key={step} initial={{ opacity: 0, x: 12 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -12 }}>
-                {step === 0 && (
-                  <div className="grid gap-4 sm:grid-cols-2">
-                    {ordered([
-                      { key: "first_name", node: <Field label={lbl("first_name", "First Name")} value={form.first_name} onChange={(v: string) => set("first_name", v)} /> },
-                      { key: "last_name", node: <Field label={lbl("last_name", "Last Name")} value={form.last_name} onChange={(v: string) => set("last_name", v)} /> },
-                      { key: "father_name", node: <Field label={lbl("father_name", "Father's Name")} value={form.father_name} onChange={(v: string) => set("father_name", v)} /> },
-                      { key: "mother_name", node: <Field label={lbl("mother_name", "Mother's Name")} value={form.mother_name} onChange={(v: string) => set("mother_name", v)} /> },
-                      { key: "gender", node: <SelectField label={lbl("gender", "Gender")} value={form.gender} onChange={(v: string) => set("gender", v)} options={["", "Male", "Female", "Other"]} /> },
-                      { key: "dob", node: <Field label={lbl("dob", "Date of Birth")} type="date" value={form.dob} onChange={(v: string) => set("dob", v)} /> },
-                      { key: "blood_group", node: <SelectField label={lbl("blood_group", "Blood Group")} value={form.blood_group} onChange={(v: string) => set("blood_group", v)} options={["", "A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-"]} /> },
-                      { key: "category", node: <SelectField label={lbl("category", "Category")} value={form.category} onChange={(v: string) => set("category", v)} options={["", "General", "OBC", "SC", "ST", "EWS"]} /> },
-                      { key: "aadhaar_number", node: <Field label={lbl("aadhaar_number", "Aadhaar Number")} inputMode="numeric" maxLength={12} value={form.aadhaar_number} onChange={(v: string) => set("aadhaar_number", v)} /> },
-                    ])}
+                {STEPS.slice(0, 5).map((name, i) => i !== step ? null : (
+                  <div key={name} className="grid gap-4 sm:grid-cols-2">
+                    {ordered(ITEMS.filter(it => sect(it.key, it.section) === name))}
+                    {name === "Documents" ? (
+                      <p className="sm:col-span-2 text-xs text-muted-foreground">Accepted formats: JPG, PNG, PDF (where applicable). Max {MAX_MB}MB per file.</p>
+                    ) : null}
+                    {ITEMS.filter(it => sect(it.key, it.section) === name).every(it => !vis(it.key)) ? (
+                      <p className="sm:col-span-2 text-sm text-muted-foreground">No fields are enabled for this step.</p>
+                    ) : null}
                   </div>
-                )}
-
-                {step === 1 && (
-                  <div className="grid gap-4 sm:grid-cols-2">
-                    {ordered([
-                      { key: "mobile", node: <Field label={lbl("mobile", "Mobile Number")} type="tel" inputMode="numeric" maxLength={10} value={form.mobile} onChange={(v: string) => set("mobile", v)} /> },
-                      { key: "alternate_mobile", node: <Field label={lbl("alternate_mobile", "Alternate Mobile")} type="tel" inputMode="numeric" maxLength={10} value={form.alternate_mobile} onChange={(v: string) => set("alternate_mobile", v)} /> },
-                      { key: "email", node: <Field label={lbl("email", "Email")} type="email" className="sm:col-span-2" value={form.email} onChange={(v: string) => set("email", v)} /> },
-                      { key: "address", node: <Field label={lbl("address", "Address")} className="sm:col-span-2" value={form.address} onChange={(v: string) => set("address", v)} /> },
-                      { key: "state", node: <Field label={lbl("state", "State")} value={form.state} onChange={(v: string) => set("state", v)} /> },
-                      { key: "district", node: <Field label={lbl("district", "District")} value={form.district} onChange={(v: string) => set("district", v)} /> },
-                      { key: "pincode", node: <Field label={lbl("pincode", "PIN Code")} inputMode="numeric" maxLength={6} value={form.pincode} onChange={(v: string) => set("pincode", v)} /> },
-                    ])}
-                  </div>
-                )}
-
-                {step === 2 && (
-                  <div className="grid gap-4 sm:grid-cols-2">
-                    {ordered([
-                      { key: "qualification", node: <SelectField label={lbl("qualification", "Highest Qualification")} value={form.qualification} onChange={(v: string) => set("qualification", v)} options={["", "8th", "10th", "12th", "Diploma", "Graduate", "Post Graduate"]} /> },
-                      { key: "school", node: <Field label={lbl("school", "School / College")} value={form.school} onChange={(v: string) => set("school", v)} /> },
-                      { key: "board", node: <Field label={lbl("board", "Board / University")} value={form.board} onChange={(v: string) => set("board", v)} /> },
-                      { key: "passing_year", node: <Field label={lbl("passing_year", "Passing Year")} inputMode="numeric" maxLength={4} value={form.passing_year} onChange={(v: string) => set("passing_year", v)} /> },
-                      { key: "percentage", node: <Field label={lbl("percentage", "Percentage / CGPA %")} inputMode="decimal" value={form.percentage} onChange={(v: string) => set("percentage", v)} /> },
-                    ])}
-                  </div>
-                )}
-
-                {step === 3 && (
-                  <div className="grid gap-4 sm:grid-cols-2">
-                    {ordered([
-                      { key: "branch_id", node: <SelectField label={lbl("branch_id", "Select Branch")} value={form.branch_id} onChange={(v: string) => set("branch_id", v)}
-                        options={[{ value: "", label: "— Select a branch —" }, ...branches.map(b => ({ value: b.id, label: `${b.name}${b.city ? ` · ${b.city}` : ""}` }))]} /> },
-                      { key: "course_id", node: <SelectField label={lbl("course_id", "Select Course")} value={form.course_id} onChange={(v: string) => set("course_id", v)}
-                        options={[{ value: "", label: "— Select a course —" }, ...courses.map(c => ({ value: c.id, label: `${c.code} · ${c.name}` }))]} /> },
-                      { key: "batch_id", node: <SelectField label={lbl("batch_id", "Select Batch")} value={form.batch_id} onChange={(v: string) => set("batch_id", v)}
-                        options={[{ value: "", label: batches.length ? "— Select a batch —" : "No active batches" }, ...batches.map(b => ({ value: b.id, label: `${b.name}${b.timing ? ` · ${b.timing}` : ""}` }))]} /> },
-                      { key: "session", node: <Field label={lbl("session", "Session")} value={form.session} onChange={(v: string) => set("session", v)} /> },
-                      { key: "preferred_timing", node: <SelectField label={lbl("preferred_timing", "Preferred Timing")} value={form.preferred_timing} onChange={(v: string) => set("preferred_timing", v)} options={["", "Morning", "Afternoon", "Evening", "Weekend"]} /> },
-                    ])}
-                  </div>
-                )}
-
-                {step === 4 && (
-                  <div className="grid gap-3 sm:grid-cols-2">
-                    {ordered(FILE_FIELDS.map(f => ({
-                      key: f.key,
-                      node: (
-                        <FileTile
-                          label={lbl(f.key, f.label)}
-                          accept={f.accept}
-                          state={uploads[f.key]}
-                          loading={uploading === f.key}
-                          onFile={(file) => uploadFile(f.key, file, f.accept)}
-                        />
-                      ),
-                    })))}
-                    <p className="sm:col-span-2 text-xs text-muted-foreground">Accepted formats: JPG, PNG, PDF (where applicable). Max {MAX_MB}MB per file.</p>
-                  </div>
-                )}
+                ))}
 
                 {step === 5 && (
                   <div className="space-y-4">
@@ -394,18 +393,19 @@ function AdmissionPage() {
                       <h3 className="text-sm font-bold uppercase tracking-wider text-brand-dark">Review your application</h3>
                       <dl className="mt-3 grid gap-x-6 gap-y-1.5 text-sm sm:grid-cols-2">
                         <Row k="Name" v={`${form.first_name ?? ""} ${form.last_name ?? ""}`} />
-                        {vis("mobile") ? <Row k="Mobile" v={form.mobile} /> : null}
-                        {vis("email") ? <Row k="Email" v={form.email} /> : null}
-                        {vis("course_id") ? <Row k="Course" v={courses.find(c => c.id === form.course_id)?.name} /> : null}
-                        {vis("branch_id") ? <Row k="Branch" v={branches.find(b => b.id === form.branch_id)?.name} /> : null}
-                        {vis("batch_id") ? <Row k="Batch" v={batches.find(b => b.id === form.batch_id)?.name || "—"} /> : null}
+                        {vis("mobile") ? <Row k={cfg["mobile"]?.label || "Mobile"} v={form.mobile} /> : null}
+                        {vis("email") ? <Row k={cfg["email"]?.label || "Email"} v={form.email} /> : null}
+                        {vis("course_id") ? <Row k={cfg["course_id"]?.label || "Course"} v={courses.find(c => c.id === form.course_id)?.name} /> : null}
+                        {vis("branch_id") ? <Row k={cfg["branch_id"]?.label || "Branch"} v={branches.find(b => b.id === form.branch_id)?.name} /> : null}
+                        {vis("batch_id") ? <Row k={cfg["batch_id"]?.label || "Batch"} v={batches.find(b => b.id === form.batch_id)?.name || "—"} /> : null}
                       </dl>
                     </div>
                     {vis("declaration_agree") ? (
                       <label className="flex items-start gap-3 rounded-xl border bg-white p-4">
                         <input type="checkbox" checked={agree} onChange={e => setAgree(e.target.checked)} className="mt-1 h-4 w-4 accent-brand" />
                         <span className="text-sm text-ink">
-                          I certify that all information provided is correct and I have uploaded genuine documents. I understand that any false information may lead to cancellation of admission.
+                          {cfg["declaration_agree"]?.help_text || null}
+                          {cfg["declaration_agree"]?.help_text ? null : <>I certify that all information provided is correct and I have uploaded genuine documents. I understand that any false information may lead to cancellation of admission.</>}
                         </span>
                       </label>
                     ) : null}
@@ -429,7 +429,7 @@ function AdmissionPage() {
                   Next <ArrowRight className="h-4 w-4" />
                 </button>
               ) : (
-                <button type="button" onClick={onSubmit} disabled={busy || !agree} className="inline-flex items-center gap-2 rounded-full gradient-brand px-6 py-2.5 text-sm font-semibold text-white shadow-brand disabled:opacity-60">
+                <button type="button" onClick={onSubmit} disabled={busy || (vis("declaration_agree") && req("declaration_agree") && !agree)} className="inline-flex items-center gap-2 rounded-full gradient-brand px-6 py-2.5 text-sm font-semibold text-white shadow-brand disabled:opacity-60">
                   {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
                   {busy ? "Submitting…" : "Submit Application"}
                 </button>
@@ -442,18 +442,19 @@ function AdmissionPage() {
   );
 }
 
-function Field({ label, value, onChange, type = "text", className, inputMode, maxLength }: any) {
+function Field({ label, value, onChange, type = "text", className, inputMode, maxLength, placeholder, help }: any) {
   return (
     <label className={`block ${className || ""}`}>
       <span className="text-xs font-semibold uppercase tracking-wider text-ink/60">{label}</span>
       <div className="mt-1.5 rounded-xl border bg-white px-3 py-2.5 focus-within:ring-2 focus-within:ring-brand/30">
-        <input value={value ?? ""} onChange={e => onChange(e.target.value)} type={type} inputMode={inputMode} maxLength={maxLength} className="w-full bg-transparent text-sm focus:outline-none" />
+        <input value={value ?? ""} onChange={e => onChange(e.target.value)} type={type} inputMode={inputMode} maxLength={maxLength} placeholder={placeholder} className="w-full bg-transparent text-sm focus:outline-none" />
       </div>
+      {help ? <span className="mt-1 block text-[11px] text-muted-foreground">{help}</span> : null}
     </label>
   );
 }
 
-function SelectField({ label, value, onChange, options, className }: any) {
+function SelectField({ label, value, onChange, options, className, help }: any) {
   const opts = options.map((o: any) => typeof o === "string" ? { value: o, label: o || "—" } : o);
   return (
     <label className={`block ${className || ""}`}>
@@ -463,6 +464,7 @@ function SelectField({ label, value, onChange, options, className }: any) {
           {opts.map((o: any) => <option key={o.value} value={o.value}>{o.label}</option>)}
         </select>
       </div>
+      {help ? <span className="mt-1 block text-[11px] text-muted-foreground">{help}</span> : null}
     </label>
   );
 }
