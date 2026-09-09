@@ -43,8 +43,11 @@ const EXTRA: Section[] = [
 
 function ConfigurationCenter() {
   const { role, loading } = useAuth();
-  const [active, setActive] = useState("institute");
+  const { section } = Route.useSearch();
+  const [active, setActive] = useState(section ?? "institute");
   const [search, setSearch] = useState("");
+
+  useEffect(() => { if (section) setActive(section); }, [section]);
 
   const sections: Section[] = useMemo(
     () => [
