@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Search, SlidersHorizontal } from "lucide-react";
 import { DashboardShell } from "@/components/erp/DashboardShell";
 import { useAuth } from "@/lib/auth";
@@ -10,6 +10,8 @@ import {
 } from "@/components/erp/settings/panels";
 
 export const Route = createFileRoute("/_authenticated/dashboard/configuration")({
+  validateSearch: (search: Record<string, unknown>): { section?: string } =>
+    typeof search["section"] === "string" ? { section: search["section"] as string } : {},
   head: () => ({
     meta: [
       { title: "Configuration Center · Krishna Computer Center ERP" },
@@ -41,8 +43,11 @@ const EXTRA: Section[] = [
 
 function ConfigurationCenter() {
   const { role, loading } = useAuth();
-  const [active, setActive] = useState("institute");
+  const { section } = Route.useSearch();
+  const [active, setActive] = useState(section ?? "institute");
   const [search, setSearch] = useState("");
+
+  useEffect(() => { if (section) setActive(section); }, [section]);
 
   const sections: Section[] = useMemo(
     () => [
