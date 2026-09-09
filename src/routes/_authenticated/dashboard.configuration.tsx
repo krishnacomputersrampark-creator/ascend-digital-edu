@@ -10,6 +10,9 @@ import {
 } from "@/components/erp/settings/panels";
 
 export const Route = createFileRoute("/_authenticated/dashboard/configuration")({
+  validateSearch: (search: Record<string, unknown>) => ({
+    section: typeof search["section"] === "string" ? (search["section"] as string) : undefined,
+  }),
   head: () => ({
     meta: [
       { title: "Configuration Center · Krishna Computer Center ERP" },
