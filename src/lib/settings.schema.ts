@@ -395,6 +395,223 @@ export const SETTINGS_GROUPS: SettingsGroupDef[] = [
       },
     ],
   },
+  {
+    id: "branding",
+    title: "Branding & Logos",
+    description: "Logos used on the website, receipts, certificates, ID cards and the login page.",
+    group: "branding",
+    settingKey: "config",
+    keywords: ["branding", "logo", "favicon", "receipt logo", "certificate logo", "id card", "login", "header", "footer", "watermark"],
+    cards: [
+      {
+        title: "Logos",
+        fields: [
+          { key: "main_logo_url", label: "Main Logo URL", type: "url", span: 2, help: "Leave blank to use the logo set in Logo Manager." },
+          { key: "header_logo_url", label: "Header Logo URL", type: "url", span: 2 },
+          { key: "footer_logo_url", label: "Footer Logo URL", type: "url", span: 2 },
+          { key: "login_logo_url", label: "Login Page Logo URL", type: "url", span: 2 },
+          { key: "receipt_logo_url", label: "Receipt Logo URL", type: "url", span: 2 },
+          { key: "certificate_logo_url", label: "Certificate Logo URL", type: "url", span: 2 },
+          { key: "idcard_logo_url", label: "ID Card Logo URL", type: "url", span: 2 },
+          { key: "favicon_url", label: "Favicon URL", type: "url", span: 2 },
+        ],
+      },
+      {
+        title: "Signatures & Marks",
+        fields: [
+          { key: "signature_url", label: "Authorised Signature URL", type: "url", span: 2 },
+          { key: "seal_url", label: "Institute Seal URL", type: "url", span: 2 },
+          { key: "watermark_url", label: "Watermark URL", type: "url", span: 2 },
+        ],
+      },
+    ],
+  },
+  {
+    id: "attendance-config",
+    title: "Attendance",
+    description: "Attendance statuses, minimum percentage, lock period and faculty permissions.",
+    group: "attendance",
+    settingKey: "config",
+    keywords: ["attendance", "present", "absent", "leave", "half day", "late", "percentage", "lock"],
+    cards: [
+      {
+        title: "General",
+        fields: [
+          { key: "enabled", label: "Attendance Enabled", type: "switch" },
+          { key: "default_status", label: "Default Status", type: "select", options: [
+            { value: "present", label: "Present" }, { value: "absent", label: "Absent" },
+            { value: "late", label: "Late" }, { value: "half_day", label: "Half Day" }, { value: "leave", label: "Leave" },
+          ] },
+          { key: "allowed_statuses", label: "Allowed Statuses", type: "tags", span: 2 },
+        ],
+      },
+      {
+        title: "Rules",
+        fields: [
+          { key: "minimum_percentage", label: "Minimum Attendance (%)", type: "number" },
+          { key: "half_day_weight", label: "Half Day Weight (%)", type: "number", help: "Counted as this share of a full present day." },
+          { key: "lock_after_days", label: "Lock Attendance After (days)", type: "number" },
+          { key: "faculty_can_mark", label: "Faculty Can Mark Attendance", type: "switch" },
+          { key: "faculty_can_edit", label: "Faculty Can Edit Past Attendance", type: "switch" },
+          { key: "notify_absent", label: "Notify Guardian On Absence", type: "switch" },
+        ],
+      },
+    ],
+  },
+  {
+    id: "results-config",
+    title: "Results & Exams",
+    description: "Exam types, passing marks, grade boundaries, divisions and publication rules.",
+    group: "results",
+    settingKey: "config",
+    keywords: ["result", "exam", "grade", "division", "marks", "passing", "publish"],
+    cards: [
+      {
+        title: "Exams",
+        fields: [
+          { key: "exam_types", label: "Exam Types", type: "tags", span: 2 },
+          { key: "result_statuses", label: "Result Statuses", type: "tags", span: 2 },
+          { key: "passing_percentage", label: "Passing Percentage (%)", type: "number" },
+          { key: "show_marks", label: "Show Marks To Students", type: "switch" },
+          { key: "show_percentage", label: "Show Percentage", type: "switch" },
+          { key: "auto_publish", label: "Auto Publish Results", type: "switch" },
+        ],
+      },
+      {
+        title: "Grades & Divisions",
+        fields: [
+          { key: "grade_a_plus_min", label: "A+ Minimum (%)", type: "number" },
+          { key: "grade_a_min", label: "A Minimum (%)", type: "number" },
+          { key: "grade_b_min", label: "B Minimum (%)", type: "number" },
+          { key: "grade_c_min", label: "C Minimum (%)", type: "number" },
+          { key: "grade_d_min", label: "D Minimum (%)", type: "number" },
+          { key: "first_division_min", label: "First Division Minimum (%)", type: "number" },
+          { key: "second_division_min", label: "Second Division Minimum (%)", type: "number" },
+          { key: "third_division_min", label: "Third Division Minimum (%)", type: "number" },
+        ],
+      },
+    ],
+  },
+  {
+    id: "idcard-config",
+    title: "ID Cards",
+    description: "Layout, visible fields and validity for student and teacher ID cards.",
+    group: "idcard",
+    settingKey: "config",
+    keywords: ["id card", "identity", "card", "qr", "photo", "validity"],
+    cards: [
+      {
+        title: "Layout",
+        fields: [
+          { key: "orientation", label: "Orientation", type: "select", options: [
+            { value: "portrait", label: "Portrait" }, { value: "landscape", label: "Landscape" },
+          ] },
+          { key: "validity_months", label: "Validity (months)", type: "number" },
+          { key: "footer_text", label: "Card Footer Text", type: "textarea", span: 2 },
+          { key: "field_order", label: "Field Order", type: "tags", span: 2, help: "Order of details printed on the card." },
+        ],
+      },
+      {
+        title: "Visible Fields",
+        fields: [
+          { key: "show_logo", label: "Show Logo", type: "switch" },
+          { key: "show_photo", label: "Show Photo", type: "switch" },
+          { key: "show_name", label: "Show Name", type: "switch" },
+          { key: "show_student_id", label: "Show Student ID", type: "switch" },
+          { key: "show_admission_no", label: "Show Admission Number", type: "switch" },
+          { key: "show_course", label: "Show Course", type: "switch" },
+          { key: "show_batch", label: "Show Batch", type: "switch" },
+          { key: "show_branch", label: "Show Branch", type: "switch" },
+          { key: "show_mobile", label: "Show Mobile", type: "switch" },
+          { key: "show_validity", label: "Show Validity", type: "switch" },
+          { key: "show_qr", label: "Show QR Code", type: "switch" },
+          { key: "show_signature", label: "Show Signature", type: "switch" },
+        ],
+      },
+    ],
+  },
+  {
+    id: "downloads-config",
+    title: "Downloads & Study Materials",
+    description: "Upload limits, visibility defaults, permissions and download tracking.",
+    group: "downloads",
+    settingKey: "config",
+    keywords: ["download", "study material", "file", "upload", "visibility", "tracking"],
+    cards: [
+      {
+        title: "Uploads",
+        fields: [
+          { key: "allowed_file_types", label: "Allowed File Types", type: "tags", span: 2 },
+          { key: "max_file_size_mb", label: "Maximum File Size (MB)", type: "number" },
+          { key: "default_visibility", label: "Default Visibility", type: "select", options: [
+            { value: "public", label: "Public" }, { value: "course", label: "Course" },
+            { value: "branch", label: "Branch" }, { value: "batch", label: "Batch" }, { value: "private", label: "Private" },
+          ] },
+        ],
+      },
+      {
+        title: "Permissions",
+        fields: [
+          { key: "faculty_can_upload", label: "Faculty Can Upload", type: "switch" },
+          { key: "students_can_download", label: "Students Can Download", type: "switch" },
+          { key: "track_downloads", label: "Track Downloads", type: "switch" },
+          { key: "show_featured", label: "Show Featured Materials", type: "switch" },
+        ],
+      },
+    ],
+  },
+  {
+    id: "notification-config",
+    title: "Notifications",
+    description: "Which events raise in-app notifications and through which channels.",
+    group: "notifications",
+    settingKey: "config",
+    keywords: ["notification", "alert", "in-app", "admission", "fee", "attendance", "result", "certificate"],
+    cards: [
+      {
+        title: "Channels",
+        fields: [
+          { key: "enabled", label: "Notifications Enabled", type: "switch" },
+          { key: "in_app", label: "In-App Notifications", type: "switch" },
+          { key: "email_channel", label: "Email Channel", type: "switch" },
+          { key: "sms_channel", label: "SMS Channel", type: "switch" },
+          { key: "whatsapp_channel", label: "WhatsApp Channel", type: "switch" },
+        ],
+      },
+      {
+        title: "Events",
+        fields: [
+          { key: "admission_notification", label: "Admission", type: "switch" },
+          { key: "fee_notification", label: "Fee", type: "switch" },
+          { key: "attendance_notification", label: "Attendance", type: "switch" },
+          { key: "result_notification", label: "Result", type: "switch" },
+          { key: "certificate_notification", label: "Certificate", type: "switch" },
+          { key: "material_notification", label: "Study Material", type: "switch" },
+        ],
+      },
+    ],
+  },
+  {
+    id: "system",
+    title: "System",
+    description: "Maintenance mode, support contacts and operational defaults.",
+    group: "system",
+    settingKey: "config",
+    keywords: ["system", "maintenance", "support", "version", "backup", "retention"],
+    cards: [
+      {
+        title: "Operations",
+        fields: [
+          { key: "maintenance_mode", label: "Maintenance Mode", type: "switch" },
+          { key: "maintenance_message", label: "Maintenance Message", type: "textarea", span: 2 },
+          { key: "support_email", label: "Support Email", type: "email" },
+          { key: "support_phone", label: "Support Phone", type: "text" },
+          { key: "academic_session", label: "Current Academic Session", type: "text" },
+          { key: "audit_retention_days", label: "Audit Retention (days)", type: "number" },
+        ],
+      },
+    ],
+  },
 ];
 
 export const INTEGRATION_DEFS = [
